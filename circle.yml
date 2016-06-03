@@ -39,7 +39,9 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-addon-google_apis-google-23
     - echo y | android update sdk --no-ui --all --filter addon-google_apis-google-23
 
-    - ./gradlew assembleRelease --info --stacktrace --parallel;
+    #- ./gradlew assembleRelease --info --stacktrace --parallel;
+    - ./gradlew assembleDebug --info --stacktrace --parallel;
+
     - find . -name '*.apk' ; exit 0
 
     - mkdir -p app/build/outputs/apk/
