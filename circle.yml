@@ -2,11 +2,11 @@ machine:
   timezone:
     Europe/Vienna
   environment:
-    EMU_: "surespot23"
-    YEMU_: "surespot21"
-    XEMU_: "surespot10"
-    sdpath: "/sdcard"
-    Ysdpath: "/storage/sdcard"
+    ZEMU_: "appemu23"
+    EMU_: "appemu21"
+    XEMU_: "appemu10"
+    Zsdpath: "/sdcard"
+    sdpath: "/storage/sdcard"
     Xsdpath: "/mnt/sdcard"
     ANDROID_HOME: /usr/local/android-sdk-linux
     ANDROID_SDK: /usr/local/android-sdk-linux/
@@ -39,12 +39,14 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-addon-google_apis-google-23
     - echo y | android update sdk --no-ui --all --filter addon-google_apis-google-23
 
-    - pwd;ls -al;
-      echo ./gradlew tasks ;
-      ./gradlew assembleRelease --info --stacktrace --parallel;
-      echo;echo;echo;
-      pwd ; ls -al;
-      cp -av ./surespot/build/outputs/apk/surespot-release-unsigned.apk ~/ ;
+    - ./gradlew assembleRelease --info --stacktrace --parallel;
+    - find . -name '*.apk' ; exit 0
+
+    - mkdir -p app/build/outputs/apk/
+    - cp -v ./build/outputs/apk/*-debug-unaligned.apk app/build/outputs/apk/app-debug-unaligned.apk
+
+    - zip -d app/build/outputs/apk/app-debug-unaligned.apk META-INF/\*     # remove signature !!
+    - cp -av app/build/outputs/apk/app-debug-unaligned.apk ~/app.apk ;
       cd ~/ ;
       echo xxxxxxrm -f ~/.android/debug.keystore ;
       ls -al ~/.android/debug.keystore ;
@@ -53,13 +55,16 @@ dependencies:
       echo "*** generating new signer key ***";
       keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -keyalg RSA -keysize 2048 -validity 10000 -alias androiddebugkey -keypass android -dname "CN=Android Debug,O=Android,C=US" ;
       fi ;
-      jarsigner -verbose -keystore ~/.android/debug.keystore -storepass android -keypass android -sigalg SHA1withRSA -digestalg SHA1 -sigfile CERT -signedjar surespot-release-signed.apk surespot-release-unsigned.apk androiddebugkey > /dev/null 2> /dev/null ;
-      $_SDK_/build-tools/23.0.1/zipalign -v 4 surespot-release-signed.apk surespot-release-signed-aligned.apk > /dev/null 2> /dev/null ;
+      ls -al ~/ ;
+      jarsigner -verbose -keystore ~/.android/debug.keystore -storepass android -keypass android -sigalg SHA1withRSA -digestalg SHA1 -sigfile CERT -signedjar app-signed.apk app.apk androiddebugkey ;
+      ls -al ~/ ;
+      $_SDK_/build-tools/23.0.1/zipalign -v 4 app-signed.apk app-signed-aligned.apk ;
+      ls -al ~/ ;
       pwd ;
       ls -al ;
-      cp -av surespot-release-signed-aligned.apk $CIRCLE_ARTIFACTS/surespot_circleci_$CIRCLE_SHA1.apk || exit 1
-    - qrencode -o $CIRCLE_ARTIFACTS/QR_apk.png 'https://circle-artifacts.com/gh/zoff99/surespot-android/'${CIRCLE_BUILD_NUM}'/artifacts/'${CIRCLE_NODE_INDEX}'/tmp/'`basename $CIRCLE_ARTIFACTS`'/'"surespot_circleci_$CIRCLE_SHA1.apk" ; exit 0
-    - qrencode -o $CIRCLE_ARTIFACTS/QR_artifacts.png 'https://circle-artifacts.com/gh/zoff99/surespot-android/'${CIRCLE_BUILD_NUM}'#artifacts' ; exit 0
+      cp -av app-signed-aligned.apk $CIRCLE_ARTIFACTS/signal_circleci_$CIRCLE_SHA1.apk || exit 1
+    - qrencode -o $CIRCLE_ARTIFACTS/QR_apk.png 'https://circle-artifacts.com/gh/zoff99/Signal-Android/'${CIRCLE_BUILD_NUM}'/artifacts/'${CIRCLE_NODE_INDEX}'/tmp/'`basename $CIRCLE_ARTIFACTS`'/'"signal_circleci_$CIRCLE_SHA1.apk" ; exit 0
+    - qrencode -o $CIRCLE_ARTIFACTS/QR_artifacts.png 'https://circle-artifacts.com/gh/zoff99/Signal-Android/'${CIRCLE_BUILD_NUM}'#artifacts' ; exit 0
 
 test:
   pre:
@@ -67,22 +72,14 @@ test:
     - echo 'mtools_skip_check=1' > ~/.mtoolsrc
     - android list targets
 #
-    - if [ "$EMU_" == "surespot23" ]; then echo "no" | android create avd -n surespot23 -f -t android-23 --abi default/armeabi-v7a --skin "WXGA720" ; fi
-    - if [ "$EMU_" == "surespot23" ]; then cat ~/.android/avd/surespot23.avd/config.ini ; fi
-    #- if [ "$EMU_" == "surespot23" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1014MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
-    #- if [ "$EMU_" == "surespot23" ]; then echo "more HEAP" ; sed -i -e 's#.*vm.heapSize=.*#vm.heapSize=64MB#' ~/.android/avd/surespot23.avd/config.ini ; cat ~/.android/avd/surespot23.avd/config.ini ; fi
-    #- if [ "$EMU_" == "surespot23" ]; then cat ~/.android/avd/surespot23.avd/config.ini ; fi
+    - if [ "$EMU_" == "appemu23" ]; then echo "no" | android create avd -n appemu23 -f -t android-23 --abi default/armeabi-v7a --skin "WXGA720" ; fi
+    - if [ "$EMU_" == "appemu23" ]; then cat ~/.android/avd/appemu23.avd/config.ini ; fi
 #
-    - if [ "$EMU_" == "surespot21" ]; then echo "no" | android create avd -n surespot21 -f -t android-21 --abi default/armeabi-v7a --skin "WXGA720" ; fi
-    - if [ "$EMU_" == "surespot21" ]; then cat ~/.android/avd/surespot21.avd/config.ini ; fi
-    - if [ "$EMU_" == "surespot21" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1014MB#' ~/.android/avd/surespot21.avd/config.ini ; cat ~/.android/avd/surespot21.avd/config.ini ; fi
-    - if [ "$EMU_" == "surespot21" ]; then echo "more HEAP" ; sed -i -e 's#.*vm.heapSize=.*#vm.heapSize=64MB#' ~/.android/avd/surespot21.avd/config.ini ; cat ~/.android/avd/surespot21.avd/config.ini ; fi
-    - if [ "$EMU_" == "surespot21" ]; then cat ~/.android/avd/surespot21.avd/config.ini ; fi
+    - if [ "$EMU_" == "appemu21" ]; then echo "no" | android create avd -n appemu21 -f -t android-21 --abi default/armeabi-v7a --skin "WXGA720" ; fi
+    - if [ "$EMU_" == "appemu21" ]; then cat ~/.android/avd/appemu21.avd/config.ini ; fi
 #
-    - if [ "$EMU_" == "surespot10" ]; then echo "no" | android create avd -n surespot10 -f -t android-10 --abi default/armeabi --skin "WQVGA432" ; fi
-    - if [ "$EMU_" == "surespot10" ]; then cat ~/.android/avd/surespot10.avd/config.ini ; fi
-    - if [ "$EMU_" == "surespot10" ]; then echo "more RAM" ; sed -i -e 's#.*hw.ramSize=.*#hw.ramSize=1024MB#' ~/.android/avd/surespot10.avd/config.ini ; cat ~/.android/avd/surespot10.avd/config.ini ; fi
-    - if [ "$EMU_" == "surespot10" ]; then cat ~/.android/avd/surespot10.avd/config.ini ; fi
+    - if [ "$EMU_" == "appemu10" ]; then echo "no" | android create avd -n appemu10 -f -t android-10 --abi default/armeabi --skin "WQVGA432" ; fi
+    - if [ "$EMU_" == "appemu10" ]; then cat ~/.android/avd/appemu10.avd/config.ini ; fi
 #
     - echo "$EMU_"
     - echo "$sdpath"
@@ -101,12 +98,15 @@ test:
     - adb shell ls -al /storage/ ; exit 0
     - adb shell ls -al /sdcard/ ; exit 0
 
-    - adb install $CIRCLE_ARTIFACTS/surespot_circleci_$CIRCLE_SHA1.apk
+    - adb install ~/app-signed-aligned.apk
 
     - adb logcat -v time > $CIRCLE_ARTIFACTS/adb_out.txt 2>&1 :
         background: true
+    - sleep 60 # let the emulator settle down first
 
     - fb-adb shell am start -n com.twofours.surespot/com.twofours.surespot.activities.MainActivity
     - sleep 60
-    - import -window root $CIRCLE_ARTIFACTS/capture_app_running.png
+
+    - died_count=`cat $CIRCLE_ARTIFACTS/adb_out.txt|grep 'Process. ws.xsoh.etar, PID.'|wc -l|tr -d ' '` ; if [ $died_count -gt 0 ]; then echo "app crashed"; exit 1; fi
+    - import -window root $CIRCLE_ARTIFACTS/capture_app_running.png # get proof that the app is running
 
