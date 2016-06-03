@@ -94,7 +94,6 @@ test:
     - sleep 10
     - import -window root $CIRCLE_ARTIFACTS/capture_emulator_running.png
 
-    - adb shell ls -al / ; exit 0
     - adb shell ls -al /storage/ ; exit 0
     - adb shell ls -al /sdcard/ ; exit 0
 
