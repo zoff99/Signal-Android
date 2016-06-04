@@ -111,4 +111,4 @@ test:
 
     - died_count=`cat $CIRCLE_ARTIFACTS/adb_out.txt|grep 'Process. org.thoughtcrime.securesms, PID.'|wc -l|tr -d ' '` ; if [ $died_count -gt 0 ]; then echo "app crashed"; exit 1; fi
     - import -window root $CIRCLE_ARTIFACTS/capture_app_running.png # get proof that the app is running
-
+    - adb shell screencap -p | sed 's/\r$//' > $CIRCLE_ARTIFACTS/capture_app_running_2.png
