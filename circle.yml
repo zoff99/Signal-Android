@@ -70,7 +70,7 @@ dependencies:
 
 test:
   pre:
-    - mksdcard -l e 180M sdcard.img
+    - mksdcard -l e 8000M sdcard.img
     - echo 'mtools_skip_check=1' > ~/.mtoolsrc
     - android list targets
 #
@@ -105,6 +105,8 @@ test:
     - adb logcat -v time > $CIRCLE_ARTIFACTS/adb_out.txt 2>&1 :
         background: true
     - sleep 60
+    
+    - adb shell screenrecord --bit-rate 8000000 --time-limit 120 $sdpath/screen_001.mp4 ; exit 0
 
     - fb-adb shell am start -n org.thoughtcrime.securesms/org.thoughtcrime.securesms.RoutingActivity
     - sleep 210 # let the app startup
@@ -112,3 +114,4 @@ test:
     - died_count=`cat $CIRCLE_ARTIFACTS/adb_out.txt|grep 'Process. org.thoughtcrime.securesms, PID.'|wc -l|tr -d ' '` ; if [ $died_count -gt 0 ]; then echo "app crashed"; exit 1; fi
     - import -window root $CIRCLE_ARTIFACTS/capture_app_running.png # get proof that the app is running
     - adb shell screencap -p | sed 's/\r$//' > $CIRCLE_ARTIFACTS/capture_app_running_2.png
+    - adb pull $sdpath/screen_001.mp4 $CIRCLE_ARTIFACTS/screen_001.mp4 ; exit 0
