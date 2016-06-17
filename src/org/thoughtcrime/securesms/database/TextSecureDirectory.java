@@ -3,9 +3,11 @@ package org.thoughtcrime.securesms.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,6 +21,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class TextSecureDirectory {
 
@@ -181,7 +184,109 @@ public class TextSecureDirectory {
           Cursor      cursor  = null;
 
     try {
-      cursor = context.getContentResolver().query(uri, new String[] {Phone.NUMBER}, null, null, null);
+      // cursor = context.getContentResolver().query(uri, new String[] {Phone.NUMBER}, null, null, null);
+
+
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      // only get entries starting with '+++' as phonenumber
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      cursor = context.getContentResolver().query(uri, new String[] {Phone.NUMBER},
+              ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE ?",
+              new String[] { "+++%" },
+              null);
+
+
+      Log.i("ZZ0Z:","getPushEligibleContactNumbers"+" "+ "localNumber="+localNumber);
+
+      MatrixCursor matrixCursor=null;
+
+      try
+      {
+        final String tag01="getPushEligibleContactNumbers";
+
+        Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
+
+        String[] columns=null;
+        try
+        {
+          columns = cursor.getColumnNames();
+          int i;
+          for (i=0;i<columns.length;i++)
+          {
+            Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
+          }
+
+          matrixCursor = new MatrixCursor(columns);
+        }
+        catch(Exception e1)
+        {
+          Log.i("ZZ0Z:", tag01 + " EE1 " + e1.getMessage());
+        }
+
+        while (cursor != null && cursor.moveToNext())
+        {
+
+          String long_log="";
+
+          try
+          {
+            int i;
+            for (i=0;i<columns.length;i++)
+            {
+              long_log=long_log+" "+ columns[i]+"="+cursor.getString(cursor.getColumnIndex(columns[i]));
+            }
+
+            matrixCursor.addRow(new Object[] { cursor.getString(cursor.getColumnIndex(columns[0])).replaceFirst(Pattern.quote("+++"),"+") });
+          }
+          catch(Exception e1)
+          {
+            e1.printStackTrace();
+            Log.i("ZZ0Z:", tag01 + " EE2 " + e1.toString());
+          }
+
+          Log.i("ZZ0Z:",tag01+" "+ long_log);
+        }
+
+        cursor.moveToFirst();
+
+        cursor.close();
+        cursor=matrixCursor;
+
+
+        while (cursor != null && cursor.moveToNext())
+        {
+
+          String long_log="";
+
+          try
+          {
+            int i;
+            for (i=0;i<columns.length;i++)
+            {
+              long_log=long_log+" (patched) "+ columns[i]+"="+cursor.getString(cursor.getColumnIndex(columns[i]));
+            }
+          }
+          catch(Exception e1)
+          {
+            e1.printStackTrace();
+            Log.i("ZZ0Z:", tag01 + " EE2a " + e1.toString());
+          }
+
+
+          Log.i("ZZ0Z:",tag01+" "+ long_log);
+        }
+
+        cursor.moveToFirst();
+
+      }
+      catch(Exception ee)
+      {
+        Log.i("ZZ0Z:", "getPushEligibleContactNumbers" + " EE3 " + ee.getMessage());
+      }
+
+
 
       while (cursor != null && cursor.moveToNext()) {
         final String rawNumber = cursor.getString(0);
