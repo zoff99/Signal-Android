@@ -36,6 +36,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.database.TextSecureDirectory;
 import org.whispersystems.libsignal.util.guava.Optional;
 import org.whispersystems.signalservice.api.push.ContactTokenDetails;
 import org.whispersystems.signalservice.api.util.InvalidNumberException;
@@ -194,13 +195,24 @@ public class ContactsDatabase {
     try
     {
       // cursor = context.getContentResolver().query(uri, projection, excludeSelection, null, sort);
-      cursor = context.getContentResolver().query(uri, projection, excludeSelection, new String[] { "+++%" }, sort);
+
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
+        // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
+      cursor = context.getContentResolver().query(uri, projection, excludeSelection, new String[] { TextSecureDirectory.USEABLE_CONTACTS_PREFIX + "%" }, sort);
     }
     catch (Exception e)
     {
         Log.w(TAG, e);
       //  cursor = context.getContentResolver().query(uri, projection, fallbackSelection, null, sort);
-      cursor = context.getContentResolver().query(uri, projection, fallbackSelection, new String[] { "+++%" }, sort);
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
+        // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+        // --------------------------------------------------------------
+        // --------------------------------------------------------------
+      cursor = context.getContentResolver().query(uri, projection, fallbackSelection, new String[] { TextSecureDirectory.USEABLE_CONTACTS_PREFIX + "%" }, sort);
     }
 
 
@@ -240,7 +252,12 @@ public class ContactsDatabase {
                       long_log=long_log+" "+ columns[i]+"="+cursor.getString(cursor.getColumnIndex(columns[i]));
                       if (columns[i].equals(ContactsContract.CommonDataKinds.Phone.NUMBER))
                       {
-                          patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i])).replaceFirst(Pattern.quote("+++"), "+");
+                          // --------------------------------------------------------------
+                          // --------------------------------------------------------------
+                          // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+                          // --------------------------------------------------------------
+                          // --------------------------------------------------------------
+                          patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i])).replaceFirst(Pattern.quote(TextSecureDirectory.USEABLE_CONTACTS_PREFIX), TextSecureDirectory.USEABLE_CONTACTS_REPLACEMENT_STR);
                       }
                       else
                       {
@@ -624,7 +641,12 @@ public class ContactsDatabase {
                         long_log=long_log+" "+ columns[i]+"="+cursor.getString(cursor.getColumnIndex(columns[i]));
                         if (columns[i].equals(ContactsContract.PhoneLookup.NUMBER))
                         {
-                            patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i])).replaceFirst(Pattern.quote("+++"), "+");
+                            // --------------------------------------------------------------
+                            // --------------------------------------------------------------
+                            // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+                            // --------------------------------------------------------------
+                            // --------------------------------------------------------------
+                            patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i])).replaceFirst(Pattern.quote(TextSecureDirectory.USEABLE_CONTACTS_PREFIX), TextSecureDirectory.USEABLE_CONTACTS_REPLACEMENT_STR);
                         }
                         else
                         {

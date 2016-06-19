@@ -46,6 +46,19 @@ public class TextSecureDirectory {
                               TIMESTAMP    + " INTEGER, " +
                               VOICE        + " INTEGER);";
 
+  // --------------------------------------------------------------
+  // --------------------------------------------------------------
+  // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+  // --------------------------------------------------------------
+  // --------------------------------------------------------------
+  public static final String USEABLE_CONTACTS_PREFIX="###";
+  public static final String USEABLE_CONTACTS_REPLACEMENT_STR="";
+  // --------------------------------------------------------------
+  // --------------------------------------------------------------
+  // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+  // --------------------------------------------------------------
+  // --------------------------------------------------------------
+
   private static final Object instanceLock = new Object();
   private static volatile TextSecureDirectory instance;
 
@@ -189,12 +202,12 @@ public class TextSecureDirectory {
 
       // --------------------------------------------------------------
       // --------------------------------------------------------------
-      // only get entries starting with '+++' as phonenumber
+      // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
       // --------------------------------------------------------------
       // --------------------------------------------------------------
       cursor = context.getContentResolver().query(uri, new String[] {Phone.NUMBER},
               ContactsContract.CommonDataKinds.Phone.NUMBER+" LIKE ?",
-              new String[] { "+++%" },
+              new String[] { TextSecureDirectory.USEABLE_CONTACTS_PREFIX +"%" },
               null);
 
 
@@ -238,7 +251,7 @@ public class TextSecureDirectory {
               long_log=long_log+" "+ columns[i]+"="+cursor.getString(cursor.getColumnIndex(columns[i]));
             }
 
-            matrixCursor.addRow(new Object[] { cursor.getString(cursor.getColumnIndex(columns[0])).replaceFirst(Pattern.quote("+++"),"+") });
+            matrixCursor.addRow(new Object[] { cursor.getString(cursor.getColumnIndex(columns[0])).replaceFirst(Pattern.quote(TextSecureDirectory.USEABLE_CONTACTS_PREFIX),TextSecureDirectory.USEABLE_CONTACTS_REPLACEMENT_STR) });
           }
           catch(Exception e1)
           {

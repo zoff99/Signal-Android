@@ -118,7 +118,19 @@ public class DirectoryHelper {
       TextSecureDirectory           directory      = TextSecureDirectory.getInstance(context);
       SignalServiceAccountManager   accountManager = TextSecureCommunicationFactory.createManager(context);
       String                        number         = Util.canonicalizeNumber(context, recipients.getPrimaryRecipient().getNumber());
-      number = number.replaceFirst(Pattern.quote("+++"), "+");
+
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      number = number.replaceFirst(Pattern.quote(TextSecureDirectory.USEABLE_CONTACTS_PREFIX), TextSecureDirectory.USEABLE_CONTACTS_REPLACEMENT_STR);
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+
       Optional<ContactTokenDetails> details        = accountManager.getContact(number);
 
       Log.i("ZZ0Z:", "refreshDirectoryFor" + " localNumber=" + localNumber + " number="+ number);
