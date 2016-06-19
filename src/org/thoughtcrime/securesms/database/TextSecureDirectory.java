@@ -51,8 +51,9 @@ public class TextSecureDirectory {
   // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
   // --------------------------------------------------------------
   // --------------------------------------------------------------
-  public static final String USEABLE_CONTACTS_PREFIX="###";
-  public static final String USEABLE_CONTACTS_REPLACEMENT_STR="";
+  public static final String USEABLE_CONTACTS_PREFIX="###"; // default "###"
+  public static final String USEABLE_CONTACTS_REPLACEMENT_STR=""; // default ""
+  public static final boolean DEBUG_PHONENUMBERS = false; // print debugging messages
   // --------------------------------------------------------------
   // --------------------------------------------------------------
   // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
@@ -211,7 +212,7 @@ public class TextSecureDirectory {
               null);
 
 
-      Log.i("ZZ0Z:","getPushEligibleContactNumbers"+" "+ "localNumber="+localNumber);
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:","getPushEligibleContactNumbers"+" "+ "localNumber="+localNumber);
 
       MatrixCursor matrixCursor=null;
 
@@ -219,7 +220,7 @@ public class TextSecureDirectory {
       {
         final String tag01="getPushEligibleContactNumbers";
 
-        Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
+        if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
 
         String[] columns=null;
         try
@@ -228,14 +229,14 @@ public class TextSecureDirectory {
           int i;
           for (i=0;i<columns.length;i++)
           {
-            Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
+            if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
           }
 
           matrixCursor = new MatrixCursor(columns);
         }
         catch(Exception e1)
         {
-          Log.i("ZZ0Z:", tag01 + " EE1 " + e1.getMessage());
+          if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", tag01 + " EE1 " + e1.getMessage());
         }
 
         while (cursor != null && cursor.moveToNext())
@@ -256,10 +257,10 @@ public class TextSecureDirectory {
           catch(Exception e1)
           {
             e1.printStackTrace();
-            Log.i("ZZ0Z:", tag01 + " EE2 " + e1.toString());
+            if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", tag01 + " EE2 " + e1.toString());
           }
 
-          Log.i("ZZ0Z:",tag01+" "+ long_log);
+          if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ long_log);
         }
 
         cursor.moveToFirst();
@@ -284,11 +285,11 @@ public class TextSecureDirectory {
           catch(Exception e1)
           {
             e1.printStackTrace();
-            Log.i("ZZ0Z:", tag01 + " EE2a " + e1.toString());
+            if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", tag01 + " EE2a " + e1.toString());
           }
 
 
-          Log.i("ZZ0Z:",tag01+" "+ long_log);
+          if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ long_log);
         }
 
         cursor.moveToFirst();
@@ -296,7 +297,7 @@ public class TextSecureDirectory {
       }
       catch(Exception ee)
       {
-        Log.i("ZZ0Z:", "getPushEligibleContactNumbers" + " EE3 " + ee.getMessage());
+        if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", "getPushEligibleContactNumbers" + " EE3 " + ee.getMessage());
       }
 
 

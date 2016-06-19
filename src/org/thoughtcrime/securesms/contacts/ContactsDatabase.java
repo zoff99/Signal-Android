@@ -144,7 +144,7 @@ public class ContactsDatabase {
   public @NonNull Cursor querySystemContacts(String filter) {
 
 
-    Log.i("ZZ0ZZ:Enter", "querySystemContacts");
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "querySystemContacts");
 
 
     Uri uri;
@@ -222,7 +222,7 @@ public class ContactsDatabase {
       {
           final String tag01="querySystemContacts";
 
-          Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
+          if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
 
           String[] columns=null;
           try
@@ -231,7 +231,7 @@ public class ContactsDatabase {
               int i;
               for (i=0;i<columns.length;i++)
               {
-                  Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
+                  if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
               }
 
               matrixCursor = new MatrixCursor(columns);
@@ -269,7 +269,7 @@ public class ContactsDatabase {
 
               }
               catch(Exception e1){}
-              Log.i("ZZ0Z:",tag01+" "+ long_log);
+              if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ long_log);
           }
 
           cursor.close();
@@ -299,7 +299,7 @@ public class ContactsDatabase {
 
 
 
-      Log.i("ZZ0ZZ:Enter", "queryTextSecureContacts");
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "queryTextSecureContacts");
 
 
 
@@ -337,7 +337,7 @@ public class ContactsDatabase {
       {
           final String tag01="queryTextSecureContacts";
 
-          Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
+          if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
 
           String[] columns=null;
           try
@@ -346,7 +346,7 @@ public class ContactsDatabase {
               int i;
               for (i=0;i<columns.length;i++)
               {
-                  Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
+                  if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
               }
           }
           catch(Exception e1){}
@@ -365,7 +365,7 @@ public class ContactsDatabase {
                   }
               }
               catch(Exception e1){}
-              Log.i("ZZ0Z:",tag01+" "+ long_log);
+              if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ long_log);
           }
 
           cursor.moveToFirst();
@@ -426,7 +426,7 @@ public class ContactsDatabase {
                                        long aggregateId, boolean supportsVoice)
   {
 
-      Log.i("ZZ0ZZ:Enter", "addTextSecureRawContact");
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "addTextSecureRawContact");
 
     int index   = operations.size();
     Uri dataUri = ContactsContract.Data.CONTENT_URI.buildUpon()
@@ -499,7 +499,7 @@ public class ContactsDatabase {
                                                                    @NonNull String localNumber)
   {
 
-      Log.i("ZZ0ZZ:Enter", "getSignalRawContacts" + " account name:"+ account.name+" account type:"+account.type);
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "getSignalRawContacts" + " account name:"+ account.name+" account type:"+account.type);
 
     Uri currentContactsUri = RawContacts.CONTENT_URI.buildUpon()
                                                     .appendQueryParameter(RawContacts.ACCOUNT_NAME, account.name)
@@ -517,7 +517,7 @@ public class ContactsDatabase {
         {
             final String tag01="getSignalRawContacts";
 
-            Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
+            if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
 
             String[] columns=null;
             try
@@ -526,7 +526,7 @@ public class ContactsDatabase {
                 int i;
                 for (i=0;i<columns.length;i++)
                 {
-                    Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
+                    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
                 }
             }
             catch(Exception e1){}
@@ -545,7 +545,7 @@ public class ContactsDatabase {
                     }
                 }
                 catch(Exception e1){}
-                Log.i("ZZ0Z:",tag01+" "+ long_log);
+                if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ long_log);
             }
 
             cursor.moveToFirst();
@@ -589,7 +589,7 @@ public class ContactsDatabase {
                                                            @NonNull String localNumber)
   {
 
-      Log.i("ZZ0ZZ:Enter", "getSystemContactInfo" + " e164number:"+ e164number+" localNumber:"+ localNumber);
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "getSystemContactInfo" + " e164number:"+ e164number+" localNumber:"+ localNumber);
 
     Uri      uri          = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(e164number));
     String[] projection   = {ContactsContract.PhoneLookup.NUMBER,
@@ -611,7 +611,7 @@ public class ContactsDatabase {
         {
             final String tag01="getSystemContactInfo";
 
-            Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
+            if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "count="+cursor.getCount());
 
             String[] columns=null;
             try
@@ -620,7 +620,7 @@ public class ContactsDatabase {
                 int i;
                 for (i=0;i<columns.length;i++)
                 {
-                    Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
+                    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ "columns: " + columns[i]);
                 }
             }
             catch(Exception e1){}
@@ -659,7 +659,7 @@ public class ContactsDatabase {
                 }
                 catch(Exception e1){}
 
-                Log.i("ZZ0Z:",tag01+" "+ long_log);
+                if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ long_log);
             }
 
             cursor.moveToFirst();
@@ -687,11 +687,11 @@ public class ContactsDatabase {
                 catch(Exception e1)
                 {
                     e1.printStackTrace();
-                    Log.i("ZZ0Z:", tag01 + " EE2a " + e1.toString());
+                    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", tag01 + " EE2a " + e1.toString());
                 }
 
 
-                Log.i("ZZ0Z:",tag01+" "+ long_log);
+                if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:",tag01+" "+ long_log);
             }
 
             cursor.moveToFirst();

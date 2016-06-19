@@ -95,12 +95,12 @@ public class DirectoryHelper {
     if (activeTokens != null) {
       for (ContactTokenDetails activeToken : activeTokens) {
         eligibleContactNumbers.remove(activeToken.getNumber());
-        Log.i("ZZ0Z:", "refreshDirectory" + " activeToken.getNumber=" + activeToken.getNumber());
+        if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", "refreshDirectory" + " activeToken.getNumber=" + activeToken.getNumber());
         activeToken.setNumber(activeToken.getNumber());
       }
 
       directory.setNumbers(activeTokens, eligibleContactNumbers);
-      Log.i("ZZ0Z:", "refreshDirectory" + " localNumber=" + localNumber);
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", "refreshDirectory" + " localNumber=" + localNumber);
 
       return updateContactsDatabase(context, localNumber, activeTokens, true);
     }
@@ -133,7 +133,7 @@ public class DirectoryHelper {
 
       Optional<ContactTokenDetails> details        = accountManager.getContact(number);
 
-      Log.i("ZZ0Z:", "refreshDirectoryFor" + " localNumber=" + localNumber + " number="+ number);
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", "refreshDirectoryFor" + " localNumber=" + localNumber + " number="+ number);
 
       if (details.isPresent()) {
         directory.setNumber(details.get(), true);
@@ -216,7 +216,7 @@ public class DirectoryHelper {
   {
     Optional<Account> account = getOrCreateAccount(context);
 
-    Log.i("ZZ0Z:", "updateContactsDatabase" + " localNumber=" + localNumber);
+    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", "updateContactsDatabase" + " localNumber=" + localNumber);
 
 
     if (account.isPresent()) {
