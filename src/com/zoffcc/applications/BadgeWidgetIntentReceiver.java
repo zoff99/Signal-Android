@@ -21,7 +21,7 @@ public class BadgeWidgetIntentReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        if (intent.getAction().equals("com.zoffcc.applications.intent.action.CHANGE_BADGE"))
+        if (intent.getAction().equals(CustomWidgetProvider.baseClass + ".CHANGE_BADGE"))
         {
             int unreadCountNew = intent.getIntExtra("UNREAD_COUNT_NEW", unreadCount);
             updateWidgetPictureAndButtonListener(context, unreadCountNew);
@@ -46,7 +46,7 @@ public class BadgeWidgetIntentReceiver extends BroadcastReceiver
             remoteViews.setTextViewText(R.id.widget_number, displayCount);
         }
 
-        Intent intent = new Intent(context, org.thoughtcrime.securesms.ConversationListActivity.class);
+        Intent intent = new Intent(context, CustomWidgetProvider.ToOpenActivity);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent p = PendingIntent.getActivity(context, 0, intent, 0);
         remoteViews.setOnClickPendingIntent(R.id.widget_frame, p);

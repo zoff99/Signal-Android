@@ -18,30 +18,22 @@ import org.thoughtcrime.securesms.R;
  */
 public class CustomWidgetProvider extends AppWidgetProvider
 {
-
+    // ---- CONFIG ----
+    // ---- CONFIG ----
+    // ---- CONFIG ----
     public static final int MAX_COUNT = 20;
+    public static Class ToOpenActivity = org.thoughtcrime.securesms.ConversationListActivity.class;
+    public static String baseClass = "org.thoughtcrime.securesms";
+    // ---- CONFIG ----
+    // ---- CONFIG ----
+    // ---- CONFIG ----
 
     @Override
     public void onUpdate(final Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
     {
-        // ----------- DEBUG ------------
-        //        final Intent intent2 = new Intent();
-        //        intent2.setAction("com.zoffcc.applications.intent.action.CHANGE_BADGE");
-        //
-        //        final Handler handler = new Handler();
-        //        handler.postDelayed(new Runnable()
-        //        {
-        //            @Override
-        //            public void run()
-        //            {
-        //                context.sendBroadcast(intent2);
-        //            }
-        //        }, 3000);
-        // ----------- DEBUG ------------
-
         for (int widgetId : appWidgetIds)
         {
-            Intent intent = new Intent(context, org.thoughtcrime.securesms.ConversationListActivity.class);
+            Intent intent = new Intent(context, ToOpenActivity);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.badge_widget);
