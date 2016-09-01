@@ -19,12 +19,8 @@ public class BadgeWidgetIntentReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent)
     {
-        String str = intent.getAction();
-        System.out.println("DH:W 071" + "onReceive"+": " + str);
-
         if (intent.getAction().equals("com.zoffcc.applications.intent.action.CHANGE_BADGE"))
         {
-            System.out.println("DH:W 071" + "update");
             updateWidgetPictureAndButtonListener(context);
         }
     }
