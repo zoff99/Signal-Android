@@ -3,6 +3,7 @@
                     android:initialLayout="@layout/badge_widget"
                     android:minHeight="34dp"
                     android:minWidth="34dp"
-                    android:updatePeriodMillis="1000000"
+                    android:updatePeriodMillis="0"
     >
+    <!-- never update: updatePeriodMillis="0" -->
 </appwidget-provider>
