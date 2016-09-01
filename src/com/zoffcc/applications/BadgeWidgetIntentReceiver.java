@@ -16,21 +16,23 @@ import org.thoughtcrime.securesms.R;
  */
 public class BadgeWidgetIntentReceiver extends BroadcastReceiver
 {
+    public static int unreadCount = 0;
+
     @Override
     public void onReceive(Context context, Intent intent)
     {
         if (intent.getAction().equals("com.zoffcc.applications.intent.action.CHANGE_BADGE"))
         {
-            updateWidgetPictureAndButtonListener(context);
+            int unreadCountNew = intent.getIntExtra("UNREAD_COUNT_NEW", unreadCount);
+            updateWidgetPictureAndButtonListener(context, unreadCountNew);
         }
     }
 
-    private void updateWidgetPictureAndButtonListener(Context context)
+    private void updateWidgetPictureAndButtonListener(Context context, int unreadCountNew)
     {
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.badge_widget);
 
-        int unreadCount = 78;
-
+        unreadCount = unreadCountNew;
         if (unreadCount <= 0)
         {
             // Hide TextView for unread count if there are no unread messages.

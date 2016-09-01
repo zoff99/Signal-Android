@@ -46,8 +46,7 @@ public class CustomWidgetProvider extends AppWidgetProvider
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.badge_widget);
 
-            int unreadCount = 0;
-
+            int unreadCount = BadgeWidgetIntentReceiver.unreadCount;
             if (unreadCount <= 0)
             {
                 // Hide TextView for unread count

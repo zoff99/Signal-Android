@@ -405,6 +405,24 @@ public class MessageNotifier {
   }
 
   private static void updateBadge(Context context, int count) {
+
+
+    try
+    {
+      // ---- update the widget if present ----
+      final Intent intent2 = new Intent();
+      intent2.setAction("com.zoffcc.applications.intent.action.CHANGE_BADGE");
+      intent2.putExtra("UNREAD_COUNT_NEW", count);
+      context.getApplicationContext().sendBroadcast(intent2);
+      // ---- update the widget if present ----
+    }
+    catch (Exception e)
+    {
+    }
+    catch (Throwable t)
+    {
+    }
+
     try {
       ShortcutBadger.setBadge(context.getApplicationContext(), count);
     } catch (Throwable t) {
