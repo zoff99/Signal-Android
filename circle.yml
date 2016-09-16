@@ -20,6 +20,9 @@ dependencies:
     - android list sdk --all | grep -i tools
     - android list sdk --all --extended
   pre:
+    - wget 'https://raw.githubusercontent.com/zoff99/android_sdk_install_wrapper/master/__sdk_update__.sh' -O ~/__sdk_update__.sh
+    - chmod a+rx ~/__sdk_update__.sh
+
     - sudo apt-get update > /dev/null 2> /dev/null
     - sudo apt-get install xvfb > /dev/null 2> /dev/null
     - sudo apt-get install xdotool > /dev/null 2> /dev/null
@@ -29,15 +32,11 @@ dependencies:
     - sudo apt-get install qrencode > /dev/null 2> /dev/null
 
     - echo y | android update sdk --no-ui --all --filter "tools"
-    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.0
-    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.1
-    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.2
-    - echo y | android update sdk --no-ui --all --filter build-tools-23.0.3
-    - echo y | android update sdk --no-ui --all --filter android-23
-    - echo y | android update sdk --no-ui --all --filter platform-tools-preview
-    - echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-android-23
-    - echo y | android update sdk --no-ui --all --filter sys-img-armeabi-v7a-addon-google_apis-google-23
-    - echo y | android update sdk --no-ui --all --filter addon-google_apis-google-23
+    - ~/__sdk_update__.sh build-tools-23.0.0
+    - ~/__sdk_update__.sh build-tools-23.0.1
+    - ~/__sdk_update__.sh build-tools-23.0.2
+    - ~/__sdk_update__.sh android-23
+    - ~/__sdk_update__.sh sys-img-armeabi-v7a-android-23
 
     #- ./gradlew assembleRelease --info --stacktrace --parallel;
     - ./gradlew assembleDebug --info --stacktrace --parallel;
