@@ -105,24 +105,16 @@ public class ConversationFragment extends Fragment
     final View view = inflater.inflate(R.layout.conversation_fragment, container, false);
     list = ViewUtil.findById(view, android.R.id.list);
 
-    final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
-    list.setHasFixedSize(false);
-    list.setLayoutManager(layoutManager);
-
     // --- fast scroll enable ---
     fastScroller = (VerticalRecyclerViewFastScroller) view.findViewById(R.id.fastscroller2);
     fastScroller.setRecyclerView(list);
-
     fastScroller.setScrollbarFadingEnabled(true);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-    {
-      fastScroller.setAlpha(0.7f);
-    }
-
     list.setOnScrollListener(fastScroller.getOnScrollListener());
-    fastScroller.bringToFront();
-    view.invalidate();
     // --- fast scroll enable ---
+
+    final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
+    list.setHasFixedSize(false);
+    list.setLayoutManager(layoutManager);
 
     loadMoreView = inflater.inflate(R.layout.load_more_header, container, false);
     loadMoreView.setOnClickListener(new OnClickListener() {
