@@ -3,29 +3,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="fill_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical">
+              android:orientation="horizontal">
 
-    <LinearLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_weight="1.0"
+        android:cacheColorHint="?conversation_background"
+        android:gravity="bottom"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@android:id/list"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:gravity="bottom"
-            android:cacheColorHint="?conversation_background"/>
+    <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
+        android:id="@+id/fastscroller2"
+        android:layout_width="20dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:gravity="bottom"
+        />
 
-        <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
-            android:id="@+id/fastscroller2"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:gravity="bottom"
-            />
-
-    </LinearLayout>
 
 </LinearLayout>
