@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -69,6 +70,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
+
 public class ConversationFragment extends Fragment
   implements LoaderManager.LoaderCallbacks<Cursor>
 {
@@ -87,6 +90,7 @@ public class ConversationFragment extends Fragment
   private ActionMode   actionMode;
   private Locale       locale;
   private RecyclerView list;
+  private VerticalRecyclerViewFastScroller fastScroller;
   private View         loadMoreView;
 
   @Override
@@ -100,9 +104,25 @@ public class ConversationFragment extends Fragment
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle bundle) {
     final View view = inflater.inflate(R.layout.conversation_fragment, container, false);
     list = ViewUtil.findById(view, android.R.id.list);
+
     final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
     list.setHasFixedSize(false);
     list.setLayoutManager(layoutManager);
+
+    // --- fast scroll enable ---
+    fastScroller = (VerticalRecyclerViewFastScroller) view.findViewById(R.id.fastscroller2);
+    fastScroller.setRecyclerView(list);
+
+    fastScroller.setScrollbarFadingEnabled(true);
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+    {
+      fastScroller.setAlpha(0.7f);
+    }
+
+    list.setOnScrollListener(fastScroller.getOnScrollListener());
+    fastScroller.bringToFront();
+    view.invalidate();
+    // --- fast scroll enable ---
 
     loadMoreView = inflater.inflate(R.layout.load_more_header, container, false);
     loadMoreView.setOnClickListener(new OnClickListener() {
@@ -113,6 +133,7 @@ public class ConversationFragment extends Fragment
         getLoaderManager().restartLoader(0, args, ConversationFragment.this);
       }
     });
+
     return view;
   }
 
