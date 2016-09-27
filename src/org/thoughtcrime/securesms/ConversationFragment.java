@@ -108,6 +108,7 @@ public class ConversationFragment extends Fragment
     // --- fast scroll enable ---
     fastScroller = (VerticalRecyclerViewFastScroller) view.findViewById(R.id.fastscroller2);
     fastScroller.setRecyclerView(list);
+    fastScroller.setScrollerDirection(VerticalRecyclerViewFastScroller.DIRECTION_REVERSED);
     fastScroller.setScrollbarFadingEnabled(true);
     list.setOnScrollListener(fastScroller.getOnScrollListener());
     // --- fast scroll enable ---

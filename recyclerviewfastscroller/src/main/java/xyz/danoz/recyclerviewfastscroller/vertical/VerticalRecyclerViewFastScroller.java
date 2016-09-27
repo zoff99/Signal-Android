@@ -52,13 +52,19 @@ public class VerticalRecyclerViewFastScroller extends AbsRecyclerViewFastScrolle
         if (mScreenPositionCalculator == null) {
             return;
         }
+
+        // System.out.println("moveHandleToPosition:"+ "scrollProgress="+scrollProgress);
+        // System.out.println("moveHandleToPosition:"+ "getYPositionFromScrollProgress="+mScreenPositionCalculator.getYPositionFromScrollProgress(scrollProgress));
+
         mHandle.setY(mScreenPositionCalculator.getYPositionFromScrollProgress(scrollProgress));
+
+
     }
 
     protected void onCreateScrollProgressCalculator() {
         VerticalScrollBoundsProvider boundsProvider =
                 new VerticalScrollBoundsProvider(mBar.getY(), mBar.getY() + mBar.getHeight() - mHandle.getHeight());
-        mScrollProgressCalculator = new VerticalLinearLayoutManagerScrollProgressCalculator(boundsProvider);
+        mScrollProgressCalculator = new VerticalLinearLayoutManagerScrollProgressCalculator(boundsProvider, scrollerDirection);
         mScreenPositionCalculator = new VerticalScreenPositionCalculator(boundsProvider);
     }
 }

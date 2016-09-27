@@ -1,6 +1,7 @@
 package xyz.danoz.recyclerviewfastscroller.calculation.progress;
 
 import xyz.danoz.recyclerviewfastscroller.calculation.VerticalScrollBoundsProvider;
+import xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,8 +13,12 @@ import android.view.View;
  */
 public class VerticalLinearLayoutManagerScrollProgressCalculator extends VerticalScrollProgressCalculator {
 
-    public VerticalLinearLayoutManagerScrollProgressCalculator(VerticalScrollBoundsProvider scrollBoundsProvider) {
+    private int scrollDirection = VerticalRecyclerViewFastScroller.DIRECTION_NORMAL;
+
+    public VerticalLinearLayoutManagerScrollProgressCalculator(VerticalScrollBoundsProvider scrollBoundsProvider, int scrollDirection) {
         super(scrollBoundsProvider);
+
+        this.scrollDirection = scrollDirection;
     }
 
     /**
@@ -40,6 +45,14 @@ public class VerticalLinearLayoutManagerScrollProgressCalculator extends Vertica
 
         int currentSection = lastFullyVisiblePosition - indexOfLastFullyVisibleItemInFirstSection;
 
-        return (float) currentSection / numScrollableSectionsInList;
+        float ret = (float) currentSection / numScrollableSectionsInList;
+
+        if (scrollDirection == VerticalRecyclerViewFastScroller.DIRECTION_REVERSED)
+        {
+            ret = 1.0f - ret;
+            // System.out.println("VerticalLinearLayoutManagerScrollProgressCalculator:" + "ret="+ ((float) currentSection / numScrollableSectionsInList));
+        }
+
+        return ret;
     }
 }

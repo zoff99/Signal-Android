@@ -36,6 +36,10 @@ public abstract class AbsRecyclerViewFastScroller extends FrameLayout implements
     /** The handle that signifies the user's progress in the list */
     protected final View mHandle;
 
+    public static final int DIRECTION_REVERSED = -1;
+    public static final int DIRECTION_NORMAL = 1;
+    public static int scrollerDirection = DIRECTION_NORMAL;
+
     /* TODO:
      *      Consider making RecyclerView final and should be passed in using a custom attribute
      *      This could allow for some type checking on the section indicator wrt the adapter of the RecyclerView
@@ -46,6 +50,16 @@ public abstract class AbsRecyclerViewFastScroller extends FrameLayout implements
     /** If I had my druthers, AbsRecyclerViewFastScroller would implement this as an interface, but Android has made
      * {@link OnScrollListener} an abstract class instead of an interface. Hmmm */
     protected OnScrollListener mOnScrollListener;
+
+    public void setScrollerDirection(int direction)
+    {
+        scrollerDirection = direction;
+    }
+
+    public int getScrollerDirection()
+    {
+        return scrollerDirection;
+    }
 
     public AbsRecyclerViewFastScroller(Context context) {
         this(context, null, 0);
@@ -80,7 +94,8 @@ public abstract class AbsRecyclerViewFastScroller extends FrameLayout implements
             attributes.recycle();
         }
 
-        setOnTouchListener(new FastScrollerTouchListener(this));
+        FastScrollerTouchListener f = new FastScrollerTouchListener(this);
+        setOnTouchListener(f);
     }
 
     private void applyCustomAttributesToView(View view, Drawable drawable, int color) {
@@ -149,8 +164,24 @@ public abstract class AbsRecyclerViewFastScroller extends FrameLayout implements
 
     @Override
     public void scrollTo(float scrollProgress, boolean fromTouch) {
+        // System.out.println("scrollTo:"+ "scrollProgress="+scrollProgress + " fromTouch="+fromTouch);
         int position = getPositionFromScrollProgress(scrollProgress);
-        mRecyclerView.scrollToPosition(position);
+
+        // System.out.println("scrollTo:" + "1position=" + position);
+        if (fromTouch == false)
+        {
+            // System.out.println("scrollTo:" + "2position=" + position);
+            mRecyclerView.scrollToPosition(position);
+        }
+        else
+        {
+            if (scrollerDirection == DIRECTION_REVERSED)
+            {
+                position = getPositionFromScrollProgress(1.0f - scrollProgress);
+                // System.out.println("scrollTo:" + "3position=" + position);
+            }
+            mRecyclerView.scrollToPosition(position);
+        }
 
         updateSectionIndicator(position, scrollProgress);
     }
@@ -191,9 +222,14 @@ public abstract class AbsRecyclerViewFastScroller extends FrameLayout implements
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     float scrollProgress = 0;
+
+                    // System.out.println("onScrolled:1");
+
                     ScrollProgressCalculator scrollProgressCalculator = getScrollProgressCalculator();
                     if (scrollProgressCalculator != null) {
+
                         scrollProgress = scrollProgressCalculator.calculateScrollProgress(recyclerView);
+                        // System.out.println("onScrolled:"+"scrollProgress=" + scrollProgress);
                     }
                     moveHandleToPosition(scrollProgress);
                 }
