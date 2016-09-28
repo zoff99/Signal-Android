@@ -36,6 +36,7 @@ dependencies:
     - ~/__sdk_update__.sh build-tools-23.0.0
     - ~/__sdk_update__.sh build-tools-23.0.1
     - ~/__sdk_update__.sh build-tools-23.0.2
+    - ~/__sdk_update__.sh build-tools-23.0.3
     - ~/__sdk_update__.sh android-23
     - ~/__sdk_update__.sh sys-img-armeabi-v7a-android-23
 
