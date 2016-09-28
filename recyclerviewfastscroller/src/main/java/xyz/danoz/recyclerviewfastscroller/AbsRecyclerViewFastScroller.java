@@ -167,20 +167,20 @@ public abstract class AbsRecyclerViewFastScroller extends FrameLayout implements
         // System.out.println("scrollTo:"+ "scrollProgress="+scrollProgress + " fromTouch="+fromTouch);
         int position = getPositionFromScrollProgress(scrollProgress);
 
-        // System.out.println("scrollTo:" + "1position=" + position);
-        if (fromTouch == false)
-        {
-            // System.out.println("scrollTo:" + "2position=" + position);
-            mRecyclerView.scrollToPosition(position);
-        }
-        else
+        if (fromTouch == true)
         {
             if (scrollerDirection == DIRECTION_REVERSED)
             {
                 position = getPositionFromScrollProgress(1.0f - scrollProgress);
-                // System.out.println("scrollTo:" + "3position=" + position);
             }
+        }
+
+        try
+        {
             mRecyclerView.scrollToPosition(position);
+        }
+        catch (Exception e)
+        {
         }
 
         updateSectionIndicator(position, scrollProgress);
@@ -246,9 +246,15 @@ public abstract class AbsRecyclerViewFastScroller extends FrameLayout implements
             onCreateScrollProgressCalculator();
         }
 
-        // synchronize the handle position to the RecyclerView
-        float scrollProgress = getScrollProgressCalculator().calculateScrollProgress(mRecyclerView);
-        moveHandleToPosition(scrollProgress);
+        try
+        {
+            // synchronize the handle position to the RecyclerView
+            float scrollProgress = getScrollProgressCalculator().calculateScrollProgress(mRecyclerView);
+            moveHandleToPosition(scrollProgress);
+        }
+        catch (Exception e)
+        {
+        }
     }
 
     /**
