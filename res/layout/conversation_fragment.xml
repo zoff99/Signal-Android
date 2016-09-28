@@ -10,14 +10,19 @@
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_weight="1.0"
-        android:cacheColorHint="?conversation_background"
-        android:gravity="bottom"/>
+        android:scrollbars="vertical"
+        android:scrollbarSize="1px"
+        android:scrollbarStyle="insideOverlay"
+        android:scrollbarTrackVertical="@drawable/transparent_scrollbar"
+        android:scrollbarThumbVertical="@drawable/transparent_scrollbar"
+        android:cacheColorHint="?conversation_background" />
 
     <xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller
         android:id="@+id/fastscroller2"
         android:layout_width="20dp"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
+        android:visibility="visible"
         android:gravity="bottom"
         />
 
