@@ -22,6 +22,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import android.support.v7.widget.RecyclerView.OnScrollListener;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -132,16 +134,43 @@ public class ConversationFragment extends Fragment
 
 
     // -- custom --
-    list.setOnScrollListener(fastScroller.getOnScrollListener());
+    list.addOnScrollListener(fastScroller.getOnScrollListener());
     // -- custom --
     // --- fast scroll enable ---
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
     list.setHasFixedSize(false);
     list.setLayoutManager(layoutManager);
-    // -- new --
-    // list.addOnScrollListener(scrollListener);
-    // -- new --
+
+    try
+    {
+      TypedValue a = new TypedValue();
+      list.getContext().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true);
+      if (a.type >= TypedValue.TYPE_FIRST_COLOR_INT && a.type <= TypedValue.TYPE_LAST_COLOR_INT)
+      {
+        // windowBackground is a color
+        int color = a.data;
+        if (isColorLight(color))
+        {
+          composeDivider.setBackgroundColor(darkenColor(color, 0.14f));
+        }
+        else
+        {
+          composeDivider.setBackgroundColor(lightenColor(color, 0.14f));
+        }
+      }
+      //else
+      //{
+      // windowBackground is not a color, probably a drawable
+      // Drawable d = getResources().getDrawable(a.resourceId);
+      // leave it at default
+      //}
+    }
+    catch (Exception e)
+    {
+    }
+
+    list.addOnScrollListener(scrollListener);
 
     loadMoreView = inflater.inflate(R.layout.load_more_header, container, false);
     loadMoreView.setOnClickListener(new OnClickListener() {
@@ -447,7 +476,8 @@ public class ConversationFragment extends Fragment
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
           composeDivider.animate().alpha(currentlyAtBottom ? 0 : 1);
-        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+        {
           composeDivider.setAlpha(currentlyAtBottom ? 0 : 1);
         }
 
@@ -557,4 +587,39 @@ public class ConversationFragment extends Fragment
       return false;
     }
   }
+
+  public static boolean isColorLight(int color)
+  {
+    float[] hsv = new float[3];
+    Color.colorToHSV(color, hsv);
+    // System.out.println("HSV="+hsv[0]+" "+hsv[1]+" "+hsv[2]);
+
+    if (hsv[2] < 0.5)
+    {
+      return false;
+    }
+    else
+    {
+      return true;
+    }
+  }
+
+  public static int lightenColor(int inColor, float inAmount)
+  {
+    return Color.argb (
+            Color.alpha(inColor),
+            (int) Math.min(255, Color.red(inColor) + 255 * inAmount),
+            (int) Math.min(255, Color.green(inColor) + 255 * inAmount),
+            (int) Math.min(255, Color.blue(inColor) + 255 * inAmount) );
+  }
+
+  public static int darkenColor(int inColor, float inAmount)
+  {
+    return Color.argb (
+            Color.alpha(inColor),
+            (int) Math.max(0, Color.red(inColor) - 255 * inAmount),
+            (int) Math.max(0, Color.green(inColor) - 255 * inAmount),
+            (int) Math.max(0, Color.blue(inColor) - 255 * inAmount) );
+  }
+
 }
