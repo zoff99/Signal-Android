@@ -36,6 +36,11 @@ public class VerticalRecyclerViewFastScroller extends AbsRecyclerViewFastScrolle
         super(context, attrs, defStyleAttr);
     }
 
+    public void onReLayout()
+    {
+        super.onReLayout();
+    }
+
     @Override
     protected int getLayoutResourceId() {
         return R.layout.vertical_recycler_fast_scroller_layout;

@@ -114,13 +114,34 @@ public class ConversationFragment extends Fragment
     fastScroller.setRecyclerView(list);
     fastScroller.setScrollerDirection(VerticalRecyclerViewFastScroller.DIRECTION_REVERSED);
     fastScroller.setScrollbarFadingEnabled(true);
+
+    if (Build.VERSION.SDK_INT >= 11) {
+      fastScroller.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+        @Override
+        public void onLayoutChange(View v,
+                                   int left, int top, int right, int bottom,
+                                   int oldLeft, int oldTop, int oldRight, int oldBottom) {
+          if ( ((left-right)!= (oldLeft-oldRight)) || ((top-bottom)!= (oldTop-oldBottom)) )
+          {
+            // System.out.println("keyboard opened/closed? -> recalculate the scrollbar position");
+            fastScroller.onReLayout();
+          }
+        }
+      });
+    }
+
+
+    // -- custom --
     list.setOnScrollListener(fastScroller.getOnScrollListener());
+    // -- custom --
     // --- fast scroll enable ---
 
     final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
     list.setHasFixedSize(false);
     list.setLayoutManager(layoutManager);
+    // -- new --
     // list.addOnScrollListener(scrollListener);
+    // -- new --
 
     loadMoreView = inflater.inflate(R.layout.load_more_header, container, false);
     loadMoreView.setOnClickListener(new OnClickListener() {

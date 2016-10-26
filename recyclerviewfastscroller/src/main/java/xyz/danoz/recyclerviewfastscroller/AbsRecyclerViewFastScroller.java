@@ -257,6 +257,21 @@ public abstract class AbsRecyclerViewFastScroller extends FrameLayout implements
         }
     }
 
+    protected void onReLayout()
+    {
+        try
+        {
+            onCreateScrollProgressCalculator();
+
+            // synchronize the handle position to the RecyclerView
+            float scrollProgress = getScrollProgressCalculator().calculateScrollProgress(mRecyclerView);
+            moveHandleToPosition(scrollProgress);
+        }
+        catch (Exception e)
+        {
+        }
+    }
+
     /**
      * Sub classes have to override this method and create the ScrollProgressCalculator instance in this method.
      */
