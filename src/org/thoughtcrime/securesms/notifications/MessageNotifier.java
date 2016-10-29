@@ -38,6 +38,8 @@ import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.util.Log;
 
+import com.zoffcc.applications.CustomWidgetProvider;
+
 import org.thoughtcrime.securesms.ApplicationContext;
 import org.thoughtcrime.securesms.ConversationActivity;
 import org.thoughtcrime.securesms.R;
@@ -405,6 +407,24 @@ public class MessageNotifier {
   }
 
   private static void updateBadge(Context context, int count) {
+
+
+    try
+    {
+      // ---- update the widget if present ----
+      final Intent intent2 = new Intent();
+      intent2.setAction(CustomWidgetProvider.baseClass + ".CHANGE_BADGE");
+      intent2.putExtra("UNREAD_COUNT_NEW", count);
+      context.getApplicationContext().sendBroadcast(intent2);
+      // ---- update the widget if present ----
+    }
+    catch (Exception e)
+    {
+    }
+    catch (Throwable t)
+    {
+    }
+
     try {
       ShortcutBadger.setBadge(context.getApplicationContext(), count);
     } catch (Throwable t) {
