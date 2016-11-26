@@ -267,7 +267,7 @@
   <string name="GcmRefreshJob_Permanent_Signal_communication_failure">Trajna okvara pri komunikaciji aplikacije Signal!</string>
   <string name="GcmRefreshJob_Signal_was_unable_to_register_with_Google_Play_Services">Registracija z Google Play Services ni bila uspešna. Podatkovna komunikacija je izklopljena, prosimo poskusite s ponovno registracijo v meniju Nastavive &gt; Napredno.</string>
   <!--GiphyActivity-->
-  <string name="GiphyActivity_error_while_retrieving_full_resolution_gif">Napaka pri pridobivanju GIF-ov v polni resoluciji...</string>
+  <string name="GiphyActivity_error_while_retrieving_full_resolution_gif">Napaka pri iskanju GIF-ov v polni resoluciji...</string>
   <!--GiphyFragmentPageAdapter-->
   <string name="GiphyFragmentPagerAdapter_gifs">GIF-i</string>
   <string name="GiphyFragmentPagerAdapter_stickers">Nalepke</string>
@@ -369,7 +369,7 @@ Uvoz iz šifrirane varnostne kopije bo popolnoma nadomestil obstoječe ključe, 
   <string name="MessageRecord_called_s">Klicali ste: %s</string>
   <string name="MessageRecord_missed_call_from">Neodgovorjen klic: %s</string>
   <string name="MessageRecord_s_is_on_signal_say_hey">%s uporablja Signal, pozdravite ga!</string>
-  <string name="MessageRecord_you">Vi</string>
+  <string name="MessageRecord_you_set_disappearing_message_time_to_s">Čas poteka sporočila ste nastavili na %1$s.</string>
   <string name="MessageRecord_s_set_disappearing_message_time_to_s">Oseba %1$s je nastavila čas poteka sporočila na %2$s</string>
   <string name="MessageRecord_your_safety_numbers_with_s_have_changed">Vaša varnostna števila pri uporabniku %s so bila spremenjena</string>
   <!--PassphraseChangeActivity-->
@@ -510,8 +510,13 @@ Prejeto sporočilo za izmenjavo ključev za napačno različico protokola.</stri
   <string name="ThreadRecord_your_safety_numbers_with_s_have_changed">Vaša varnostna števila pri uporabniku %s so bila spremenjena</string>
   <!--VerifyIdentityActivity-->
   <string name="VerifyIdentityActivity_your_contact_is_running_an_old_version_of_signal">Vaš partner uporablja zastarelo različico aplikacije Signal. Pred overbo jo je potrebno nadgraditi.</string>
+  <string name="VerifyIdentityActivity_your_contact_is_running_a_newer_version_of_Signal">Vaš partner uporablja novejšo različico aplikacije Signal z nekompatibilnimi kodami QR. Prosimo nadgradite svojo aplikacijo.</string>
   <string name="VerifyIdentityActivity_you_re_attempting_to_verify_safety_numbers_with">Želeli ste overiti varnostna števila za %1$s, namesto tega pa ste skenirali %2$s.</string>
   <string name="VerifyIdentityActivity_the_scanned_qr_code_is_not_a_correctly_formatted_safety_number">Skenirana koda QR ni pravilno pravilno oblikovana verifikacijska koda za varnostna števila. Poskusite znova.</string>
+  <string name="VerifyIdentityActivity_share_safety_numbers_via">Deli varnostna števila preko...</string>
+  <string name="VerifyIdentityActivity_our_signal_safety_numbers">Najina varnostna števila Signal:</string>
+  <string name="VerifyIdentityActivity_no_app_to_share_to">Kaže, da nimate nameščene nobene primerne aplikacije.</string>
+  <string name="VerifyIdentityActivity_no_safety_numbers_to_compare_were_found_in_the_clipboard">V odložišču ni bilo najdenih varnostnih števil za primerjavo</string>
   <!--KeyExchangeInitiator-->
   <string name="KeyExchangeInitiator_initiate_despite_existing_request_question">Začnem kljub že poslani zahtevi?</string>
   <string name="KeyExchangeInitiator_send">Pošlji</string>
@@ -603,6 +608,7 @@ Prejeto sporočilo za izmenjavo ključev za napačno različico protokola.</stri
   <string name="conversation_activity__emoji_toggle_description">Vklop tipkovnice emoji</string>
   <string name="conversation_activity__attachment_thumbnail">Predogledna sličica priponke</string>
   <string name="conversation_activity__quick_attachment_drawer_toggle_description">Vklopi poteznik za priponke</string>
+  <string name="conversation_activity__enable_signal_for_sms">Omogoči uporabo sporočil SMS</string>
   <!--conversation_input_panel-->
   <string name="conversation_input_panel__slide_to_cancel">ZA PREKINITEV PODRSAJTE</string>
   <!--conversation_item-->
@@ -674,7 +680,7 @@ Prejeto sporočilo za izmenjavo ključev za napačno različico protokola.</stri
   <!--giphy_activity-->
   <string name="giphy_activity_toolbar__search_gifs_and_stickers">Iskanje po GIF-ih in nalepkah</string>
   <!--giphy_fragment-->
-  <string name="giphy_fragment__no_results_found">Iskanje ni vrnilo nobenega rezultata.</string>
+  <string name="giphy_fragment__nothing_found">Nič ni bilo najdeno</string>
   <!--log_submit_activity-->
   <string name="log_submit_activity__log_fetch_failed">Sistemski dnevnik vaše naprave ni dostopen. Za oddajo sistemske zabeležbe lahko uporabite ADB.</string>
   <string name="log_submit_activity__thanks">Hvala za pomoč!</string>
@@ -802,9 +808,10 @@ bila uspešna.</string>
   <string name="recipients_panel__to"><small>Vnesite ime ali številko</small></string>
   <string name="recipients_panel__add_members">Dodaj člane</string>
   <!--verify_display_fragment-->
-  <string name="verify_display_fragment__scan_the_code_on_your_contact_s_phone_or_ask_them_to_scan_your_code_to_verify_that_your_messages_are_end_to_end_encrypted_you_can_alternately_compare_the_number_above">Če želite overiti varnost vaše od konca do konca zaščitene komunikacije z uporabnikom %s, primerjajte gornja števila s števili na partnerjevi napravi.
-Namesto tega lahko tudi skenirate kodo na napravi partnerja ali njega prosite, naj skenira vašo.</string>
+  <string name="verify_display_fragment__scan_the_code_on_your_contact_s_phone_or_ask_them_to_scan_your_code_to_verify_that_your_messages_are_end_to_end_encrypted_you_can_alternately_compare_the_number_above"><![CDATA[Če želite preveriti varnost vaše od konca do konca zaščitene komunikacije z uporabnikom %s, primerjajte gornja števila s števili na partnerjevi napravi. Namesto tega lahko tudi skenirate kodo na napravi partnerja ali njega prosite, naj skenira vašo. <a href=\"https://whispersystems.org/redirect/safety-numbers\">Več o verifikaciji varnostnih števil</a>.]]></string>
   <string name="verify_display_fragment__tap_to_scan">Tapnite za skeniranje</string>
+  <!--verify_identity-->
+  <string name="verify_identity__share_safety_numbers">Deli varnostna števila</string>
   <!--message_details_header-->
   <string name="message_details_header__issues_need_your_attention">Prišlo je do težav, ki zahtevajo vašo pozornost.</string>
   <string name="message_details_header__sent">Poslano:</string>
@@ -928,8 +935,8 @@ Namesto tega lahko tudi skenirate kodo na napravi partnerja ali njega prosite, n
   <string name="preferences__mms_proxy_port">Vrata posredniškega strežnika MMS</string>
   <string name="preferences__mmsc_username">Uporabniško ime MMSC</string>
   <string name="preferences__mmsc_password">Geslo MMSC</string>
-  <string name="preferences__sms_delivery_reports">Potrdila o dostavi SMS</string>
-  <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">Zahtevaj potrdilo o dostavi za vsako poslano sporočilo SMS</string>
+  <string name="preferences__sms_delivery_reports">Potrdila o prejemu SMS</string>
+  <string name="preferences__request_a_delivery_report_for_each_sms_message_you_send">Zahteva potrdilo o prejemu za vsako poslano sporočilo SMS</string>
   <string name="preferences__automatically_delete_older_messages_once_a_conversation_exceeds_a_specified_length">Samodejen izbris starih sporočil, ko pogovor preseže določeno dolžino</string>
   <string name="preferences__delete_old_messages">Samodejen izbris</string>
   <string name="preferences__chats">Pogovori in multimedija</string>
@@ -950,7 +957,7 @@ Namesto tega lahko tudi skenirate kodo na napravi partnerja ali njega prosite, n
   <string name="preferences__enable_if_your_device_supports_sms_mms_delivery_over_wifi">Aktivirajte, če dostava SMS/MMS sporočil na vaši napravi poteka preko povezave WiFi (samo, če imate vklopljeno \'WiFi klicanje/WiFi Calling)</string>
   <string name="preferences_app_protection__blocked_contacts">Blokirani stiki</string>
   <string name="preferences_app_protection__safety_numbers_approval">Overjanje varnostnih števil</string>
-  <string name="preferences_app_protecting__require_approval_of_new_safety_numbers_when_they_change">Zahtevaj overitev varnostnih števil, če se ta spremenijo</string>
+  <string name="preferences_app_protecting__require_approval_of_new_safety_numbers_when_they_change">Zahteva overitev varnostnih števil, če se ta spremenijo</string>
   <string name="preferences_notifications__display_in_notifications">Prikazano v obvestilu</string>
   <string name="preferences_chats__when_using_mobile_data">Ob uporabi mobilnega omrežja</string>
   <string name="preferences_chats__when_using_wifi">Ob uporabi omrežja Wi-Fi</string>
@@ -1039,6 +1046,9 @@ Namesto tega lahko tudi skenirate kodo na napravi partnerja ali njega prosite, n
   <string name="text_secure_normal__mark_all_as_read">Označi vse kot prebrano</string>
   <string name="text_secure_normal__invite_friends">Povabi prijatelje</string>
   <string name="text_secure_normal__help">Pomoč</string>
+  <!--verify_display_fragment-->
+  <string name="verify_display_fragment_context_menu__copy_to_clipboard">Kopiraj v odložišče</string>
+  <string name="verify_display_fragment_context_menu__compare_with_clipboard">Primerjaj preko odložišča</string>
   <!--reminder_header-->
   <string name="reminder_header_outdated_build">Vaša različica aplikacije Signal je zastarela</string>
   <plurals name="reminder_header_outdated_build_details">
@@ -1073,6 +1083,7 @@ Namesto tega lahko tudi skenirate kodo na napravi partnerja ali njega prosite, n
   <string name="MediaPreviewActivity_unssuported_media_type">Nepodprt medij</string>
   <!--media_preview-->
   <string name="media_preview__save_title">Shrani</string>
+  <string name="media_preview__forward_title">Naprej</string>
   <!--media_overview-->
   <string name="media_overview__save_all">Shrani vse</string>
   <!--media_preview_activity-->
