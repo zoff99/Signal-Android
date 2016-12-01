@@ -229,10 +229,6 @@ android {
             proguardFiles = buildTypes.debug.proguardFiles
             signingConfig signingConfigs.release
         }
-        dev.initWith(buildTypes.debug)
-        dev {
-            buildConfigField "boolean", "DEV_BUILD", "true"
-        }
     }
 
     sourceSets {
