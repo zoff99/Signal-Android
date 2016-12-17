@@ -35,10 +35,14 @@ dependencies:
     - sudo apt-get install qrencode > /dev/null 2> /dev/null
 
     - echo y | android update sdk --no-ui --all --filter "tools"
+    - android list sdk --all | grep -i tools
+    - android list sdk --all --extended
+
     - ~/__sdk_update__.sh build-tools-23.0.0
     - ~/__sdk_update__.sh build-tools-23.0.1
     - ~/__sdk_update__.sh build-tools-23.0.2
     - ~/__sdk_update__.sh build-tools-23.0.3
+    - echo y | android update sdk --no-ui --all --filter build-tools-24.0.3 > /dev/null 2> /dev/null # license
     - ~/__sdk_update__.sh android-23
     - ~/__sdk_update__.sh sys-img-armeabi-v7a-android-23
     - echo y | android update sdk --no-ui --all --filter platform-tools
