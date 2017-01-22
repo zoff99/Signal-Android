@@ -59,6 +59,12 @@ dependencies {
     compile 'org.whispersystems:libpastelog:1.0.7'
     compile 'org.whispersystems:signal-service-android:2.4.7'
 
+    // compile 'xyz.danoz:recyclerviewfastscroller:0.1.3'
+    compile (project(':recyclerviewfastscroller')){
+        exclude module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    }
+
     compile 'me.leolin:ShortcutBadger:1.1.0-WS1'
     compile 'se.emilsjolander:stickylistheaders:2.7.0'
     compile 'com.jpardogo.materialtabstrip:library:1.0.9'
