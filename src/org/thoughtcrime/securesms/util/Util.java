@@ -340,12 +340,8 @@ public class Util {
   }
 
   public static int getDaysTillBuildExpiry() {
-    // int age = (int)TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - BuildConfig.BUILD_TIMESTAMP);
-    // return 90 - age;
-    
-    // never expire ------
-    return 200;
-    // never expire ------
+    int age = (int)TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - BuildConfig.BUILD_TIMESTAMP);
+    return 90 - age;
   }
 
   @TargetApi(VERSION_CODES.LOLLIPOP)
