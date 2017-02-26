@@ -104,7 +104,7 @@ public class ContactsDatabase {
           addedNumbers.add(registeredNumber);
           addTextSecureRawContact(operations, account, systemContactInfo.get().number,
                                   systemContactInfo.get().name, systemContactInfo.get().id,
-                                  registeredContact.isVoice());
+                                  true);
         }
       }
     }
@@ -117,12 +117,9 @@ public class ContactsDatabase {
           Log.w(TAG, "Removing number: " + currentContactEntry.getKey());
           removeTextSecureRawContact(operations, account, currentContactEntry.getValue().getId());
         }
-      } else if (tokenDetails.isVoice() && !currentContactEntry.getValue().isVoiceSupported()) {
+      } else if (!currentContactEntry.getValue().isVoiceSupported()) {
         Log.w(TAG, "Adding voice support: " + currentContactEntry.getKey());
         addContactVoiceSupport(operations, currentContactEntry.getKey(), currentContactEntry.getValue().getId());
-      } else if (!tokenDetails.isVoice() && currentContactEntry.getValue().isVoiceSupported()) {
-        Log.w(TAG, "Removing voice support: " + currentContactEntry.getKey());
-        removeContactVoiceSupport(operations, currentContactEntry.getValue().getId());
       } else if (!Util.isStringEquals(currentContactEntry.getValue().getRawDisplayName(),
                                       currentContactEntry.getValue().getAggregateDisplayName()))
       {
