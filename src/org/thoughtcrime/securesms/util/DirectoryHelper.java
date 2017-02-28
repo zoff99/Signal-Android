@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class DirectoryHelper {
 
@@ -102,10 +103,13 @@ public class DirectoryHelper {
     if (activeTokens != null) {
       for (ContactTokenDetails activeToken : activeTokens) {
         eligibleContactNumbers.remove(activeToken.getNumber());
+        if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", "refreshDirectory" + " activeToken.getNumber=" + activeToken.getNumber());
         activeToken.setNumber(activeToken.getNumber());
       }
 
       directory.setNumbers(activeTokens, eligibleContactNumbers);
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", "refreshDirectory" + " localNumber=" + localNumber);
+
       return updateContactsDatabase(context, localNumber, activeTokens, true);
     }
 
@@ -122,7 +126,24 @@ public class DirectoryHelper {
       TextSecureDirectory           directory      = TextSecureDirectory.getInstance(context);
       SignalServiceAccountManager   accountManager = AccountManagerFactory.createManager(context);
       String                        number         = Util.canonicalizeNumber(context, recipients.getPrimaryRecipient().getNumber());
+
+
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      number = number.replaceFirst(Pattern.quote(TextSecureDirectory.USEABLE_CONTACTS_PREFIX), TextSecureDirectory.USEABLE_CONTACTS_REPLACEMENT_STR);
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+
+
       Optional<ContactTokenDetails> details        = accountManager.getContact(number);
+
+      if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", "refreshDirectoryFor" + " localNumber=" + localNumber + " number="+ number);
 
       if (details.isPresent()) {
         directory.setNumber(details.get(), true);
@@ -210,6 +231,8 @@ public class DirectoryHelper {
                                                                boolean removeMissing)
   {
     Optional<AccountHolder> account = getOrCreateAccount(context);
+
+    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0Z:", "updateContactsDatabase" + " localNumber=" + localNumber);
 
     if (account.isPresent()) {
       try {
