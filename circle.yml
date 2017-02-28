@@ -56,7 +56,8 @@ dependencies:
     - echo y | android update sdk --no-ui --all --filter extra-android-support
 
     #- ./gradlew assembleRelease --info --stacktrace --parallel;
-    - ./gradlew assembleDebug --info --stacktrace --parallel;
+    #- ./gradlew assembleDebug --info --stacktrace --parallel;
+    - ./gradlew assembleDebug --info --no-daemon --stacktrace -x lint
 
     - find . -name '*.apk' ; exit 0
 
