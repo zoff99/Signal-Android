@@ -46,6 +46,7 @@ dependencies:
     - ~/__sdk_update__.sh build-tools-23.0.2
     - ~/__sdk_update__.sh build-tools-23.0.3
     - echo y | android update sdk --no-ui --all --filter build-tools-24.0.3,android-24,extra-android-m2repository # license
+    - echo y | android update sdk --no-ui --all --filter build-tools-25.0.0,android-25,extra-android-m2repository # license
     - echo y | android update sdk --no-ui --all --filter build-tools-25.1.0
     - ~/__sdk_update__.sh android-23
     - echo y | android update sdk --no-ui --all --filter android-25
