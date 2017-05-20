@@ -97,6 +97,7 @@
     <string name="ConversationItem_click_to_approve_unencrypted_mms_dialog_title">Fallback to unencrypted MMS?</string>
     <string name="ConversationItem_click_to_approve_unencrypted_dialog_message">This message will <b>not</b> be encrypted because the recipient is no longer a Signal user.\n\nSend unsecured message?</string>
     <string name="ConversationItem_unable_to_open_media">Can\'t find an app able to open this media.</string>
+    <string name="ConversationItem_copied_text">Copied %s</string>
     <string name="ConversationItem_from_s">from %s</string>
     <string name="ConversationItem_to_s">to %s</string>
 
@@ -701,12 +702,8 @@
 
 
     <!-- attachment_type_selector -->
-    <string name="attachment_type_selector__image">Image</string>
-    <string name="attachment_type_selector__image_description">Image</string>
     <string name="attachment_type_selector__audio">Audio</string>
     <string name="attachment_type_selector__audio_description">Audio</string>
-    <string name="attachment_type_selector__video">Video</string>
-    <string name="attachment_type_selector__video_description">Video</string>
     <string name="attachment_type_selector__contact">Contact</string>
     <string name="attachment_type_selector__contact_description">Contact</string>
     <string name="attachment_type_selector__camera">Camera</string>
@@ -715,6 +712,11 @@
     <string name="attachment_type_selector__location_description">Location</string>
     <string name="attachment_type_selector__gif">GIF</string>
     <string name="attachment_type_selector__gif_description">Gif</string>
+    <string name="attachment_type_selector__gallery_description">Image or video</string>
+    <string name="attachment_type_selector__file_description">File</string>
+    <string name="attachment_type_selector__gallery">Gallery</string>
+    <string name="attachment_type_selector__file">File</string>
+
     <string name="attachment_type_selector__drawer_description">Toggle attachment drawer</string>
 
     <!-- change_passphrase_activity -->
@@ -745,9 +747,9 @@
     <string name="conversation_title_view__conversation_muted">Conversation muted</string>
 
     <!-- conversation_activity -->
-    <string name="conversation_activity__type_message_push">Send Signal message</string>
-    <string name="conversation_activity__type_message_sms_insecure">Send unsecured SMS</string>
-    <string name="conversation_activity__type_message_mms_insecure">Send unsecured MMS</string>
+    <string name="conversation_activity__type_message_push">Signal message</string>
+    <string name="conversation_activity__type_message_sms_insecure">Unsecured SMS</string>
+    <string name="conversation_activity__type_message_mms_insecure">Unsecured MMS</string>
     <string name="conversation_activity__from_sim_name">From %1$s</string>
     <string name="conversation_activity__send">Send</string>
     <string name="conversation_activity__remove">Remove</string>
@@ -1073,6 +1075,15 @@
     <string name="arrays__video">Video</string>
     <string name="arrays__documents">Documents</string>
 
+    <string name="arrays__small">Small</string>
+    <string name="arrays__normal">Normal</string>
+    <string name="arrays__large">Large</string>
+    <string name="arrays__extra_large">Extra large</string>
+
+    <string name="arrays__default">Default</string>
+    <string name="arrays__high">High</string>
+    <string name="arrays__max">Max</string>
+
     <!-- plurals.xml -->
     <plurals name="hours_ago">
         <item quantity="one">%d hour</item>
@@ -1115,7 +1126,6 @@
     <string name="preferences__pref_led_blink_custom_pattern_off_for">Off for:</string>
     <string name="preferences__pref_led_blink_custom_pattern_set">Custom LED blink pattern set!</string>
     <string name="preferences__sound">Sound</string>
-    <string name="preferences__change_notification_sound">Change notification sound</string>
     <string name="preferences__silent">Silent</string>
     <string name="preferences__in_conversation_notifications">In-conversation notifications</string>
     <string name="preferences__play_inthread_notifications">Play notification sound when viewing an active conversation</string>
@@ -1188,9 +1198,19 @@
     <string name="preferences_advanced__enable_support_for_next_generation_video_and_voice_calls">Support for next-generation video and voice calls when enabled by both parties. This feature is in beta.</string>
     <string name="preferences_advanced__relay_all_calls_through_the_signal_server_to_avoid_revealing_your_ip_address">Relay all calls through the Signal server to avoid revealing your IP address to your contact. Enabling will reduce call quality.</string>
     <string name="preferences_advanced__always_relay_calls">Always relay calls</string>
-
-
-
+    <string name="preferences_app_protection__app_access">App access</string>
+    <string name="preferences_app_protection__communication">Communication</string>
+    <string name="preferences_chats__chats">Chats</string>
+    <string name="preferences_notifications__message_notifications">Message notifications</string>
+    <string name="preferences_notifications__events">Events</string>
+    <string name="preferences_notifications__in_chat_sounds">In-chat sounds</string>
+    <string name="preferences_notifications__show">Show</string>
+    <string name="preferences_chats__show_invitation_prompts">Show invitation prompts</string>
+    <string name="preferences_chats__display_invitation_prompts_for_contacts_without_signal">Display invitation prompts for contacts without Signal</string>
+    <string name="preferences_chats__message_text_size">Message font size</string>
+    <string name="preferences_events__contact_joined_signal">Contact joined Signal</string>
+    <string name="preferences_notifications__priority">Priority</string>
+    
     <!-- **************************************** -->
     <!-- menus -->
     <!-- **************************************** -->
@@ -1352,6 +1372,7 @@
 
     <!-- transport_selection_list_item -->
     <string name="transport_selection_list_item__transport_icon">Transport icon</string>
+
 
     <!-- EOF -->
 

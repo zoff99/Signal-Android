@@ -102,11 +102,11 @@ import org.thoughtcrime.securesms.database.MessagingDatabase.MarkedMessageInfo;
 import org.thoughtcrime.securesms.database.MmsSmsColumns.Types;
 import org.thoughtcrime.securesms.database.RecipientPreferenceDatabase.RecipientPreferenceEvent;
 import org.thoughtcrime.securesms.database.RecipientPreferenceDatabase.RecipientsPreferences;
+import org.thoughtcrime.securesms.database.SmsDatabase;
 import org.thoughtcrime.securesms.database.ThreadDatabase;
 import org.thoughtcrime.securesms.jobs.MultiDeviceBlockedUpdateJob;
 import org.thoughtcrime.securesms.mms.AttachmentManager;
 import org.thoughtcrime.securesms.mms.AttachmentManager.MediaType;
-import org.thoughtcrime.securesms.mms.AttachmentTypeSelectorAdapter;
 import org.thoughtcrime.securesms.mms.AudioSlide;
 import org.thoughtcrime.securesms.mms.LocationSlide;
 import org.thoughtcrime.securesms.mms.MediaConstraints;
@@ -157,8 +157,6 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import ws.com.google.android.mms.ContentType;
-
 import static org.thoughtcrime.securesms.TransportOption.Type;
 import static org.thoughtcrime.securesms.database.GroupDatabase.GroupRecord;
 import static org.whispersystems.signalservice.internal.push.SignalServiceProtos.GroupContext;
@@ -189,8 +187,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   public static final String TIMING_EXTRA            = "timing";
   public static final String LAST_SEEN_EXTRA         = "last_seen";
 
-  private static final int PICK_IMAGE        = 1;
-  private static final int PICK_VIDEO        = 2;
+  private static final int PICK_GALLERY      = 1;
+  private static final int PICK_DOCUMENT     = 2;
   private static final int PICK_AUDIO        = 3;
   private static final int PICK_CONTACT_INFO = 4;
   private static final int GROUP_EDIT        = 5;
@@ -275,7 +273,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     if (!Util.isEmpty(composeText) || attachmentManager.isAttachmentPresent()) {
       saveDraft();
-      attachmentManager.clear();
+      attachmentManager.clear(false);
       composeText.setText("");
     }
 
@@ -374,12 +372,19 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     }
 
     switch (reqCode) {
-    case PICK_IMAGE:
-      boolean isGif = MediaUtil.isGif(MediaUtil.getMimeType(this, data.getData()));
-      setMedia(data.getData(), isGif ? MediaType.GIF : MediaType.IMAGE);
+    case PICK_GALLERY:
+      MediaType mediaType;
+
+      String mimeType = MediaUtil.getMimeType(this, data.getData());
+
+      if      (MediaUtil.isGif(mimeType))   mediaType = MediaType.GIF;
+      else if (MediaUtil.isVideo(mimeType)) mediaType = MediaType.VIDEO;
+      else                                  mediaType = MediaType.IMAGE;
+
+      setMedia(data.getData(), mediaType);
       break;
-    case PICK_VIDEO:
-      setMedia(data.getData(), MediaType.VIDEO);
+    case PICK_DOCUMENT:
+      setMedia(data.getData(), MediaType.DOCUMENT);
       break;
     case PICK_AUDIO:
       setMedia(data.getData(), MediaType.AUDIO);
@@ -560,7 +565,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
             recipients.setExpireMessages(expirationTime);
 
             OutgoingExpirationUpdateMessage outgoingMessage = new OutgoingExpirationUpdateMessage(getRecipients(), System.currentTimeMillis(), expirationTime * 1000);
-            MessageSender.send(ConversationActivity.this, masterSecret, outgoingMessage, threadId, false);
+            MessageSender.send(ConversationActivity.this, masterSecret, outgoingMessage, threadId, false, null);
 
             return null;
           }
@@ -686,7 +691,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
           new AsyncTask<OutgoingEndSessionMessage, Void, Long>() {
             @Override
             protected Long doInBackground(OutgoingEndSessionMessage... messages) {
-              return MessageSender.send(context, masterSecret, messages[0], threadId, false);
+              return MessageSender.send(context, masterSecret, messages[0], threadId, false, null);
             }
 
             @Override
@@ -734,7 +739,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
                                              .build();
 
           OutgoingGroupMediaMessage outgoingMessage = new OutgoingGroupMediaMessage(getRecipients(), context, null, System.currentTimeMillis(), 0);
-          MessageSender.send(self, masterSecret, outgoingMessage, threadId, false);
+          MessageSender.send(self, masterSecret, outgoingMessage, threadId, false, null);
           DatabaseFactory.getGroupDatabase(self).remove(groupId, TextSecurePreferences.getLocalNumber(self));
           initializeEnabledCheck();
         } catch (IOException e) {
@@ -871,7 +876,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     final String    draftText      = getIntent().getStringExtra(TEXT_EXTRA);
     final Uri       draftMedia     = getIntent().getData();
     final MediaType draftMediaType = MediaType.from(getIntent().getType());
-
+    
     if (draftText != null)                            composeText.setText(draftText);
     if (draftMedia != null && draftMediaType != null) setMedia(draftMedia, draftMediaType);
 
@@ -978,11 +983,12 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   protected void updateInviteReminder(boolean seenInvite) {
     Log.w(TAG, "updateInviteReminder(" + seenInvite+")");
-    if (TextSecurePreferences.isPushRegistered(this) &&
-        !isSecureText                                &&
-        !seenInvite                                  &&
-        recipients.isSingleRecipient()               &&
-        recipients.getPrimaryRecipient() != null     &&
+    if (TextSecurePreferences.isPushRegistered(this)      &&
+        TextSecurePreferences.isShowInviteReminders(this) &&
+        !isSecureText                                     &&
+        !seenInvite                                       &&
+        recipients.isSingleRecipient()                    &&
+        recipients.getPrimaryRecipient() != null          &&
         recipients.getPrimaryRecipient().getContactUri() != null)
     {
       InviteReminder reminder = new InviteReminder(this, recipients);
@@ -1197,17 +1203,17 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private void addAttachment(int type) {
     Log.w("ComposeMessageActivity", "Selected: " + type);
     switch (type) {
-    case AttachmentTypeSelectorAdapter.ADD_IMAGE:
-      AttachmentManager.selectImage(this, PICK_IMAGE); break;
-    case AttachmentTypeSelectorAdapter.ADD_VIDEO:
-      AttachmentManager.selectVideo(this, PICK_VIDEO); break;
-    case AttachmentTypeSelectorAdapter.ADD_SOUND:
+    case AttachmentTypeSelector.ADD_GALLERY:
+      AttachmentManager.selectGallery(this, PICK_GALLERY); break;
+    case AttachmentTypeSelector.ADD_DOCUMENT:
+      AttachmentManager.selectDocument(this, PICK_DOCUMENT); break;
+    case AttachmentTypeSelector.ADD_SOUND:
       AttachmentManager.selectAudio(this, PICK_AUDIO); break;
-    case AttachmentTypeSelectorAdapter.ADD_CONTACT_INFO:
+    case AttachmentTypeSelector.ADD_CONTACT_INFO:
       AttachmentManager.selectContactInfo(this, PICK_CONTACT_INFO); break;
     case AttachmentTypeSelector.ADD_LOCATION:
       AttachmentManager.selectLocation(this, PICK_LOCATION); break;
-    case AttachmentTypeSelectorAdapter.TAKE_PHOTO:
+    case AttachmentTypeSelector.TAKE_PHOTO:
       attachmentManager.capturePhoto(this, TAKE_PHOTO); break;
     case AttachmentTypeSelector.ADD_GIF:
       AttachmentManager.selectGif(this, PICK_GIF, !isSecureText); break;
@@ -1399,8 +1405,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   private MediaConstraints getCurrentMediaConstraints() {
     return sendButton.getSelectedTransport().getType() == Type.TEXTSECURE
-           ? MediaConstraints.PUSH_CONSTRAINTS
-           : MediaConstraints.MMS_CONSTRAINTS;
+           ? MediaConstraints.getPushMediaConstraints()
+           : MediaConstraints.getMmsMediaConstraints(sendButton.getSelectedTransport().getSimSubscriptionId().or(-1));
   }
 
   private void markThreadAsRead() {
@@ -1504,13 +1510,19 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       outgoingMessage = new OutgoingSecureMediaMessage(outgoingMessage);
     }
 
-    attachmentManager.clear();
+    attachmentManager.clear(false);
     composeText.setText("");
+    final long id = fragment.stageOutgoingMessage(outgoingMessage);
 
     new AsyncTask<OutgoingMediaMessage, Void, Long>() {
       @Override
       protected Long doInBackground(OutgoingMediaMessage... messages) {
-        return MessageSender.send(context, masterSecret, messages[0], threadId, forceSms);
+        return MessageSender.send(context, masterSecret, messages[0], threadId, forceSms, new SmsDatabase.InsertListener() {
+          @Override
+          public void onComplete() {
+            fragment.releaseOutgoingMessage(id);
+          }
+        });
       }
 
       @Override
@@ -1536,11 +1548,17 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     }
 
     this.composeText.setText("");
+    final long id = fragment.stageOutgoingMessage(message);
 
     new AsyncTask<OutgoingTextMessage, Void, Long>() {
       @Override
       protected Long doInBackground(OutgoingTextMessage... messages) {
-        return MessageSender.send(context, masterSecret, messages[0], threadId, forceSms);
+        return MessageSender.send(context, masterSecret, messages[0], threadId, forceSms, new SmsDatabase.InsertListener() {
+          @Override
+          public void onComplete() {
+            fragment.releaseOutgoingMessage(id);
+          }
+        });
       }
 
       @Override
@@ -1587,7 +1605,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   @Override
   public void onImageCapture(@NonNull final byte[] imageBytes) {
     setMedia(PersistentBlobProvider.getInstance(this)
-                                   .create(masterSecret, imageBytes, ContentType.IMAGE_JPEG),
+                                   .create(masterSecret, imageBytes, MediaUtil.IMAGE_JPEG, null),
              MediaType.IMAGE);
     quickAttachmentDrawer.hide(false);
   }
@@ -1628,7 +1646,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
           boolean    forceSms       = sendButton.isManualSelection() && sendButton.getSelectedTransport().isSms();
           int        subscriptionId = sendButton.getSelectedTransport().getSimSubscriptionId().or(-1);
           long       expiresIn      = recipients.getExpireMessages() * 1000;
-          AudioSlide audioSlide     = new AudioSlide(ConversationActivity.this, result.first, result.second, ContentType.AUDIO_AAC);
+          AudioSlide audioSlide     = new AudioSlide(ConversationActivity.this, result.first, result.second, MediaUtil.AUDIO_AAC, true);
           SlideDeck  slideDeck      = new SlideDeck();
           slideDeck.addSlide(audioSlide);
 
@@ -1699,11 +1717,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   public void onMediaSelected(@NonNull Uri uri, String contentType) {
     if (!TextUtils.isEmpty(contentType) && contentType.trim().equals("image/gif")) {
       setMedia(uri, MediaType.GIF);
-    } else if (ContentType.isImageType(contentType)) {
+    } else if (MediaUtil.isImageType(contentType)) {
       setMedia(uri, MediaType.IMAGE);
-    } else if (ContentType.isVideoType(contentType)) {
+    } else if (MediaUtil.isVideoType(contentType)) {
       setMedia(uri, MediaType.VIDEO);
-    } else if (ContentType.isAudioType(contentType)) {
+    } else if (MediaUtil.isAudioType(contentType)) {
       setMedia(uri, MediaType.AUDIO);
     }
   }
@@ -1722,7 +1740,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       Intent intent = new Intent();
       intent.setData(uri);
 
-      onActivityResult(PICK_IMAGE, RESULT_OK, intent);
+      onActivityResult(PICK_GALLERY, RESULT_OK, intent);
     }
   }
 

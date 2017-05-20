@@ -37,7 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import ws.com.google.android.mms.MmsException;
+import org.thoughtcrime.securesms.mms.MmsException;
 
 import static org.thoughtcrime.securesms.database.GroupDatabase.GroupRecord;
 import static org.whispersystems.signalservice.internal.push.SignalServiceProtos.AttachmentPointer;
@@ -205,7 +205,7 @@ public class GroupMessageProcessor {
         Recipients                recipients      = RecipientFactory.getRecipientsFromString(context, GroupUtil.getEncodedId(group.getGroupId()), false);
         OutgoingGroupMediaMessage outgoingMessage = new OutgoingGroupMediaMessage(recipients, storage, null, envelope.getTimestamp(), 0);
         long                      threadId        = DatabaseFactory.getThreadDatabase(context).getThreadIdFor(recipients);
-        long                      messageId       = mmsDatabase.insertMessageOutbox(masterSecret, outgoingMessage, threadId, false);
+        long                      messageId       = mmsDatabase.insertMessageOutbox(masterSecret, outgoingMessage, threadId, false, null);
 
         mmsDatabase.markAsSent(messageId, true);
 

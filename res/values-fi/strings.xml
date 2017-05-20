@@ -85,6 +85,7 @@
   <string name="ConversationItem_click_to_approve_unencrypted_mms_dialog_title">Käytetäänkö salaamattomia MMS-viestejä?</string>
   <string name="ConversationItem_click_to_approve_unencrypted_dialog_message">Tätä viestiä <b>ei</b> voida salata, koska vastaanottaja ei enää käytä Signalia.\n\nLähetetäänkö salaamattomana?</string>
   <string name="ConversationItem_unable_to_open_media">Median avaamiseen ei löytynyt sovellusta.</string>
+  <string name="ConversationItem_copied_text">Kopioitu: %s</string>
   <string name="ConversationItem_from_s">SIM-kortilta %s</string>
   <string name="ConversationItem_to_s">vastaanotettu SIM-kortille %s</string>
   <!--ConversationActivity-->
@@ -231,6 +232,7 @@ Vastaanotettu: %4$s</string>
   <string name="DeviceListItem_last_active_s">Viimeksi käytetty %s</string>
   <string name="DeviceListItem_today">tänään</string>
   <!--DocumentView-->
+  <string name="DocumentView_unknown_file">Tuntematon tiedosto</string>
   <!--DozeReminder-->
   <string name="DozeReminder_optimize_for_missing_play_services">Optimoi Play Servicesin puuttumista</string>
   <string name="DozeReminder_this_device_does_not_support_play_services_tap_to_disable_system_battery">Tämä laite ei tue Play Servicesiä. Napsauta tästä ottaaksesi pois päältä virransäästöominaisuudet, jotka estävät Signalia hakemasta viestejä taustalla.</string>
@@ -320,8 +322,8 @@ seuraa niiden uudelleentuonnista viestien kaksoiskappaleita.</string>
   <string name="InviteActivity_invitations_sent">Kutsut lähetetty!</string>
   <string name="InviteActivity_invite_to_signal">Kutsu Signaliin</string>
   <plurals name="InviteActivity_send_sms_to_friends">
-    <item quantity="one">LÄHETÄ SMS 1 YSTÄVÄLLE</item>
-    <item quantity="other">LÄHETÄ SMS %d YSTÄVÄLLE</item>
+    <item quantity="one">LÄHETÄ TEKSTIVIESTI 1 YSTÄVÄLLE</item>
+    <item quantity="other">LÄHETÄ TEKSTIVIESTI %d YSTÄVÄLLE</item>
   </plurals>
   <plurals name="InviteActivity_send_sms_invites">
     <item quantity="one">Lähetä 1 SMS-kutsu?</item>
@@ -366,6 +368,7 @@ seuraa niiden uudelleentuonnista viestien kaksoiskappaleita.</string>
   <string name="MessageRecord_s_called_you">%s soitti sinulle</string>
   <string name="MessageRecord_called_s">Soitit puhelun: %s</string>
   <string name="MessageRecord_missed_call_from">Vastaamatta jäänyt puhelu: %s</string>
+  <string name="MessageRecord_s_joined_signal">%s liittyi Signaliin</string>
   <string name="MessageRecord_you_set_disappearing_message_time_to_s">Sinä asetit viestien katoamisajan: %1$s</string>
   <string name="MessageRecord_s_set_disappearing_message_time_to_s">%1$s asetti viestien katoamisajan: %2$s</string>
   <string name="MessageRecord_your_safety_number_with_s_has_changed">Sinun ja yhteystiedon %s turvanumero on vaihtunut.</string>
@@ -462,6 +465,8 @@ Tarkista vielä, että tämä on varmasti numerosi! Aiomme seuraavaksi vahvistaa
   <string name="RegistrationActivity_i_understand">Ymmärrän</string>
   <string name="RegistrationActivity_play_services_error">Play Services -virhe</string>
   <string name="RegistrationActivity_google_play_services_is_updating_or_unavailable">Google Play Servicesiä päivitetään tai se ei ole juuri nyt saavutettavissa. Yritä myöhemmin uudelleen.</string>
+  <string name="RegistrationActivity_more_information">Näytä lisää</string>
+  <string name="RegistrationActivity_less_information">Näytä vähemmän</string>
   <!--RegistrationProblemsActivity-->
   <string name="RegistrationProblemsActivity_possible_problems">Mahdollisia ongelmia</string>
   <!--RegistrationProgressActivity-->
@@ -484,6 +489,7 @@ Tarkista vielä, että tämä on varmasti numerosi! Aiomme seuraavaksi vahvistaa
   <string name="RegistrationProgressActivity_too_many_requests">Liian monta pyyntöä!</string>
   <string name="RegistrationProgressActivity_youve_already_requested_a_voice_call">Olet jo äskettäin pyytänyt puhelua. Voit pyytää uutta puhelua 20 minuutin kuluttua.</string>
   <string name="RegistrationProgressActivity_registration_conflict">Rekisteröintiristiriita</string>
+  <string name="RegistrationProgressActivity_this_number_is_already_registered_on_a_different">Tämä numero on jo rekisteröity toiselle Signal-palvelimelle. Sinun täytyy  vapauttaa rekisteröinti ennen uudelleenrekisteröitymistä.</string>
   <!--RegistrationService-->
   <string name="RegistrationService_registration_complete">Rekisteröinti suoritettu</string>
   <string name="RegistrationService_signal_registration_has_successfully_completed">Signalin rekisteröityminen onnistui.</string>
@@ -511,6 +517,7 @@ Vastaanotetiin avaintenvaihtoviesti, joka kuuluu väärälle protokollaversiolle
   <string name="ThreadRecord_called_you">Soitti sinulle</string>
   <string name="ThreadRecord_missed_call">Vastaamatta jäänyt puhelu</string>
   <string name="ThreadRecord_media_message">Mediaviesti</string>
+  <string name="ThreadRecord_s_joined_signal">%s liittyi Signaliin</string>
   <string name="ThreadRecord_disappearing_message_time_updated_to_s">Katoavien viestien ajaksi asetettu %s</string>
   <string name="ThreadRecord_your_safety_number_with_s_has_changed">Sinun ja yhteystiedon %s turvanumero on vaihtunut.</string>
   <!--UpdateApkReadyListener-->
@@ -587,6 +594,7 @@ Vastaanotetiin avaintenvaihtoviesti, joka kuuluu väärälle protokollaversiolle
   <string name="QuickResponseService_quick_response_unavailable_when_Signal_is_locked">Pikavastaus ei toimi, kun Signal on lukittu!</string>
   <string name="QuickResponseService_problem_sending_message">Ongelma viestin lähettämisessä!</string>
   <!--SaveAttachmentTask-->
+  <string name="SaveAttachmentTask_open_directory">Avaa hakemisto</string>
   <!--SingleRecipientNotificationBuilder-->
   <string name="SingleRecipientNotificationBuilder_signal">Signal</string>
   <string name="SingleRecipientNotificationBuilder_new_message">Uusi viesti</string>
@@ -599,12 +607,8 @@ Vastaanotetiin avaintenvaihtoviesti, joka kuuluu väärälle protokollaversiolle
   <!--WebRtcCallControls-->
   <string name="WebRtcCallControls_tap_to_enable_your_video">Käytä video-tilaa napsauttamalla</string>
   <!--attachment_type_selector-->
-  <string name="attachment_type_selector__image">Kuva</string>
-  <string name="attachment_type_selector__image_description">Kuva</string>
   <string name="attachment_type_selector__audio">Äänitallenne</string>
   <string name="attachment_type_selector__audio_description">Äänitallenne</string>
-  <string name="attachment_type_selector__video">Video</string>
-  <string name="attachment_type_selector__video_description">Video</string>
   <string name="attachment_type_selector__contact">Yhteystieto</string>
   <string name="attachment_type_selector__contact_description">Yhteystieto</string>
   <string name="attachment_type_selector__camera">Kamera</string>
@@ -613,6 +617,10 @@ Vastaanotetiin avaintenvaihtoviesti, joka kuuluu väärälle protokollaversiolle
   <string name="attachment_type_selector__location_description">Sijainti</string>
   <string name="attachment_type_selector__gif">GIF</string>
   <string name="attachment_type_selector__gif_description">Gif</string>
+  <string name="attachment_type_selector__gallery_description">Kuva tai video</string>
+  <string name="attachment_type_selector__file_description">Tiedosto</string>
+  <string name="attachment_type_selector__gallery">Galleria</string>
+  <string name="attachment_type_selector__file">Tiedosto</string>
   <string name="attachment_type_selector__drawer_description">Avaa tai sulje liitetiedostovalikko</string>
   <!--change_passphrase_activity-->
   <string name="change_passphrase_activity__old_passphrase">Vanha salalause</string>
@@ -634,9 +642,9 @@ Vastaanotetiin avaintenvaihtoviesti, joka kuuluu väärälle protokollaversiolle
   <!--conversation_title_view-->
   <string name="conversation_title_view__conversation_muted">Keskustelu mykistetty</string>
   <!--conversation_activity-->
-  <string name="conversation_activity__type_message_push">Lähetä Signal-viesti</string>
-  <string name="conversation_activity__type_message_sms_insecure">Lähetä salaamaton SMS </string>
-  <string name="conversation_activity__type_message_mms_insecure">Lähetä salaamaton MMS-viesti</string>
+  <string name="conversation_activity__type_message_push">Signal-viesti</string>
+  <string name="conversation_activity__type_message_sms_insecure">Salaamaton SMS-viesti</string>
+  <string name="conversation_activity__type_message_mms_insecure">Salaamaton MMS-viesti</string>
   <string name="conversation_activity__from_sim_name">SIM-kortilta %1$s</string>
   <string name="conversation_activity__send">Lähetä</string>
   <string name="conversation_activity__remove">Poista</string>
@@ -785,6 +793,7 @@ Jotta voit ottaa Signalin käyttöön, tulee sinun ensin vahvistaa puhelinnumero
 PUHELINNUMEROSI</string>
   <string name="registration_activity__phone_number">PUHELINNUMERO</string>
   <string name="registration_activity__register">Rekisteröidy</string>
+  <string name="registration_activity__registration_will_transmit_some_contact_information_to_the_server_temporariliy">Signal tekee kommunikoinnista helppoa käyttämällä hyödyksi olemassaolevaa puhelinnumeroasi ja yhteystietojasi. Ystäväsi, jotka tuntevat sinut puhelinnumerosi kautta, voivat ottaa sinuun yhteyttä jatkossa myös Signalin kautta.\n\nRekisteröityminen siirtää joitakin yhteystietoja väliaikaisesti palvelimelle. Niitä ei kuitenkaan tallenneta sinne.</string>
   <string name="registration_activity__powered_by_twilio">Palvelun tarjoaa Twilio</string>
   <!--registration_problems-->
   <string name="registration_problems__some_possible_problems_include">Mahdollisiin ongelmiin
@@ -879,6 +888,14 @@ Signal ei saanut vahvistustekstiviestiä odotusajan sisällä.</string>
   <string name="arrays__images">Kuvat</string>
   <string name="arrays__audio">Äänitallenteet</string>
   <string name="arrays__video">Videot</string>
+  <string name="arrays__documents">Dokumentit</string>
+  <string name="arrays__small">Pieni</string>
+  <string name="arrays__normal">Normaali</string>
+  <string name="arrays__large">Suuri</string>
+  <string name="arrays__extra_large">Erittäin suuri</string>
+  <string name="arrays__default">Oletus</string>
+  <string name="arrays__high">Korkea</string>
+  <string name="arrays__max">Maksimi</string>
   <!--plurals.xml-->
   <plurals name="hours_ago">
     <item quantity="one">%d tunti</item>
@@ -920,7 +937,6 @@ Signal ei saanut vahvistustekstiviestiä odotusajan sisällä.</string>
   <string name="preferences__pref_led_blink_custom_pattern_off_for">Pois päältä:</string>
   <string name="preferences__pref_led_blink_custom_pattern_set">Mukautettu LED:in vilkkumistahti asetettu!</string>
   <string name="preferences__sound">Ääni</string>
-  <string name="preferences__change_notification_sound">Vaihda ilmoitusääni</string>
   <string name="preferences__silent">Ei ääntä</string>
   <string name="preferences__in_conversation_notifications">Keskustelun sisäiset ilmoitukset</string>
   <string name="preferences__play_inthread_notifications">Käytä ilmoitusääniä myös silloin, kun olen keskustelussa.</string>
@@ -993,6 +1009,18 @@ Signal ei saanut vahvistustekstiviestiä odotusajan sisällä.</string>
   <string name="preferences_advanced__enable_support_for_next_generation_video_and_voice_calls">Tuki seuraavan sukupolven video- ja äänipuheluille, jos asetus on päällä molemmilla osapuolilla. Tämä on vielä beta-vaiheessa.</string>
   <string name="preferences_advanced__relay_all_calls_through_the_signal_server_to_avoid_revealing_your_ip_address">Välitä kaikki puhelut Signal-palvelimen kautta välttääksesi IP-osoitteesi paljastumista yhteystiedollesi. Tämä toiminto heikentää puhelun laatua.</string>
   <string name="preferences_advanced__always_relay_calls">Välitä aina kaikki puhelut</string>
+  <string name="preferences_app_protection__app_access">Sovelluksen käyttö</string>
+  <string name="preferences_app_protection__communication">Kommunikointi</string>
+  <string name="preferences_chats__chats">Keskustelut</string>
+  <string name="preferences_notifications__message_notifications">Viesti-ilmoitukset</string>
+  <string name="preferences_notifications__events">Huomautukset</string>
+  <string name="preferences_notifications__in_chat_sounds">Keskustelun sisäiset äänet</string>
+  <string name="preferences_notifications__show">Näytä</string>
+  <string name="preferences_chats__show_invitation_prompts">Näytä kutsukehotukset</string>
+  <string name="preferences_chats__display_invitation_prompts_for_contacts_without_signal">Näytä kehotuksia kutsua yhteystietoja, jotka eivät vielä käytä Signalia</string>
+  <string name="preferences_chats__message_text_size">Viestien tekstin koko</string>
+  <string name="preferences_events__contact_joined_signal">Yhteistietosi liittyi Signaliin</string>
+  <string name="preferences_notifications__priority">Prioriteetti</string>
   <!--****************************************-->
   <!--menus-->
   <!--****************************************-->

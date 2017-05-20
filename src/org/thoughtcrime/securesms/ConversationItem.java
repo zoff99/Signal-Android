@@ -28,10 +28,14 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -68,6 +72,8 @@ import org.thoughtcrime.securesms.recipients.Recipients;
 import org.thoughtcrime.securesms.service.ExpiringMessageManager;
 import org.thoughtcrime.securesms.util.DateUtils;
 import org.thoughtcrime.securesms.util.DynamicTheme;
+import org.thoughtcrime.securesms.util.LongClickCopySpan;
+import org.thoughtcrime.securesms.util.LongClickMovementMethod;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.dualsim.SubscriptionInfoCompat;
@@ -163,6 +169,8 @@ public class ConversationItem extends LinearLayout
 
     bodyText.setOnLongClickListener(passthroughClickListener);
     bodyText.setOnClickListener(passthroughClickListener);
+
+    bodyText.setMovementMethod(LongClickMovementMethod.getInstance(getContext()));
   }
 
   @Override
@@ -265,7 +273,6 @@ public class ConversationItem extends LinearLayout
 
   private void setInteractionState(MessageRecord messageRecord) {
     setSelected(batchSelected.contains(messageRecord));
-    bodyText.setAutoLinkMask(batchSelected.isEmpty() ? Linkify.ALL : 0);
 
     if (mediaThumbnailStub.resolved()) {
       mediaThumbnailStub.get().setFocusable(!shouldInterceptClicks(messageRecord) && batchSelected.isEmpty());
@@ -304,11 +311,12 @@ public class ConversationItem extends LinearLayout
   private void setBodyText(MessageRecord messageRecord) {
     bodyText.setClickable(false);
     bodyText.setFocusable(false);
+    bodyText.setTextSize(TypedValue.COMPLEX_UNIT_SP, TextSecurePreferences.getMessageBodyTextSize(context));
 
     if (isCaptionlessMms(messageRecord)) {
       bodyText.setVisibility(View.GONE);
     } else {
-      bodyText.setText(messageRecord.getDisplayBody());
+      bodyText.setText(linkifyMessageBody(messageRecord.getDisplayBody(), batchSelected.isEmpty()));
       bodyText.setVisibility(View.VISIBLE);
     }
   }
@@ -347,7 +355,7 @@ public class ConversationItem extends LinearLayout
       //noinspection ConstantConditions
       mediaThumbnailStub.get().setImageResource(masterSecret,
                                                 ((MmsMessageRecord)messageRecord).getSlideDeck().getThumbnailSlide(),
-                                                showControls);
+                                                showControls, false);
       mediaThumbnailStub.get().setThumbnailClickListener(new ThumbnailClickListener());
       mediaThumbnailStub.get().setDownloadClickListener(downloadClickListener);
       mediaThumbnailStub.get().setOnLongClickListener(passthroughClickListener);
@@ -366,6 +374,20 @@ public class ConversationItem extends LinearLayout
     if (! messageRecord.isOutgoing()) {
       setContactPhotoForRecipient(recipient);
     }
+  }
+
+  private SpannableString linkifyMessageBody(SpannableString messageBody, boolean shouldLinkifyAllLinks) {
+    boolean hasLinks = Linkify.addLinks(messageBody, shouldLinkifyAllLinks ? Linkify.ALL : 0);
+
+    if (hasLinks) {
+      URLSpan[] urlSpans = messageBody.getSpans(0, messageBody.length(), URLSpan.class);
+      for (URLSpan urlSpan : urlSpans) {
+        int start = messageBody.getSpanStart(urlSpan);
+        int end = messageBody.getSpanEnd(urlSpan);
+        messageBody.setSpan(new LongClickCopySpan(urlSpan.getURL()), start, end, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      }
+    }
+    return messageBody;
   }
 
   private void setStatusIcons(MessageRecord messageRecord) {
@@ -576,6 +598,9 @@ public class ConversationItem extends LinearLayout
 
     @Override
     public boolean onLongClick(View v) {
+      if (bodyText.hasSelection()) {
+        return false;
+      }
       performLongClick();
       return true;
     }

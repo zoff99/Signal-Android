@@ -7,7 +7,6 @@ import android.util.Log;
 import android.util.Pair;
 
 import org.thoughtcrime.securesms.ApplicationContext;
-import org.thoughtcrime.securesms.attachments.Attachment;
 import org.thoughtcrime.securesms.attachments.DatabaseAttachment;
 import org.thoughtcrime.securesms.attachments.PointerAttachment;
 import org.thoughtcrime.securesms.crypto.IdentityKeyUtil;
@@ -77,11 +76,10 @@ import org.whispersystems.signalservice.api.messages.multidevice.SentTranscriptM
 import org.whispersystems.signalservice.api.messages.multidevice.SignalServiceSyncMessage;
 import org.whispersystems.signalservice.api.push.SignalServiceAddress;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import ws.com.google.android.mms.MmsException;
+import org.thoughtcrime.securesms.mms.MmsException;
 
 public class PushDecryptJob extends ContextJob {
 
@@ -321,7 +319,7 @@ public class PushDecryptJob extends ContextJob {
       SecurityEvent.broadcastSecurityUpdateEvent(context);
 
       long messageId = database.insertMessageOutbox(masterSecret, threadId, outgoingEndSessionMessage,
-                                                    false, message.getTimestamp());
+                                                    false, message.getTimestamp(), null);
       database.markAsSent(messageId, true);
     }
 
@@ -521,7 +519,7 @@ public class PushDecryptJob extends ContextJob {
                                                                                                   message.getMessage().getExpiresInSeconds() * 1000);
 
     long threadId  = DatabaseFactory.getThreadDatabase(context).getThreadIdFor(recipients);
-    long messageId = database.insertMessageOutbox(masterSecret, expirationUpdateMessage, threadId, false);
+    long messageId = database.insertMessageOutbox(masterSecret, expirationUpdateMessage, threadId, false, null);
 
     database.markAsSent(messageId, true);
 
@@ -554,7 +552,7 @@ public class PushDecryptJob extends ContextJob {
     }
 
     long threadId  = DatabaseFactory.getThreadDatabase(context).getThreadIdFor(recipients);
-    long messageId = database.insertMessageOutbox(masterSecret, mediaMessage, threadId, false);
+    long messageId = database.insertMessageOutbox(masterSecret, mediaMessage, threadId, false, null);
 
     database.markAsSent(messageId, true);
 
@@ -635,7 +633,7 @@ public class PushDecryptJob extends ContextJob {
     }
 
     long threadId  = DatabaseFactory.getThreadDatabase(context).getThreadIdFor(recipients);
-    long messageId = database.insertMessageOutbox(masterSecret, threadId, outgoingTextMessage, false, message.getTimestamp());
+    long messageId = database.insertMessageOutbox(masterSecret, threadId, outgoingTextMessage, false, message.getTimestamp(), null);
 
     database.markAsSent(messageId, true);
 
