@@ -87,6 +87,7 @@ que %2$s reinstalou o Signal.</string>
   <string name="ConversationItem_click_to_approve_unencrypted_mms_dialog_title">Recorrer a MMS não cifrado?</string>
   <string name="ConversationItem_click_to_approve_unencrypted_dialog_message">Esta mensagem <b>não</b> será cifrada porque o destinatário já não é um utilizador Signal.\n\nEnviar mensagem de modo inseguro?</string>
   <string name="ConversationItem_unable_to_open_media">Não foi possível encontrar uma aplicação capaz de abrir este média.</string>
+  <string name="ConversationItem_copied_text">Copiado %s</string>
   <string name="ConversationItem_from_s">de %s</string>
   <string name="ConversationItem_to_s">para %s</string>
   <!--ConversationActivity-->
@@ -134,6 +135,10 @@ que %2$s reinstalou o Signal.</string>
   <string name="ConversationActivity_error_sending_voice_message">Erro no envio de mensagem de voz</string>
   <string name="ConversationActivity_there_is_no_app_available_to_handle_this_link_on_your_device">Não existe uma aplicação capaz de lidar com este tipo de ligação no seu dispositivo.</string>
   <!--ConversationAdapter-->
+  <plurals name="ConversationAdapter_n_unread_messages">
+    <item quantity="one">%d mensagem não lida</item>
+    <item quantity="other">%d mensagens não lidas</item>
+  </plurals>
   <!--ConversationFragment-->
   <string name="ConversationFragment_message_details">Detalhes da mensagem</string>
   <string name="ConversationFragment_transport_s_sent_received_s">Transporte: %1$s\nEnviadas/Recebidas: %2$s</string>
@@ -225,6 +230,7 @@ que %2$s reinstalou o Signal.</string>
   <string name="DeviceListItem_last_active_s">Activo pela última vez %s</string>
   <string name="DeviceListItem_today">Hoje</string>
   <!--DocumentView-->
+  <string name="DocumentView_unknown_file">Ficheiro desconhecido</string>
   <!--DozeReminder-->
   <string name="DozeReminder_optimize_for_missing_play_services">Otimiza para os Play Services em falta.</string>
   <string name="DozeReminder_this_device_does_not_support_play_services_tap_to_disable_system_battery">Este dispositivo não suporta os Play Services. Clica para desativar o sistema que otimização de bateria que previne o Signal de recolher mensagens quando inativo.</string>
@@ -462,6 +468,8 @@ Verifique que este é o seu número! Estamos prestes a confirmá-lo com uma SMS.
   <string name="RegistrationActivity_i_understand">Eu compreendo</string>
   <string name="RegistrationActivity_play_services_error">Erro dos Play Services</string>
   <string name="RegistrationActivity_google_play_services_is_updating_or_unavailable">Os Google Play Services estão a ser atualizados ou estão temporariamente indisponíveis. Por favor, tenta outra vez.</string>
+  <string name="RegistrationActivity_more_information">Mais informação</string>
+  <string name="RegistrationActivity_less_information">Menos informação</string>
   <!--RegistrationProblemsActivity-->
   <string name="RegistrationProblemsActivity_possible_problems">Problemas possíveis.</string>
   <!--RegistrationProgressActivity-->
@@ -484,6 +492,7 @@ Verifique que este é o seu número! Estamos prestes a confirmá-lo com uma SMS.
   <string name="RegistrationProgressActivity_too_many_requests">Demasiados pedidos!</string>
   <string name="RegistrationProgressActivity_youve_already_requested_a_voice_call">Já requereu uma chamada recentemente. Pode pedir outra dentro de 20 minutos.</string>
   <string name="RegistrationProgressActivity_registration_conflict">Conflito de registo</string>
+  <string name="RegistrationProgressActivity_this_number_is_already_registered_on_a_different">Este número já se encontra registado num servidor Signal diferente. Tem de eliminar esse registo antes de o registar aqui.</string>
   <!--RegistrationService-->
   <string name="RegistrationService_registration_complete">Registo completo!</string>
   <string name="RegistrationService_signal_registration_has_successfully_completed">O registo Signal foi completado com sucesso.</string>
@@ -514,6 +523,7 @@ Mensagem de troca de chave inválida para esta versão do protocolo.
   <string name="ThreadRecord_missed_call">Chamada perdida</string>
   <string name="ThreadRecord_media_message">Mensagem media</string>
   <string name="ThreadRecord_disappearing_message_time_updated_to_s">Tempo de mensagens a desaparecer definido para %s</string>
+  <string name="ThreadRecord_safety_number_changed">Número de segurança alterado</string>
   <string name="ThreadRecord_your_safety_number_with_s_has_changed">O seu número de segurança com %s mudou.</string>
   <!--UpdateApkReadyListener-->
   <string name="UpdateApkReadyListener_Signal_update">Update do Signal</string>
@@ -578,6 +588,8 @@ Mensagem de troca de chave inválida para esta versão do protocolo.
   <string name="MessageNotifier_mark_read">Marcar como lida</string>
   <string name="MessageNotifier_media_message">Mensagem media</string>
   <string name="MessageNotifier_reply">Responder</string>
+  <string name="MessageNotifier_pending_signal_messages">Mensagens de sinal pendentes</string>
+  <string name="MessageNotifier_you_have_pending_signal_messages">Você tem mensagens de Sinal pendentes, toque para abrir e recuperar</string>
   <!--MmsPreferencesFragment-->
   <string name="MmsPreferencesFragment__manual_mms_settings_are_required">É necessária a configuração manual de MMS para o seu aparelho.</string>
   <string name="MmsPreferencesFragment__enabled">Activo</string>
@@ -589,6 +601,7 @@ Mensagem de troca de chave inválida para esta versão do protocolo.
   <string name="QuickResponseService_quick_response_unavailable_when_Signal_is_locked">A resposta rápida encontra-se indisponível quando o Signal está bloqueado!</string>
   <string name="QuickResponseService_problem_sending_message">Problema no envio da mensagem!</string>
   <!--SaveAttachmentTask-->
+  <string name="SaveAttachmentTask_open_directory">Abrir directório</string>
   <!--SingleRecipientNotificationBuilder-->
   <string name="SingleRecipientNotificationBuilder_signal">Signal</string>
   <string name="SingleRecipientNotificationBuilder_new_message">Mensagem nova</string>
@@ -601,12 +614,8 @@ Mensagem de troca de chave inválida para esta versão do protocolo.
   <!--WebRtcCallControls-->
   <string name="WebRtcCallControls_tap_to_enable_your_video">Clica para ligar o teu vídeo</string>
   <!--attachment_type_selector-->
-  <string name="attachment_type_selector__image">Imagem</string>
-  <string name="attachment_type_selector__image_description">Imagem</string>
   <string name="attachment_type_selector__audio">Áudio</string>
   <string name="attachment_type_selector__audio_description">Áudio</string>
-  <string name="attachment_type_selector__video">Vídeo</string>
-  <string name="attachment_type_selector__video_description">Vídeo</string>
   <string name="attachment_type_selector__contact">Contacto</string>
   <string name="attachment_type_selector__contact_description">Contacto</string>
   <string name="attachment_type_selector__camera">Câmara</string>
@@ -615,6 +624,10 @@ Mensagem de troca de chave inválida para esta versão do protocolo.
   <string name="attachment_type_selector__location_description">Localização</string>
   <string name="attachment_type_selector__gif">GIF</string>
   <string name="attachment_type_selector__gif_description">Gif</string>
+  <string name="attachment_type_selector__gallery_description">Imagem ou vídeo</string>
+  <string name="attachment_type_selector__file_description">Ficheiro</string>
+  <string name="attachment_type_selector__gallery">Galeria</string>
+  <string name="attachment_type_selector__file">Ficheiro</string>
   <string name="attachment_type_selector__drawer_description">Comutar gaveta de anexos</string>
   <!--change_passphrase_activity-->
   <string name="change_passphrase_activity__old_passphrase">Frase-chave anterior</string>
@@ -636,9 +649,9 @@ Mensagem de troca de chave inválida para esta versão do protocolo.
   <!--conversation_title_view-->
   <string name="conversation_title_view__conversation_muted">Conversa silenciada</string>
   <!--conversation_activity-->
-  <string name="conversation_activity__type_message_push">Enviar mensagem Signal</string>
-  <string name="conversation_activity__type_message_sms_insecure">Enviar SMS insegura</string>
-  <string name="conversation_activity__type_message_mms_insecure">Enviar MMS insegura</string>
+  <string name="conversation_activity__type_message_push">Mensagem Signal</string>
+  <string name="conversation_activity__type_message_sms_insecure">SMS insegura</string>
+  <string name="conversation_activity__type_message_mms_insecure">MMS insegura</string>
   <string name="conversation_activity__from_sim_name">De %1$s</string>
   <string name="conversation_activity__send">Enviar</string>
   <string name="conversation_activity__remove">Remover</string>
@@ -713,6 +726,7 @@ Mensagem de troca de chave inválida para esta versão do protocolo.
     <item quantity="other">%d semanas</item>
   </plurals>
   <string name="expiration_weeks_abbreviated">%dw</string>
+  <!--unverified safety numbers-->
   <!--giphy_activity-->
   <string name="giphy_activity_toolbar__search_gifs_and_stickers">Pesquisar GIFs e autocolantes</string>
   <!--giphy_fragment-->
@@ -748,7 +762,6 @@ Mensagem de troca de chave inválida para esta versão do protocolo.
   <!--media_overview_activity-->
   <string name="media_overview_activity__no_media">Sem média</string>
   <!--message_recipients_list_item-->
-  <string name="message_recipients_list_item__verify">VERIFICAR</string>
   <string name="message_recipients_list_item__resend">REENVIAR</string>
   <string name="message_recipients_list_item__resending">A reenviar...</string>
   <!--GroupUtil-->
@@ -772,7 +785,7 @@ Mensagem de troca de chave inválida para esta versão do protocolo.
   <string name="recipient_preferences__block">Bloquear</string>
   <string name="recipient_preferences__color">Cor</string>
   <string name="recipient_preferences__color_for_this_contact">Cor para este contacto</string>
-  <string name="recipient_preferences__verify_safety_number">Verificar número de segurança</string>
+  <string name="recipient_preferences__view_safety_number">Número de verificação de segurança</string>
   <!--- redphone_call_controls-->
   <string name="redphone_call_card__signal_call">Chamada Signal</string>
   <string name="redphone_call_controls__end_call">terminar chamada</string>
@@ -788,6 +801,7 @@ Verifique o seu número de telefone para contactar com Signal
 NÚMERO DE TELEFONE</string>
   <string name="registration_activity__phone_number">TELEFONE</string>
   <string name="registration_activity__register">Registar</string>
+  <string name="registration_activity__registration_will_transmit_some_contact_information_to_the_server_temporariliy">Sinal facilita a sua comunicação, utilizando o seu número de telefone e livro de enredeços. Amigos e contactos que já conseguem falar consigo telefonicamente podem chegar até si facilmente via Signal.\n\nO registo envia alguma informação de contacto para o servidor. Esta não é armazenada.</string>
   <string name="registration_activity__powered_by_twilio">Providenciado por twilio</string>
   <!--registration_problems-->
   <string name="registration_problems__some_possible_problems_include">Alguns possíveis problemas
@@ -855,7 +869,7 @@ falhou.
   <string name="recipients_panel__to"><small>Introduza um nome ou número</small></string>
   <string name="recipients_panel__add_members">Adicionar membros</string>
   <!--verify_display_fragment-->
-  <string name="verify_display_fragment__if_you_wish_to_verify_the_security_of_your_end_to_end_encryption_with_s"><![CDATA[Se deseja verificar a segurança da sua cifra ponto-a-ponto com %s, Compare o número acima com o presente no dispositivo dele. Como alternativa, pode ler o código QR do telefone dele ou pedir-lhe para ler o seu. <a href="https://whispersystems.org/redirect/safety-numbers">Aprenda mais sobre como verificar números de segurança</a>]]></string>
+  <string name="verify_display_fragment__if_you_wish_to_verify_the_security_of_your_end_to_end_encryption_with_s"><![CDATA[Se pretende verificar a segurança da sua encriptação end-to-end com o contacto %s, então compare este número acima com o equivalente no dispositivo do seu contacto. Em alternativa poderá fazer um scan ao QR code exibido no outro dispositivo. <a href="https://whispersystems.org/redirect/safety-numbers">Mais informações sobre o número de verificação de segurança </a>]]></string>
   <string name="verify_display_fragment__tap_to_scan">Toque para ler</string>
   <!--verify_identity-->
   <string name="verify_identity__share_safety_number">Partilhar número de segurança</string>
@@ -901,6 +915,14 @@ falhou.
   <string name="arrays__images">Imagens</string>
   <string name="arrays__audio">Áudio</string>
   <string name="arrays__video">Vídeo</string>
+  <string name="arrays__documents">Documentos</string>
+  <string name="arrays__small">Pequeno</string>
+  <string name="arrays__normal">Normal</string>
+  <string name="arrays__large">Grande</string>
+  <string name="arrays__extra_large">Extra grande</string>
+  <string name="arrays__default">Opção por omissão</string>
+  <string name="arrays__high">Elevado</string>
+  <string name="arrays__max">Máximo</string>
   <!--plurals.xml-->
   <plurals name="hours_ago">
     <item quantity="one">%d hora</item>
@@ -942,7 +964,6 @@ falhou.
   <string name="preferences__pref_led_blink_custom_pattern_off_for">Inactivo durante:</string>
   <string name="preferences__pref_led_blink_custom_pattern_set">Padrão de intermitência LED definido!</string>
   <string name="preferences__sound">Som</string>
-  <string name="preferences__change_notification_sound">Alterar som de notificação</string>
   <string name="preferences__silent">Silencioso</string>
   <string name="preferences__in_conversation_notifications">Notificações nas conversas</string>
   <string name="preferences__play_inthread_notifications">Activar notificações enquanto segue uma conversa activa</string>
@@ -1015,6 +1036,17 @@ falhou.
   <string name="preferences_advanced__enable_support_for_next_generation_video_and_voice_calls">Suporte para vídeo chamadas e chamadas de voz de próxima geração quando ligado por ambas as partes. Esta funcionalidade está em beta.</string>
   <string name="preferences_advanced__relay_all_calls_through_the_signal_server_to_avoid_revealing_your_ip_address">Retransmite todas as chamadas pelo servidor do Signal para evitar revelar o teu IP ao teu contact. Ao ligar a qualidade da chamada irá ser reduzida.</string>
   <string name="preferences_advanced__always_relay_calls">Retransmitir todas as chamadas</string>
+  <string name="preferences_app_protection__app_access">Acesso da aplicação</string>
+  <string name="preferences_app_protection__communication">Comunicação</string>
+  <string name="preferences_chats__chats">Conversas</string>
+  <string name="preferences_notifications__events">Eventos</string>
+  <string name="preferences_notifications__in_chat_sounds">Sons na conversa</string>
+  <string name="preferences_notifications__show">Mostrar</string>
+  <string name="preferences_chats__show_invitation_prompts">Mostrar notificações de convite</string>
+  <string name="preferences_chats__display_invitation_prompts_for_contacts_without_signal">Mostrar notificações de convite para contactos sem Signal</string>
+  <string name="preferences_chats__message_text_size">Tamanho de letra da mensagem</string>
+  <string name="preferences_events__contact_joined_signal">Um contacto juntou-se à rede Signal!</string>
+  <string name="preferences_notifications__priority">Prioridade</string>
   <!--****************************************-->
   <!--menus-->
   <!--****************************************-->

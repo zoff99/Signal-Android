@@ -85,6 +85,7 @@
   <string name="ConversationItem_click_to_approve_unencrypted_mms_dialog_title">Να σταλεί ΜΗ κρυπτογραφημένο μήνυμα πολυμέσων MMS?</string>
   <string name="ConversationItem_click_to_approve_unencrypted_dialog_message">Αυτό το μήνυμα <b>δεν</b> θα κρυπτογραφηθεί, επειδή ο παραλήπτης δεν είναι πλέον χρήστης του Signal.\n\nΝα σταλεί το μήνυμα μη κρυπτογραφημένο;</string>
   <string name="ConversationItem_unable_to_open_media">Δεν μπορεί να βρεθεί κατάλληλη εφαρμογή για το άνοιγμα αυτού του πολυμέσου.</string>
+  <string name="ConversationItem_copied_text">Αντιγράφτηκε: %s</string>
   <string name="ConversationItem_from_s">από %s</string>
   <string name="ConversationItem_to_s">προς %s</string>
   <!--ConversationActivity-->
@@ -366,10 +367,14 @@
   <string name="MessageRecord_s_called_you">O/H %s σε κάλεσε</string>
   <string name="MessageRecord_called_s">Κάλεσες τον/την %s</string>
   <string name="MessageRecord_missed_call_from">Αναπάντητη κλήση από τον/την %s</string>
-  <string name="MessageRecord_s_joined_signal">Ο/Η %s εγκατέστησε το Signal!</string>
+  <string name="MessageRecord_s_joined_signal">Ο/Η %s είναι στο Signal!</string>
   <string name="MessageRecord_you_set_disappearing_message_time_to_s">Όρισες το χρόνο εξαφάνισης των μηνυμάτων σε: %1$s</string>
   <string name="MessageRecord_s_set_disappearing_message_time_to_s">Ο/Η %1$s όρισε το χρόνο εξαφάνισης των μηνυμάτων σε: %2$s</string>
   <string name="MessageRecord_your_safety_number_with_s_has_changed">Ο αριθμός ασφαλείας με τον/την %s έχει αλλάξει.</string>
+  <string name="MessageRecord_you_marked_your_safety_number_with_s_verified">Σημείωσες τον αριθμό ασφαλείας με τον/την %s ως επιβεβαιωμένο</string>
+  <string name="MessageRecord_you_marked_your_safety_number_with_s_verified_from_another_device">Σημείωσες τον αριθμό ασφαλείας με τον/την %s ως επιβεβαιωμένο από άλλη συσκευή</string>
+  <string name="MessageRecord_you_marked_your_safety_number_with_s_unverified">Σημείωσες τον αριθμό ασφαλείας με τον/την %s ως μη επιβεβαιωμένο</string>
+  <string name="MessageRecord_you_marked_your_safety_number_with_s_unverified_from_another_device">Σημείωσες τον αριθμό ασφαλείας με τον/την %s ως μη επιβεβαιωμένο από άλλη συσκευή</string>
   <!--PassphraseChangeActivity-->
   <string name="PassphraseChangeActivity_passphrases_dont_match_exclamation">Τα συνθηματικά δε ταιριάζουν!</string>
   <string name="PassphraseChangeActivity_incorrect_old_passphrase_exclamation">Λάθος παλιό συνθηματικό!</string>
@@ -516,9 +521,12 @@
   <string name="ThreadRecord_called_you">Σε κάλεσε</string>
   <string name="ThreadRecord_missed_call">Αναπάντητη κλήση</string>
   <string name="ThreadRecord_media_message">Μήνυμα πολυμέσων</string>
-  <string name="ThreadRecord_s_joined_signal">Ο/Η %s εγκατέστησε το Signal!</string>
+  <string name="ThreadRecord_s_is_on_signal">Ο/Η %s είναι στο Signal!</string>
   <string name="ThreadRecord_disappearing_message_time_updated_to_s">Ο χρόνος εξαφάνισης των μηνυμάτων ρυθμίστηκε σε %s</string>
+  <string name="ThreadRecord_safety_number_changed">Ο αριθμός ασφαλείας άλλαξε</string>
   <string name="ThreadRecord_your_safety_number_with_s_has_changed">Ο αριθμός ασφαλείας με τον/την %s έχει αλλάξει.</string>
+  <string name="ThreadRecord_you_marked_verified">Το σημείωσες ως επιβεβαιωμένο</string>
+  <string name="ThreadRecord_you_marked_unverified">Το σημείωσες ως μη επιβεβαιωμένο</string>
   <!--UpdateApkReadyListener-->
   <string name="UpdateApkReadyListener_Signal_update">Αναβάθμιση Signal</string>
   <string name="UpdateApkReadyListener_a_new_version_of_signal_is_available_tap_to_update">Μια νέα έκδοση του Signal είναι διαθέσιμη, πάτα για αναβάθμιση</string>
@@ -582,6 +590,8 @@
   <string name="MessageNotifier_mark_read">Σημείωση ως αναγνωσμένο</string>
   <string name="MessageNotifier_media_message">Μήνυμα πολυμέσων</string>
   <string name="MessageNotifier_reply">Απάντηση</string>
+  <string name="MessageNotifier_pending_signal_messages">Μηνύματα Signal σε αναμονή</string>
+  <string name="MessageNotifier_you_have_pending_signal_messages">Έχεις μηνύματα Signal σε αναμονή, πάτα για να τα ανοίξεις και να τα λάβεις</string>
   <!--MmsPreferencesFragment-->
   <string name="MmsPreferencesFragment__manual_mms_settings_are_required">Απαιτούνται χειροκίνητες ρυθμίσεις MMS για το κινητό σου.</string>
   <string name="MmsPreferencesFragment__enabled">Ενεργοποιημένο</string>
@@ -606,12 +616,8 @@
   <!--WebRtcCallControls-->
   <string name="WebRtcCallControls_tap_to_enable_your_video">Πάτα για να ενεργοποιήσεις το βίντεό σου</string>
   <!--attachment_type_selector-->
-  <string name="attachment_type_selector__image">Εικόνα</string>
-  <string name="attachment_type_selector__image_description">Εικόνα</string>
   <string name="attachment_type_selector__audio">Ήχος</string>
   <string name="attachment_type_selector__audio_description">Ήχος</string>
-  <string name="attachment_type_selector__video">Βίντεο</string>
-  <string name="attachment_type_selector__video_description">Βίντεο</string>
   <string name="attachment_type_selector__contact">Επαφή</string>
   <string name="attachment_type_selector__contact_description">Επαφή</string>
   <string name="attachment_type_selector__camera">Κάμερα</string>
@@ -620,6 +626,10 @@
   <string name="attachment_type_selector__location_description">Τοποθεσία</string>
   <string name="attachment_type_selector__gif">GIF</string>
   <string name="attachment_type_selector__gif_description">Gif</string>
+  <string name="attachment_type_selector__gallery_description">Εικόνα ή βίντεο</string>
+  <string name="attachment_type_selector__file_description">Αρχείο</string>
+  <string name="attachment_type_selector__gallery">Πινακοθήκη</string>
+  <string name="attachment_type_selector__file">Αρχείο</string>
   <string name="attachment_type_selector__drawer_description">Εναλλαγή συρταριού επισυνημμένων</string>
   <!--change_passphrase_activity-->
   <string name="change_passphrase_activity__old_passphrase">Παλιό συνθηματικό</string>
@@ -641,9 +651,9 @@
   <!--conversation_title_view-->
   <string name="conversation_title_view__conversation_muted">Η συζήτηση έχει σιγαθεί</string>
   <!--conversation_activity-->
-  <string name="conversation_activity__type_message_push">Αποστολή μηνύματος Signal</string>
-  <string name="conversation_activity__type_message_sms_insecure">Αποστολή μη ασφαλούς SMS</string>
-  <string name="conversation_activity__type_message_mms_insecure">Αποστολή μη ασφαλούς MMS</string>
+  <string name="conversation_activity__type_message_push">Μήνυμα Signal</string>
+  <string name="conversation_activity__type_message_sms_insecure">Μη ασφαλές SMS</string>
+  <string name="conversation_activity__type_message_mms_insecure">Μη ασφαλές MMS</string>
   <string name="conversation_activity__from_sim_name">Από τον/την %1$s</string>
   <string name="conversation_activity__send">Αποστολή</string>
   <string name="conversation_activity__remove">Αφαίρεση</string>
@@ -718,6 +728,20 @@
     <item quantity="other">%d εβδομάδες</item>
   </plurals>
   <string name="expiration_weeks_abbreviated">%dεβ</string>
+  <!--unverified safety numbers-->
+  <string name="IdentityUtil_unverified_banner_one">Ο αριθμός ασφαλείας σου με τον/την %s άλλαξε και δεν είναι πια επιβεβαιωμένος</string>
+  <string name="IdentityUtil_unverified_banner_two">Οι αριθμοί ασφαλείας σου με τους/τις %1$s και %2$s δεν είναι πια επιβεβαιωμένοι</string>
+  <string name="IdentityUtil_unverified_banner_many">Οι αριθμοί ασφαλείας σου με τους/τις %1$s, %2$s και %3$s δεν είναι πια επιβεβαιωμένοι</string>
+  <string name="IdentityUtil_unverified_dialog_one">Ο αριθμός ασφαλείας σου με τον/την %1$s άλλαξε και δεν είναι πια επιβεβαιωμένος. Αυτό μπορεί να σημαίνει πως είτε κάποιος προσπαθεί να υποκλέψει τη συνομιλία σας, είτε απλά ο/η %1$s επανεγκατέστησε το Signal.</string>
+  <string name="IdentityUtil_unverified_dialog_two">Οι αριθμοί ασφαλείας σου με τους/τις %1$s και %2$s δεν είναι πια επιβεβαιωμένοι. Αυτό μπορεί να σημαίνει πως είτε κάποιος προσπαθεί να υποκλέψει τις συνομιλίες σας, είτε απλά επανεγκατέστησαν το Signal.</string>
+  <string name="IdentityUtil_unverified_dialog_many">Οι αριθμοί ασφαλείας σου με τους/τις %1$s, %2$s και %3$s δεν είναι πια επιβεβαιωμένοι. Αυτό μπορεί να σημαίνει πως είτε κάποιος προσπαθεί να υποκλέψει τις συνομιλίες σας, είτε απλά επανεγκατέστησαν το Signal.</string>
+  <string name="IdentityUtil_untrusted_dialog_one">Ο αριθμός ασφαλείας με τον/την %s μόλις άλλαξε.</string>
+  <string name="IdentityUtil_untrusted_dialog_two">Οι αριθμοί ασφαλείας με τους/τις %1$s και %2$s μόλις άλλαξαν.</string>
+  <string name="IdentityUtil_untrusted_dialog_many">Οι αριθμοί ασφαλείας με τους/τις %1$s, %2$s και %3$s μόλις άλλαξαν.</string>
+  <plurals name="identity_others">
+    <item quantity="one">%d άλλος/η</item>
+    <item quantity="other">%d άλλοι/ες</item>
+  </plurals>
   <!--giphy_activity-->
   <string name="giphy_activity_toolbar__search_gifs_and_stickers">Αναζήτηση GIFs και αυτοκολλήτων</string>
   <!--giphy_fragment-->
@@ -753,7 +777,7 @@
   <!--media_overview_activity-->
   <string name="media_overview_activity__no_media">Κανένα πολυμέσο</string>
   <!--message_recipients_list_item-->
-  <string name="message_recipients_list_item__verify">ΕΠΑΛΗΘΕΥΣΗ</string>
+  <string name="message_recipients_list_item__view">ΠΡΟΒΟΛΗ</string>
   <string name="message_recipients_list_item__resend">ΕΠΑΝΑΠΟΣΤΟΛΗ</string>
   <string name="message_recipients_list_item__resending">Επαναποστολή...</string>
   <!--GroupUtil-->
@@ -777,7 +801,7 @@
   <string name="recipient_preferences__block">Μπλοκάρισμα</string>
   <string name="recipient_preferences__color">Χρώμα</string>
   <string name="recipient_preferences__color_for_this_contact">Χρώμα επαφής</string>
-  <string name="recipient_preferences__verify_safety_number">Επαλήθευση αριθμού ασφαλείας</string>
+  <string name="recipient_preferences__view_safety_number">Προβολή αριθμού ασφαλείας</string>
   <!--- redphone_call_controls-->
   <string name="redphone_call_card__signal_call">Κλήση Signal</string>
   <string name="redphone_call_controls__end_call">τερματισμός κλήσης</string>
@@ -857,8 +881,10 @@
   <string name="recipients_panel__to"><small>Εισαγωγή ονόματος ή αριθμού</small></string>
   <string name="recipients_panel__add_members">Προσθήκη μελών</string>
   <!--verify_display_fragment-->
-  <string name="verify_display_fragment__if_you_wish_to_verify_the_security_of_your_end_to_end_encryption_with_s"><![CDATA[Αν θέλεις να επιβεβαιώσεις την ασφάλεια της κρυπτογραφίας από άκρο σε άκρο με τον/την %s, σύγκρινε τον παρακάτω αριθμό με τον αριθμό στην συσκευή του/της. Εναλλακτικά, μπορείς να σκανάρεις τον κωδικό στην οθόνη του κινητού του/της, ή να τους ζητήσεις να σκανάρουν τον δικό σου κωδικό. <a href="https://whispersystems.org/redirect/safety-numbers">Μάθε περισσότερα για την επιβεβαίωση του αριθμού ασφαλείας.</a>]]></string>
+  <string name="verify_display_fragment__if_you_wish_to_verify_the_security_of_your_end_to_end_encryption_with_s"><![CDATA[Αν θέλεις να επιβεβαιώσεις την ασφάλεια της κρυπτογραφίας με τον/την %s, σύγκρινε τον παραπάνω αριθμό με τον αριθμό στην συσκευή του/της. Εναλλακτικά, μπορείς να σκανάρεις τον κωδικό στο κινητό του/της, ή να του/της ζητήσεις να σκανάρει τον δικό σου κωδικό.<a href="https://whispersystems.org/redirect/safety-numbers">Μάθε περισσότερα.</a>]]></string>
   <string name="verify_display_fragment__tap_to_scan">Πάτα για σκανάρισμα</string>
+  <string name="verify_display_fragment__loading">Φορτώνει...</string>
+  <string name="verify_display_fragment__verified">Επιβεβαιωμένο</string>
   <!--verify_identity-->
   <string name="verify_identity__share_safety_number">Μοιράσου τον αριθμό ασφαλείας</string>
   <!--message_details_header-->
@@ -904,6 +930,13 @@
   <string name="arrays__audio">Ήχοι</string>
   <string name="arrays__video">Βίντεο</string>
   <string name="arrays__documents">Αρχεία</string>
+  <string name="arrays__small">Μικρό</string>
+  <string name="arrays__normal">Κανονικό</string>
+  <string name="arrays__large">Μεγάλο</string>
+  <string name="arrays__extra_large">Πολύ μεγάλο</string>
+  <string name="arrays__default">Προκαθορισμένο</string>
+  <string name="arrays__high">Υψηλό</string>
+  <string name="arrays__max">Μέγιστο</string>
   <!--plurals.xml-->
   <plurals name="hours_ago">
     <item quantity="one">%d ώρα</item>
@@ -929,7 +962,7 @@
   <string name="preferences__enable_passphrase">Ενεργοποίηση συνθηματικού</string>
   <string name="preferences__lock_signal_and_message_notifications_with_a_passphrase">Κλείδωμα του Signal και των ειδοποιήσεων μηνυμάτων με ένα συνθηματικό</string>
   <string name="preferences__screen_security">Ασφάλεια οθόνης</string>
-  <string name="preferences__disable_screen_security_to_allow_screen_shots">Να επιτρέπεται η καταγραφή της οθόνης (screenshots)</string>
+  <string name="preferences__disable_screen_security_to_allow_screen_shots">Να μην επιτρέπεται η καταγραφή της οθόνης (screenshots) στη λίστα με τα πρόσφατα και μέσα στην εφαρμογή</string>
   <string name="preferences__auto_lock_signal_after_a_specified_time_interval_of_inactivity">Αυτόματο κλείδωμα του Signal μετά απο κάποιο συγκεκριμένο χρόνο αδράνειας</string>
   <string name="preferences__inactivity_timeout_passphrase">Συνθηματικό χρόνου αδράνειας</string>
   <string name="preferences__inactivity_timeout_interval">Χρονικό διάστημα χρόνου αδράνειας</string>
@@ -945,7 +978,6 @@
   <string name="preferences__pref_led_blink_custom_pattern_off_for">Σβηστό για:</string>
   <string name="preferences__pref_led_blink_custom_pattern_set">Ορίστηκε το προσαρμοσμένο μοτίβο αναβοσβησίματος του LED!</string>
   <string name="preferences__sound">Ήχος</string>
-  <string name="preferences__change_notification_sound">Αλλαγή ήχου ειδοποίησης</string>
   <string name="preferences__silent">Σε σίγαση</string>
   <string name="preferences__in_conversation_notifications">Ειδοποιήσεις εντός της συζήτησης</string>
   <string name="preferences__play_inthread_notifications">Αναπαραγωγή ήχου ειδοποίησης όταν βλέπεις μια ενεργή συνομιλία</string>
@@ -1018,6 +1050,18 @@
   <string name="preferences_advanced__enable_support_for_next_generation_video_and_voice_calls">Υποστήριξη για κλήσεις βίντεο και φωνής επόμενης γενιάς, όταν ενεργοποιηθεί και από τις δύο πλευρές. Αυτό το χαρακτηριστικό είναι σε δοκιμαστική λειτουργία beta.</string>
   <string name="preferences_advanced__relay_all_calls_through_the_signal_server_to_avoid_revealing_your_ip_address">Αναμετάδοση όλων των κλήσεων μέσω του σέρβερ Signal για να αποφύγεις την αποκάλυψη της IP διεύθυνσής σου στην επαφή σου. Η ενεργοποίηση θα χαλάσει την ποιότητα των κλήσεων.</string>
   <string name="preferences_advanced__always_relay_calls">Πάντα να αναμεταδίδονται οι κλήσεις</string>
+  <string name="preferences_app_protection__app_access">Πρόσβαση εφαρμογής</string>
+  <string name="preferences_app_protection__communication">Επικοινωνία</string>
+  <string name="preferences_chats__chats">Συνομιλίες</string>
+  <string name="preferences_notifications__messages">Μηνύματα</string>
+  <string name="preferences_notifications__events">Εκδηλώσεις</string>
+  <string name="preferences_notifications__in_chat_sounds">Ήχοι μέσα στη συνομιλία</string>
+  <string name="preferences_notifications__show">Εμφάνιση</string>
+  <string name="preferences_chats__show_invitation_prompts">Εμφάνιση υπενθυμίσεων πρόσκλησης</string>
+  <string name="preferences_chats__display_invitation_prompts_for_contacts_without_signal">Προβολή υπενθυμίσεων πρόσκλησης για επαφές που δεν έχουν Signal</string>
+  <string name="preferences_chats__message_text_size">Μέγεθος γραμματοσειράς μηνύματος</string>
+  <string name="preferences_events__contact_joined_signal">Η επαφή εγκατέστησε το Signal</string>
+  <string name="preferences_notifications__priority">Προτεραιότητα</string>
   <!--****************************************-->
   <!--menus-->
   <!--****************************************-->
@@ -1147,5 +1191,9 @@
   <string name="trimmer__old_messages_successfully_deleted">Τα παλιά μηνύματα διαγράφτηκαν επιτυχώς</string>
   <!--transport_selection_list_item-->
   <string name="transport_selection_list_item__transport_icon">Μεταφορά εικονίδιου</string>
+  <string name="UntrustedSendDialog_send_message">Αποστολή μηνύματος;</string>
+  <string name="UntrustedSendDialog_send">Αποστολή</string>
+  <string name="UnverifiedSendDialog_send_message">Αποστολή μηνύματος;</string>
+  <string name="UnverifiedSendDialog_send">Αποστολή</string>
   <!--EOF-->
 </resources>

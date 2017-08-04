@@ -414,9 +414,7 @@
   <!--WebRtcCallScreen-->
   <!--WebRtcCallControls-->
   <!--attachment_type_selector-->
-  <string name="attachment_type_selector__image">படம்</string>
   <string name="attachment_type_selector__audio">கேள்</string>
-  <string name="attachment_type_selector__video">காணொளி</string>
   <string name="attachment_type_selector__contact">தொடர்பு</string>
   <string name="attachment_type_selector__camera">நிழற்படக்கருவி</string>
   <string name="attachment_type_selector__location">இடம்</string>
@@ -438,9 +436,6 @@
   <string name="contact_selection_recent_activity__no_recent_calls">சமீபத்திய அழைப்புகள் இல்லை.</string>
   <!--conversation_title_view-->
   <!--conversation_activity-->
-  <string name="conversation_activity__type_message_push">சிக்னல் தகவல் அனுப்புக </string>
-  <string name="conversation_activity__type_message_sms_insecure">பாதுகாப்பில்லாத SMS அனுப்பு </string>
-  <string name="conversation_activity__type_message_mms_insecure">பாதுகாப்பில்லாத MMS அனுப்பு </string>
   <string name="conversation_activity__send">அனுப்பு</string>
   <string name="conversation_activity__remove">நீக்கு</string>
   <string name="conversation_activity__window_description">%1$s உடன் உரையாடல்</string>
@@ -479,6 +474,7 @@
   <string name="experience_upgrade_activity__continue">தொடர்</string>
   <!--expiration-->
   <string name="expiration_off">அணை</string>
+  <!--unverified safety numbers-->
   <!--giphy_activity-->
   <!--giphy_fragment-->
   <!--import_export_fragment-->
@@ -504,7 +500,6 @@
   <string name="load_more_header__see_full_conversation">முழு உரையாடலைப் பார்க்க</string>
   <!--media_overview_activity-->
   <!--message_recipients_list_item-->
-  <string name="message_recipients_list_item__verify">சரிபார்க்கவும்</string>
   <string name="message_recipients_list_item__resend">மீண்டும் அனுப்பு</string>
   <!--GroupUtil-->
   <string name="GroupUtil_group_name_is_now">இக்குழுவின் பெயர் \'%1$s\'.</string>
@@ -590,6 +585,7 @@
   <string name="arrays__images">புகைப்படங்கள்</string>
   <string name="arrays__audio">ஒலி</string>
   <string name="arrays__video">காணொளி</string>
+  <string name="arrays__normal">சாதாரணமாக</string>
   <!--plurals.xml-->
   <plurals name="hours_ago">
     <item quantity="one">%d மணிநேரம்</item>
@@ -623,7 +619,6 @@
   <string name="preferences__pref_led_blink_custom_pattern_off_for">இவைக்கு இயற்றாதே:</string>
   <string name="preferences__pref_led_blink_custom_pattern_set">LED மிளிரும் முறையை சுய விருப்பம் போல் அமைக்கப்பட்டது!</string>
   <string name="preferences__sound">ஒலி</string>
-  <string name="preferences__change_notification_sound">அறிவிப்பு ஒலியை மாற்று</string>
   <string name="preferences__silent">அமைதி</string>
   <string name="preferences__repeat_alerts">பலமுறை எச்சரிக்கைகள்</string>
   <string name="preferences__never">ஒருபோதுமில்லை</string>

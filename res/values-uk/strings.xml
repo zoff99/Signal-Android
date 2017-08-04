@@ -88,6 +88,7 @@
   <string name="ConversationItem_click_to_approve_unencrypted_mms_dialog_title">Скористатися незашифрованим MMS як запасним варіантом?</string>
   <string name="ConversationItem_click_to_approve_unencrypted_dialog_message">Це повідомлення <b>не</b> буде зашифровано, оскільки одержувач більше не користується Signal.\n\nНадіслати незахищене повідомлення?</string>
   <string name="ConversationItem_unable_to_open_media">Неможливо знайти програму для відкриття цього медіа.</string>
+  <string name="ConversationItem_copied_text">Скопійовано %s</string>
   <string name="ConversationItem_from_s">від %s</string>
   <string name="ConversationItem_to_s">до %s</string>
   <!--ConversationActivity-->
@@ -207,6 +208,7 @@
     <item quantity="other">%d розмов переміщено до вхідних</item>
   </plurals>
   <!--ConversationListItem-->
+  <string name="ConversationListItem_key_exchange_message">Повідомлення обміну ключам</string>
   <!--ConversationListItemAction-->
   <string name="ConversationListItemAction_archived_conversations_d">Архівовані розмови (%d)</string>
   <!--CustomDefaultPreference-->
@@ -243,6 +245,7 @@
   <string name="ExperienceUpgradeActivity_textsecure_is_now_signal_long">TextSecure і RedPhone тепер єдина програма: Signal. Торкніться, щоб дізнатися більше.</string>
   <string name="ExperienceUpgradeActivity_say_hello_to_video_calls">Привійтайте безпечні відеодзвінки.</string>
   <string name="ExperienceUpgradeActivity_signal_now_supports_secure_video_calling">Signal тепер підтримує безпечні відеодзвінки.</string>
+  <string name="ExperienceUpgradeActivity_signal_now_supports_secure_video_calling_long">Signal тепер підтримує безпечні відеодзвінок. Натисніть, щоб дізнатись більше.</string>
   <!--ExportFragment-->
   <string name="ExportFragment_export">Експортувати</string>
   <string name="ExportFragment_export_plaintext_to_storage">Експортувати незашифрованим текстом до сховища?</string>
@@ -257,6 +260,7 @@
   <string name="GcmRefreshJob_Permanent_Signal_communication_failure">Постійний збій зв\'язку Signal!</string>
   <string name="GcmRefreshJob_Signal_was_unable_to_register_with_Google_Play_Services">Signal не зміг зареєструватись у сервісах Google Play. Виклики та повідомлення Signal наразі вимкнено, спробуйте перереєструватися у Налаштуваннях &gt; Додатково.</string>
   <!--GiphyActivity-->
+  <string name="GiphyActivity_error_while_retrieving_full_resolution_gif">Помилка при отриманні GIF у повному розширенні</string>
   <!--GiphyFragmentPageAdapter-->
   <string name="GiphyFragmentPagerAdapter_gifs">GIF</string>
   <string name="GiphyFragmentPagerAdapter_stickers">Наліпки</string>
@@ -342,8 +346,10 @@
   <string name="MessageDetailsRecipient_new_safety_number">Новий номер безпеки</string>
   <!--MessageRetrievalService-->
   <string name="MessageRetrievalService_signal">Signal</string>
+  <string name="MessageRetrievalService_background_connection_enabled">Фонове підключення активоване</string>
   <!--MmsDownloader-->
   <string name="MmsDownloader_error_storing_mms">Помилка при збереженні MMS!</string>
+  <string name="MmsDownloader_error_connecting_to_mms_provider">Помилка підключення до провайдера MMS</string>
   <!--- NotificationBarManager-->
   <string name="NotificationBarManager_signal_call_in_progress">Відбувається виклик Signal</string>
   <string name="NotificationBarManager_missed_call_from_s">Пропущено виклик від %s</string>
@@ -356,6 +362,8 @@
   <string name="NotificationBarManager__cancel_call">Скасувати виклик</string>
   <!--NotificationMmsMessageRecord-->
   <string name="NotificationMmsMessageRecord_multimedia_message">Мультимедійне повідомлення</string>
+  <string name="NotificationMmsMessageRecord_downloading_mms_message">Завантаження MMS...</string>
+  <string name="NotificationMmsMessageRecord_error_downloading_mms_message">Виникла помилка при завантаженні MMS, натисніть щоб повторити</string>
   <!--MessageRecord-->
   <string name="MessageRecord_message_encrypted_with_a_legacy_protocol_version_that_is_no_longer_supported">Отримано повідомлення, яке зашифроване старою версією Signal, яка вже не підтримується. Попросіть друга оновитися до останньої версії та надіслати повідомлення знову.</string>
   <string name="MessageRecord_left_group">Ви покинули групу.</string>
@@ -364,7 +372,6 @@
   <string name="MessageRecord_s_called_you">%s вам телефонував/-ла</string>
   <string name="MessageRecord_called_s">Телефонували %s</string>
   <string name="MessageRecord_missed_call_from">Пропущено виклик від %s</string>
-  <string name="MessageRecord_s_joined_signal">%s приєднався до Signal!</string>
   <string name="MessageRecord_you_set_disappearing_message_time_to_s">Ви встановили час зникнення повідомлень на %1$s.</string>
   <string name="MessageRecord_s_set_disappearing_message_time_to_s">%1$s встановлює час зникнення повідомлень на %2$s.</string>
   <string name="MessageRecord_your_safety_number_with_s_has_changed">Ваш номер безпеки із %s змінився.</string>
@@ -514,7 +521,6 @@
   <string name="ThreadRecord_called_you">Вам телефонували</string>
   <string name="ThreadRecord_missed_call">Пропущений виклик</string>
   <string name="ThreadRecord_media_message">Медіа повідомлення</string>
-  <string name="ThreadRecord_s_joined_signal">%s приєднався до Signal!</string>
   <string name="ThreadRecord_disappearing_message_time_updated_to_s">Час зникнення повідомлень встановлено на %s</string>
   <string name="ThreadRecord_your_safety_number_with_s_has_changed">Ваш номер безпеки із %s змінився.</string>
   <!--UpdateApkReadyListener-->
@@ -601,12 +607,8 @@
   <string name="WebRtcCallScreen_new_safety_number_title">Новий номер безпеки</string>
   <!--WebRtcCallControls-->
   <!--attachment_type_selector-->
-  <string name="attachment_type_selector__image">Зображення</string>
-  <string name="attachment_type_selector__image_description">Зображення</string>
   <string name="attachment_type_selector__audio">Аудіо</string>
   <string name="attachment_type_selector__audio_description">Аудіо</string>
-  <string name="attachment_type_selector__video">Відео</string>
-  <string name="attachment_type_selector__video_description">Відео</string>
   <string name="attachment_type_selector__contact">Контакт</string>
   <string name="attachment_type_selector__contact_description">Контакт</string>
   <string name="attachment_type_selector__camera">Камера</string>
@@ -615,6 +617,9 @@
   <string name="attachment_type_selector__location_description">Розташування</string>
   <string name="attachment_type_selector__gif">GIF</string>
   <string name="attachment_type_selector__gif_description">Gif</string>
+  <string name="attachment_type_selector__file_description">Файл</string>
+  <string name="attachment_type_selector__gallery">Галерея</string>
+  <string name="attachment_type_selector__file">Файл</string>
   <string name="attachment_type_selector__drawer_description">Увімк/вимк скриньку вкладень</string>
   <!--change_passphrase_activity-->
   <string name="change_passphrase_activity__old_passphrase">Стара фраза-пароль</string>
@@ -636,9 +641,6 @@
   <!--conversation_title_view-->
   <string name="conversation_title_view__conversation_muted">Звук для розмови вимкнено</string>
   <!--conversation_activity-->
-  <string name="conversation_activity__type_message_push">Надіслати Signal повідомлення</string>
-  <string name="conversation_activity__type_message_sms_insecure">Надіслати незахищене SMS</string>
-  <string name="conversation_activity__type_message_mms_insecure">Надіслати незахищене MMS</string>
   <string name="conversation_activity__from_sim_name">Від %1$s</string>
   <string name="conversation_activity__send">Надіслати</string>
   <string name="conversation_activity__remove">Вилучити</string>
@@ -673,6 +675,7 @@
   <string name="conversation_fragment_cab__batch_selection_mode">Режим групового виділення</string>
   <string name="conversation_fragment_cab__batch_selection_amount">%s обрано</string>
   <!--conversation_fragment-->
+  <string name="conversation_fragment__scroll_to_the_bottom_content_description">Прокрутить до самого низу</string>
   <!--country_selection_fragment-->
   <string name="country_selection_fragment__loading_countries">Завантаження країн...</string>
   <string name="country_selection_fragment__search">Пошук</string>
@@ -717,6 +720,7 @@
     <item quantity="other">%d тижнів</item>
   </plurals>
   <string name="expiration_weeks_abbreviated">%dт</string>
+  <!--unverified safety numbers-->
   <!--giphy_activity-->
   <string name="giphy_activity_toolbar__search_gifs_and_stickers">Пошук GIF та наліпок</string>
   <!--giphy_fragment-->
@@ -751,8 +755,8 @@
   <string name="load_more_header__see_full_conversation">Переглянути всю розмову</string>
   <!--media_overview_activity-->
   <!--message_recipients_list_item-->
-  <string name="message_recipients_list_item__verify">ПІДТВЕРДИТИ</string>
   <string name="message_recipients_list_item__resend">НАДІСЛАТИ ЗНОВУ</string>
+  <string name="message_recipients_list_item__resending">Повторне пересилання...</string>
   <!--GroupUtil-->
   <plurals name="GroupUtil_joined_the_group">
     <item quantity="one">%1$s приєднується до групи.</item>
@@ -775,7 +779,6 @@
   <string name="recipient_preferences__block">Заблокувати</string>
   <string name="recipient_preferences__color">Колір</string>
   <string name="recipient_preferences__color_for_this_contact">Колір для цього контакту</string>
-  <string name="recipient_preferences__verify_safety_number">Перевірити номер безпеки</string>
   <!--- redphone_call_controls-->
   <string name="redphone_call_card__signal_call">Виклик Signal </string>
   <string name="redphone_call_controls__end_call">завершити виклик</string>
@@ -860,7 +863,6 @@ Signal не дочекався перевірочного SMS.
   <string name="recipients_panel__to"><small>Введіть ім\'я або номер</small></string>
   <string name="recipients_panel__add_members">Додати учасників</string>
   <!--verify_display_fragment-->
-  <string name="verify_display_fragment__if_you_wish_to_verify_the_security_of_your_end_to_end_encryption_with_s"><![CDATA[Якщо ви хочете перевірити безпеку вашого наскрізного шифрування із %s, порівняйте номер вище із номером на його/її пристрої. Інший спосіб, ви можете сканувати код на його/її телефоні, або попростити його/її сканувати ваш код. <a href="https://whispersystems.org/redirect/safety-numbers">Дізнатися більше про перевірку номерів безпеки</a>]]></string>
   <string name="verify_display_fragment__tap_to_scan">Натисніть, щоб сканувати</string>
   <!--verify_identity-->
   <string name="verify_identity__share_safety_number">Поділитися номером безпеки</string>
@@ -882,6 +884,8 @@ Signal не дочекався перевірочного SMS.
   <string name="AndroidManifest__verify_safety_number">Перевірити номер безпеки</string>
   <string name="AndroidManifest__log_submit">Відіслати журнал відлагодження</string>
   <string name="AndroidManifest__media_preview">Попередній перегляд медіа</string>
+  <string name="AndroidManifest__all_media">Всі медіа-файли
+Всі зображення</string>
   <string name="AndroidManifest__message_details">Деталі повідомлення</string>
   <string name="AndroidManifest__linked_devices">Прив\'язані пристрої</string>
   <string name="AndroidManifest__invite_friends">Запросити друзів</string>
@@ -905,6 +909,7 @@ Signal не дочекався перевірочного SMS.
   <string name="arrays__audio">Аудіо</string>
   <string name="arrays__video">Відео</string>
   <string name="arrays__documents">Документи</string>
+  <string name="arrays__normal">Звичайний</string>
   <!--plurals.xml-->
   <plurals name="hours_ago">
     <item quantity="one">%d година</item>
@@ -947,7 +952,6 @@ Signal не дочекався перевірочного SMS.
   <string name="preferences__pref_led_blink_custom_pattern_off_for">Вимкнено для:</string>
   <string name="preferences__pref_led_blink_custom_pattern_set">Власний шаблон мерехтіння LED задано!</string>
   <string name="preferences__sound">Звук</string>
-  <string name="preferences__change_notification_sound">Змінити звук сповіщення</string>
   <string name="preferences__silent">Беззвучно</string>
   <string name="preferences__in_conversation_notifications">Сповіщення при розмові</string>
   <string name="preferences__play_inthread_notifications">Відтворювати звуковий сигнал у активній розмові</string>
@@ -1016,6 +1020,15 @@ Signal не дочекався перевірочного SMS.
   <string name="preferences_chats__message_trimming">Обрізка повідомлень</string>
   <string name="preferences_advanced__use_system_emoji">Використовувати системні emoji</string>
   <string name="preferences_advanced__disable_signal_built_in_emoji_support">Вимкнути вбудовану в Signal підтримку emoji</string>
+  <string name="preferences_advanced__relay_all_calls_through_the_signal_server_to_avoid_revealing_your_ip_address">Ретранслювати всі дзвінки через сервер Signal щоб уникнути розкриття вашого IP-адреси контакту. Включення знизить якість дзвінка.</string>
+  <string name="preferences_advanced__always_relay_calls">Завжди ретранслювати дзвінки</string>
+  <string name="preferences_chats__chats">Чати</string>
+  <string name="preferences_notifications__events">Події</string>
+  <string name="preferences_notifications__in_chat_sounds">Звуки чату</string>
+  <string name="preferences_notifications__show">Показувати</string>
+  <string name="preferences_chats__message_text_size">Розмір шрифту повідомлень</string>
+  <string name="preferences_events__contact_joined_signal">Контакт приєднався до Signal</string>
+  <string name="preferences_notifications__priority">Пріорітет</string>
   <!--****************************************-->
   <!--menus-->
   <!--****************************************-->
@@ -1073,6 +1086,8 @@ Signal не дочекався перевірочного SMS.
   <string name="conversation__menu_edit_group">Редагувати групу</string>
   <string name="conversation__menu_leave_group">Вийти з групи</string>
   <string name="conversation__menu_delete_thread">Видалити розмову</string>
+  <string name="conversation__menu_view_all_media">Всі медіа-файли
+Всі зображення</string>
   <string name="conversation__menu_conversation_settings">Налаштування розмови</string>
   <!--conversation_popup-->
   <string name="conversation_popup__menu_expand_popup">Розгорнути спливаюче вікно</string>
@@ -1128,6 +1143,8 @@ Signal не дочекався перевірочного SMS.
   <!--media_preview-->
   <string name="media_preview__save_title">Зберегти</string>
   <string name="media_preview__forward_title">Переслати</string>
+  <string name="media_preview__all_media_title">Всі медіа-файли
+Всі зображення</string>
   <!--media_overview-->
   <string name="media_overview__save_all">Зберегти все</string>
   <!--media_preview_activity-->

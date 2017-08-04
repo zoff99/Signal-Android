@@ -80,6 +80,7 @@
   <string name="ConversationItem_click_to_approve_unencrypted_mms_dialog_title">암호화되지않은 MMS로 바꾸시겠습니까?</string>
   <string name="ConversationItem_click_to_approve_unencrypted_dialog_message">수신자는 이젠 Signal 사용자가 아니어서 이 메시지는 <b>암호화되지 않습니다</b>.\n\n보안 해제된 메시지를 보내시겠습니까?</string>
   <string name="ConversationItem_unable_to_open_media">미디어를 열 수 있는 앱이 없음</string>
+  <string name="ConversationItem_copied_text">복사됨 %s</string>
   <string name="ConversationItem_from_s">%s을(를) 사용하여 수신 문자</string>
   <string name="ConversationItem_to_s">%s을(를) 사용하여 발신 문자</string>
   <!--ConversationActivity-->
@@ -502,12 +503,8 @@
   <!--WebRtcCallScreen-->
   <!--WebRtcCallControls-->
   <!--attachment_type_selector-->
-  <string name="attachment_type_selector__image">이미지</string>
-  <string name="attachment_type_selector__image_description">이미지</string>
   <string name="attachment_type_selector__audio">오디오</string>
   <string name="attachment_type_selector__audio_description">오디오</string>
-  <string name="attachment_type_selector__video">동영상</string>
-  <string name="attachment_type_selector__video_description">동영상</string>
   <string name="attachment_type_selector__contact">연락처</string>
   <string name="attachment_type_selector__contact_description">연락처</string>
   <string name="attachment_type_selector__camera">카메라</string>
@@ -536,9 +533,6 @@
   <!--conversation_title_view-->
   <string name="conversation_title_view__conversation_muted">대화 알림 꺼짐</string>
   <!--conversation_activity-->
-  <string name="conversation_activity__type_message_push">Signal 메시지 보내기</string>
-  <string name="conversation_activity__type_message_sms_insecure">보안 해제된 SMS 보내기</string>
-  <string name="conversation_activity__type_message_mms_insecure">보안 해제된 MMS 보내기</string>
   <string name="conversation_activity__from_sim_name">%1$s(으)로</string>
   <string name="conversation_activity__send">보내기</string>
   <string name="conversation_activity__remove">삭제</string>
@@ -603,6 +597,7 @@
     <item quantity="other">%d주</item>
   </plurals>
   <string name="expiration_weeks_abbreviated">%d주</string>
+  <!--unverified safety numbers-->
   <!--giphy_activity-->
   <string name="giphy_activity_toolbar__search_gifs_and_stickers">GIF 파일과 스티커 검색</string>
   <!--giphy_fragment-->
@@ -637,7 +632,6 @@
   <string name="load_more_header__see_full_conversation">대화 전체 보기</string>
   <!--media_overview_activity-->
   <!--message_recipients_list_item-->
-  <string name="message_recipients_list_item__verify">확인</string>
   <string name="message_recipients_list_item__resend">다시 보내기</string>
   <!--GroupUtil-->
   <plurals name="GroupUtil_joined_the_group">
@@ -746,6 +740,7 @@
   <string name="arrays__images">이미지</string>
   <string name="arrays__audio">오디오</string>
   <string name="arrays__video">동영상</string>
+  <string name="arrays__normal">보통</string>
   <!--plurals.xml-->
   <plurals name="hours_ago">
     <item quantity="other">%d시간 전</item>
@@ -786,7 +781,6 @@
   <string name="preferences__pref_led_blink_custom_pattern_off_for">꺼진 시간</string>
   <string name="preferences__pref_led_blink_custom_pattern_set">알림등 반복 패턴 맞춤 설정됨</string>
   <string name="preferences__sound">소리</string>
-  <string name="preferences__change_notification_sound">알림 벨소리 변경</string>
   <string name="preferences__silent">무음</string>
   <string name="preferences__in_conversation_notifications">대화 중 알림</string>
   <string name="preferences__play_inthread_notifications">대화 중에 알림 벨소리 재생</string>

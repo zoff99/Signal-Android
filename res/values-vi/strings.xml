@@ -498,9 +498,7 @@ Nhận thông tin trao đổi chìa khóa về phiên bản giao thức không h
   <string name="WebRtcCallScreen_you_may_wish_to_verify_this_contact">Bạn có thể sẽ cần xác minh mã số an toàn với liên hệ này.</string>
   <!--WebRtcCallControls-->
   <!--attachment_type_selector-->
-  <string name="attachment_type_selector__image">Hình ảnh</string>
   <string name="attachment_type_selector__audio">Âm thanh</string>
-  <string name="attachment_type_selector__video">Đoạn phim</string>
   <string name="attachment_type_selector__contact">Liên lạc</string>
   <string name="attachment_type_selector__camera">Máy ảnh</string>
   <string name="attachment_type_selector__location">Vị trí</string>
@@ -523,9 +521,6 @@ Nhận thông tin trao đổi chìa khóa về phiên bản giao thức không h
   <!--conversation_title_view-->
   <string name="conversation_title_view__conversation_muted">Chuyện trò tạm im</string>
   <!--conversation_activity-->
-  <string name="conversation_activity__type_message_push">Gửi thông điệp Signal</string>
-  <string name="conversation_activity__type_message_sms_insecure">Gửi SMS không mã hóa</string>
-  <string name="conversation_activity__type_message_mms_insecure">Gửi MMS không mã hóa</string>
   <string name="conversation_activity__from_sim_name">Từ %1$s</string>
   <string name="conversation_activity__send">Gửi</string>
   <string name="conversation_activity__remove">Bỏ</string>
@@ -567,6 +562,7 @@ Nhận thông tin trao đổi chìa khóa về phiên bản giao thức không h
   <string name="experience_upgrade_activity__continue">tiếp tục</string>
   <!--expiration-->
   <string name="expiration_off">Tắt</string>
+  <!--unverified safety numbers-->
   <!--giphy_activity-->
   <!--giphy_fragment-->
   <!--import_export_fragment-->
@@ -598,7 +594,6 @@ Phục hồi sao lưu Signal đã mã khóa từng xuất ra trước đó</stri
   <string name="load_more_header__see_full_conversation">Xem cuộc hội thoại đầy đủ</string>
   <!--media_overview_activity-->
   <!--message_recipients_list_item-->
-  <string name="message_recipients_list_item__verify">KIỂM CHỨNG</string>
   <string name="message_recipients_list_item__resend">GỬI LẠI</string>
   <!--GroupUtil-->
   <plurals name="GroupUtil_joined_the_group">
@@ -736,6 +731,7 @@ SMS thất bại.
   <string name="arrays__images">Hình ảnh</string>
   <string name="arrays__audio">Nhạc</string>
   <string name="arrays__video">Đoạn phim</string>
+  <string name="arrays__normal">Bình thường</string>
   <!--plurals.xml-->
   <plurals name="hours_ago">
     <item quantity="other">%d tiếng</item>
@@ -776,7 +772,6 @@ SMS thất bại.
   <string name="preferences__pref_led_blink_custom_pattern_off_for">Tắt trong vòng:</string>
   <string name="preferences__pref_led_blink_custom_pattern_set">Mô hình chớp nháy LED tùy chỉnh thiết lập xong!</string>
   <string name="preferences__sound">Âm thanh</string>
-  <string name="preferences__change_notification_sound">Đổi âm thanh thông báo</string>
   <string name="preferences__silent">Yên lặng</string>
   <string name="preferences__in_conversation_notifications">Thông báo ngay trong hội thoại</string>
   <string name="preferences__play_inthread_notifications">Phát âm thanh thông báo khi xem một chuyện trò đang diễn ra</string>

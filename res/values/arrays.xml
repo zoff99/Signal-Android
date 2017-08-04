@@ -6,6 +6,7 @@
       <item>English</item>
       <item>Arabic العربية</item>
       <item>Bulgarian български</item>
+      <item>Català</item>
       <item>Čeština</item>
       <item>Chinese (Simplified) 中文 (简体)</item>
       <item>Chinese (Traditional) 中文 (繁體)</item>
@@ -50,6 +51,7 @@
       <item>en</item>
       <item>ar</item>
       <item>bg</item>
+      <item>ca</item>
       <item>cs</item>
       <item>zh_CN</item>
       <item>zh_TW</item>
@@ -276,5 +278,31 @@
         <item>#00ffff</item>
         <item>#ff00ff</item>
     </array>
+
+    <string-array name="pref_message_font_size_entries">
+        <item>@string/arrays__small</item>
+        <item>@string/arrays__normal</item>
+        <item>@string/arrays__large</item>
+        <item>@string/arrays__extra_large</item>
+    </string-array>
+
+    <string-array name="pref_message_font_size_values">
+        <item>13</item>
+        <item>16</item>
+        <item>20</item>
+        <item>30</item>
+    </string-array>
+
+    <string-array name="pref_notification_priority_entries">
+        <item>@string/arrays__default</item>
+        <item>@string/arrays__high</item>
+        <item>@string/arrays__max</item>
+    </string-array>
+
+    <string-array name="pref_notification_priority_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
 
 </resources>
