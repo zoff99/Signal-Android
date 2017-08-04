@@ -3,6 +3,8 @@ package org.thoughtcrime.securesms;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -22,7 +24,6 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.i18n.phonenumbers.AsYouTypeFormatter;
-import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
@@ -30,6 +31,7 @@ import org.thoughtcrime.securesms.crypto.MasterSecret;
 import org.thoughtcrime.securesms.util.Dialogs;
 import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.thoughtcrime.securesms.util.Util;
+import org.whispersystems.libsignal.util.guava.Optional;
 import org.whispersystems.signalservice.api.util.PhoneNumberFormatter;
 
 /**
@@ -145,26 +147,17 @@ public class RegistrationActivity extends BaseActionBarActivity {
   }
 
   private void initializeNumber() {
-    PhoneNumberUtil numberUtil  = PhoneNumberUtil.getInstance();
-    String          localNumber = Util.getDeviceE164Number(this);
+    Optional<Phonenumber.PhoneNumber> localNumber = Util.getDeviceNumber(this);
 
-    try {
-      if (!TextUtils.isEmpty(localNumber)) {
-        Phonenumber.PhoneNumber localNumberObject = numberUtil.parse(localNumber, null);
+    if (localNumber.isPresent()) {
+      this.countryCode.setText(String.valueOf(localNumber.get().getCountryCode()));
+      this.number.setText(String.valueOf(localNumber.get().getNationalNumber()));
+    } else {
+      Optional<String> simCountryIso = Util.getSimCountryIso(this);
 
-        if (localNumberObject != null) {
-          this.countryCode.setText(String.valueOf(localNumberObject.getCountryCode()));
-          this.number.setText(String.valueOf(localNumberObject.getNationalNumber()));
-        }
-      } else {
-        String simCountryIso = Util.getSimCountryIso(this);
-
-        if (!TextUtils.isEmpty(simCountryIso)) {
-          this.countryCode.setText(numberUtil.getCountryCodeForRegion(simCountryIso)+"");
-        }
+      if (simCountryIso.isPresent() && !TextUtils.isEmpty(simCountryIso.get())) {
+        this.countryCode.setText(PhoneNumberUtil.getInstance().getCountryCodeForRegion(simCountryIso.get())+"");
       }
-    } catch (NumberParseException npe) {
-      Log.w(TAG, npe);
     }
   }
 
@@ -279,6 +272,16 @@ public class RegistrationActivity extends BaseActionBarActivity {
         case ConnectionResult.SUCCESS:
           return PlayServicesStatus.SUCCESS;
         case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+          try {
+            ApplicationInfo applicationInfo = getPackageManager().getApplicationInfo("com.google.android.gms", 0);
+
+            if (applicationInfo != null && !applicationInfo.enabled) {
+              return PlayServicesStatus.MISSING;
+            }
+          } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, e);
+          }
+
           return PlayServicesStatus.NEEDS_UPDATE;
         case ConnectionResult.SERVICE_DISABLED:
         case ConnectionResult.SERVICE_MISSING:

@@ -79,7 +79,6 @@ public class TextSecurePreferences {
   private static final String UPDATE_APK_DIGEST                = "pref_update_apk_digest";
   private static final String SIGNED_PREKEY_ROTATION_TIME_PREF = "pref_signed_pre_key_rotation_time";
   private static final String IN_THREAD_NOTIFICATION_PREF      = "pref_key_inthread_notifications";
-  private static final String BLOCKING_IDENTITY_CHANGES_PREF   = "pref_blocking_identity_changes";
   private static final String SHOW_INVITE_REMINDER_PREF        = "pref_show_invite_reminder";
   public  static final String MESSAGE_BODY_TEXT_SIZE_PREF      = "pref_message_body_text_size";
 
@@ -154,14 +153,6 @@ public class TextSecurePreferences {
 
   public static boolean isMultiDevice(Context context) {
     return getBooleanPreference(context, MULTI_DEVICE_PROVISIONED_PREF, false);
-  }
-
-  public static boolean isBlockingIdentityUpdates(Context context) {
-    return getBooleanPreference(context, BLOCKING_IDENTITY_CHANGES_PREF, true);
-  }
-
-  public static void setBlockingIdentityUpdates(Context context, boolean value) {
-    setBooleanPreference(context, BLOCKING_IDENTITY_CHANGES_PREF, value);
   }
 
   public static void setSignedPreKeyFailureCount(Context context, int value) {
@@ -313,7 +304,7 @@ public class TextSecurePreferences {
   }
 
   public static String getLocalNumber(Context context) {
-    return getStringPreference(context, LOCAL_NUMBER_PREF, "No Stored Number");
+    return getStringPreference(context, LOCAL_NUMBER_PREF, null);
   }
 
   public static void setLocalNumber(Context context, String localNumber) {

@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ public class ConversationTitleView extends LinearLayout {
 
   private TextView  title;
   private TextView  subtitle;
+  private ImageView verified;
 
   public ConversationTitleView(Context context) {
     this(context, null);
@@ -32,8 +34,9 @@ public class ConversationTitleView extends LinearLayout {
   public void onFinishInflate() {
     super.onFinishInflate();
 
-    this.title    = (TextView) findViewById(R.id.title);
-    this.subtitle = (TextView) findViewById(R.id.subtitle);
+    this.title    = (TextView)  findViewById(R.id.title);
+    this.subtitle = (TextView)  findViewById(R.id.subtitle);
+    this.verified = (ImageView) findViewById(R.id.verified_indicator);
 
     ViewUtil.setTextViewGravityStart(this.title, getContext());
     ViewUtil.setTextViewGravityStart(this.subtitle, getContext());
@@ -53,6 +56,10 @@ public class ConversationTitleView extends LinearLayout {
     }
   }
 
+  public void setVerified(boolean verified) {
+    this.verified.setVisibility(verified ? View.VISIBLE : View.GONE);
+  }
+
   private void setComposeTitle() {
     this.title.setText(R.string.ConversationActivity_compose_message);
     this.subtitle.setText(null);
@@ -62,14 +69,14 @@ public class ConversationTitleView extends LinearLayout {
   private void setRecipientTitle(Recipient recipient) {
     if (!recipient.isGroupRecipient()) {
       if (TextUtils.isEmpty(recipient.getName())) {
-        this.title.setText(recipient.getNumber());
+        this.title.setText(recipient.getAddress().serialize());
         this.subtitle.setText(null);
         this.subtitle.setVisibility(View.GONE);
       } else {
         this.title.setText(recipient.getName());
 
         if (recipient.getCustomLabel() != null) this.subtitle.setText(recipient.getCustomLabel());
-        else                                    this.subtitle.setText(recipient.getNumber());
+        else                                    this.subtitle.setText(recipient.getAddress().serialize());
 
         this.subtitle.setVisibility(View.VISIBLE);
       }

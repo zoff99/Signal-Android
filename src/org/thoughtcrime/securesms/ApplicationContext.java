@@ -30,10 +30,8 @@ import org.thoughtcrime.securesms.dependencies.InjectableType;
 import org.thoughtcrime.securesms.dependencies.SignalCommunicationModule;
 import org.thoughtcrime.securesms.jobs.CreateSignedPreKeyJob;
 import org.thoughtcrime.securesms.jobs.GcmRefreshJob;
-import org.thoughtcrime.securesms.jobs.RefreshAttributesJob;
 import org.thoughtcrime.securesms.jobs.persistence.EncryptingJobSerializer;
 import org.thoughtcrime.securesms.jobs.requirements.MasterSecretRequirementProvider;
-import org.thoughtcrime.securesms.jobs.requirements.MediaNetworkRequirementProvider;
 import org.thoughtcrime.securesms.jobs.requirements.ServiceRequirementProvider;
 import org.thoughtcrime.securesms.push.SignalServiceNetworkAccess;
 import org.thoughtcrime.securesms.service.DirectoryRefreshListener;
@@ -72,8 +70,6 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
   private JobManager             jobManager;
   private ObjectGraph            objectGraph;
 
-  private MediaNetworkRequirementProvider mediaNetworkRequirementProvider = new MediaNetworkRequirementProvider();
-
   public static ApplicationContext getInstance(Context context) {
     return (ApplicationContext)context.getApplicationContext();
   }
@@ -90,7 +86,6 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
     initializeSignedPreKeyCheck();
     initializePeriodicTasks();
     initializeCircumvention();
-    initializeSetVideoCapable();
     initializeWebRtc();
   }
 
@@ -124,14 +119,9 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
                                 .withJobSerializer(new EncryptingJobSerializer())
                                 .withRequirementProviders(new MasterSecretRequirementProvider(this),
                                                           new ServiceRequirementProvider(this),
-                                                          new NetworkRequirementProvider(this),
-                                                          mediaNetworkRequirementProvider)
+                                                          new NetworkRequirementProvider(this))
                                 .withConsumerThreads(5)
                                 .build();
-  }
-
-  public void notifyMediaControlEvent() {
-    mediaNetworkRequirementProvider.notifyMediaControlEvent();
   }
 
   private void initializeDependencyInjection() {
@@ -168,40 +158,32 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
     }
   }
 
-  private void initializeSetVideoCapable() {
-    if (TextSecurePreferences.isPushRegistered(this) &&
-        !TextSecurePreferences.isWebrtcCallingEnabled(this))
-    {
-      TextSecurePreferences.setWebrtcCallingEnabled(this, true);
-      jobManager.add(new RefreshAttributesJob(this));
-    }
-  }
-
   private void initializeWebRtc() {
-    Set<String> HARDWARE_AEC_WHITELIST = new HashSet<String>() {{
-      add("D5803");
-      add("FP1");
-      add("SM-A500FU");
-      add("XT1092");
-    }};
+    try {
+      Set<String> HARDWARE_AEC_BLACKLIST = new HashSet<String>() {{
+        add("Pixel");
+        add("Pixel XL");
+        add("Moto G5");
+      }};
 
-    Set<String> OPEN_SL_ES_WHITELIST = new HashSet<String>() {{
-    }};
+      Set<String> OPEN_SL_ES_WHITELIST = new HashSet<String>() {{
+        add("Pixel");
+        add("Pixel XL");
+      }};
 
-    if (Build.VERSION.SDK_INT >= 11) {
-      if (HARDWARE_AEC_WHITELIST.contains(Build.MODEL)) {
-        WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(false);
-      } else {
-        WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true);
+      if (Build.VERSION.SDK_INT >= 11) {
+        if (HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
+          WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true);
+        }
+
+        if (!OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
+          WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true);
+        }
+
+        PeerConnectionFactory.initializeAndroidGlobals(this, true, true, true);
       }
-
-      if (OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
-        WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(false);
-      } else {
-        WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true);
-      }
-
-      PeerConnectionFactory.initializeAndroidGlobals(this, true, true, true);
+    } catch (UnsatisfiedLinkError e) {
+      Log.w(TAG, e);
     }
   }
 
