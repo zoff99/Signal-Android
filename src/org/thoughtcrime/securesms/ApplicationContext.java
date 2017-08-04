@@ -30,10 +30,8 @@ import org.thoughtcrime.securesms.dependencies.InjectableType;
 import org.thoughtcrime.securesms.dependencies.SignalCommunicationModule;
 import org.thoughtcrime.securesms.jobs.CreateSignedPreKeyJob;
 import org.thoughtcrime.securesms.jobs.GcmRefreshJob;
-import org.thoughtcrime.securesms.jobs.RefreshAttributesJob;
 import org.thoughtcrime.securesms.jobs.persistence.EncryptingJobSerializer;
 import org.thoughtcrime.securesms.jobs.requirements.MasterSecretRequirementProvider;
-import org.thoughtcrime.securesms.jobs.requirements.MediaNetworkRequirementProvider;
 import org.thoughtcrime.securesms.jobs.requirements.ServiceRequirementProvider;
 import org.thoughtcrime.securesms.push.SignalServiceNetworkAccess;
 import org.thoughtcrime.securesms.service.DirectoryRefreshListener;
@@ -72,8 +70,6 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
   private JobManager             jobManager;
   private ObjectGraph            objectGraph;
 
-  private MediaNetworkRequirementProvider mediaNetworkRequirementProvider = new MediaNetworkRequirementProvider();
-
   public static ApplicationContext getInstance(Context context) {
     return (ApplicationContext)context.getApplicationContext();
   }
@@ -90,7 +86,6 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
     initializeSignedPreKeyCheck();
     initializePeriodicTasks();
     initializeCircumvention();
-    initializeSetVideoCapable();
     initializeWebRtc();
   }
 
@@ -124,14 +119,9 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
                                 .withJobSerializer(new EncryptingJobSerializer())
                                 .withRequirementProviders(new MasterSecretRequirementProvider(this),
                                                           new ServiceRequirementProvider(this),
-                                                          new NetworkRequirementProvider(this),
-                                                          mediaNetworkRequirementProvider)
+                                                          new NetworkRequirementProvider(this))
                                 .withConsumerThreads(5)
                                 .build();
-  }
-
-  public void notifyMediaControlEvent() {
-    mediaNetworkRequirementProvider.notifyMediaControlEvent();
   }
 
   private void initializeDependencyInjection() {
@@ -168,48 +158,32 @@ public class ApplicationContext extends MultiDexApplication implements Dependenc
     }
   }
 
-  private void initializeSetVideoCapable() {
-    if (TextSecurePreferences.isPushRegistered(this) &&
-        !TextSecurePreferences.isWebrtcCallingEnabled(this))
-    {
-      TextSecurePreferences.setWebrtcCallingEnabled(this, true);
-      jobManager.add(new RefreshAttributesJob(this));
-    }
-  }
-
   private void initializeWebRtc() {
-    Set<String> HARDWARE_AEC_BLACKLIST = new HashSet<String>() {{
-      add("D6503"); // Sony Xperia Z2 D6503
-      add("ONE A2005"); // OnePlus 2
-      add("MotoG3"); // Moto G (3rd Generation)
-      add("Nexus 6P"); // Nexus 6p
-      add("Pixel"); // Pixel #6241
-      add("Pixel XL"); // Pixel XL #6241
-      add("MI 4LTE"); // Xiami Mi4 #6241
-      add("Redmi Note 3"); // Redmi Note 3 #6241
-      add("SM-G900F"); // Samsung Galaxy S5 #6241
-      add("g3_kt_kr"); // LG G3 #6241
-      add("SM-G930F"); // Samsung Galaxy S7 #6241
-      add("Xperia SP"); // Sony Xperia SP #6241
-      add("Nexus 6"); // Nexus 6
-      add("ONE E1003"); // OnePlus X
-      add("One"); // OnePlus One
-    }};
+    try {
+      Set<String> HARDWARE_AEC_BLACKLIST = new HashSet<String>() {{
+        add("Pixel");
+        add("Pixel XL");
+        add("Moto G5");
+      }};
 
-    Set<String> OPEN_SL_ES_BLACKLIST = new HashSet<String>() {{
-      add("MI 4LTE"); // Xiami Mi4 #6241
-    }};
+      Set<String> OPEN_SL_ES_WHITELIST = new HashSet<String>() {{
+        add("Pixel");
+        add("Pixel XL");
+      }};
 
-    if (Build.VERSION.SDK_INT >= 11) {
-      if (HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
-        WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true);
+      if (Build.VERSION.SDK_INT >= 11) {
+        if (HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
+          WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true);
+        }
+
+        if (!OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
+          WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true);
+        }
+
+        PeerConnectionFactory.initializeAndroidGlobals(this, true, true, true);
       }
-
-      if (OPEN_SL_ES_BLACKLIST.contains(Build.MODEL)) {
-        WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true);
-      }
-
-      PeerConnectionFactory.initializeAndroidGlobals(this, true, true, true);
+    } catch (UnsatisfiedLinkError e) {
+      Log.w(TAG, e);
     }
   }
 

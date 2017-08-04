@@ -53,15 +53,18 @@ import android.widget.Toast;
 import org.thoughtcrime.securesms.ConversationAdapter.HeaderViewHolder;
 import org.thoughtcrime.securesms.ConversationAdapter.ItemClickListener;
 import org.thoughtcrime.securesms.crypto.MasterSecret;
+import org.thoughtcrime.securesms.database.Address;
 import org.thoughtcrime.securesms.database.DatabaseFactory;
 import org.thoughtcrime.securesms.database.MmsSmsDatabase;
 import org.thoughtcrime.securesms.database.loaders.ConversationLoader;
 import org.thoughtcrime.securesms.database.model.MediaMmsMessageRecord;
 import org.thoughtcrime.securesms.database.model.MessageRecord;
+import org.thoughtcrime.securesms.mms.OutgoingMediaMessage;
 import org.thoughtcrime.securesms.mms.Slide;
 import org.thoughtcrime.securesms.recipients.RecipientFactory;
 import org.thoughtcrime.securesms.recipients.Recipients;
 import org.thoughtcrime.securesms.sms.MessageSender;
+import org.thoughtcrime.securesms.sms.OutgoingTextMessage;
 import org.thoughtcrime.securesms.util.SaveAttachmentTask;
 import org.thoughtcrime.securesms.util.SaveAttachmentTask.Attachment;
 import org.thoughtcrime.securesms.util.StickyHeaderDecoration;
@@ -181,8 +184,8 @@ public class ConversationFragment extends Fragment
   }
 
   private void initializeResources() {
-    this.recipients     = RecipientFactory.getRecipientsForIds(getActivity(), getActivity().getIntent().getLongArrayExtra("recipients"), true);
-    this.threadId       = this.getActivity().getIntent().getLongExtra("thread_id", -1);
+    this.recipients     = RecipientFactory.getRecipientsFor(getActivity(), Address.fromParcelable(getActivity().getIntent().getParcelableArrayExtra(ConversationActivity.ADDRESSES_EXTRA)), true);
+    this.threadId       = this.getActivity().getIntent().getLongExtra(ConversationActivity.THREAD_ID_EXTRA, -1);
     this.lastSeen       = this.getActivity().getIntent().getLongExtra(ConversationActivity.LAST_SEEN_EXTRA, -1);
     this.firstLoad      = true;
 
@@ -213,7 +216,8 @@ public class ConversationFragment extends Fragment
     for (MessageRecord messageRecord : messageRecords) {
       if (messageRecord.isGroupAction() || messageRecord.isCallLog() ||
           messageRecord.isJoined() || messageRecord.isExpirationTimerUpdate() ||
-          messageRecord.isEndSession() || messageRecord.isIdentityUpdate())
+          messageRecord.isEndSession() || messageRecord.isIdentityUpdate() ||
+          messageRecord.isIdentityVerified() || messageRecord.isIdentityDefault())
       {
         actionMessage = true;
         break;
@@ -355,7 +359,7 @@ public class ConversationFragment extends Fragment
     intent.putExtra(MessageDetailsActivity.MESSAGE_ID_EXTRA, message.getId());
     intent.putExtra(MessageDetailsActivity.THREAD_ID_EXTRA, threadId);
     intent.putExtra(MessageDetailsActivity.TYPE_EXTRA, message.isMms() ? MmsSmsDatabase.MMS_TRANSPORT : MmsSmsDatabase.SMS_TRANSPORT);
-    intent.putExtra(MessageDetailsActivity.RECIPIENTS_IDS_EXTRA, recipients.getIds());
+    intent.putExtra(MessageDetailsActivity.ADDRESSES_EXTRA, recipients.getAddresses());
     intent.putExtra(MessageDetailsActivity.IS_PUSH_GROUP_EXTRA, (!recipients.isSingleRecipient() || recipients.isGroupRecipient()) && message.isPush());
     startActivity(intent);
   }
@@ -445,6 +449,32 @@ public class ConversationFragment extends Fragment
   public void onLoaderReset(Loader<Cursor> arg0) {
     if (list.getAdapter() != null) {
       getListAdapter().changeCursor(null);
+    }
+  }
+
+  public long stageOutgoingMessage(OutgoingMediaMessage message) {
+    MessageRecord messageRecord = DatabaseFactory.getMmsDatabase(getContext()).readerFor(message, threadId).getCurrent();
+
+    if (getListAdapter() != null) {
+      getListAdapter().addFastRecord(messageRecord);
+    }
+
+    return messageRecord.getId();
+  }
+
+  public long stageOutgoingMessage(OutgoingTextMessage message) {
+    MessageRecord messageRecord = DatabaseFactory.getSmsDatabase(getContext()).readerFor(message, threadId).getCurrent();
+
+    if (getListAdapter() != null) {
+      getListAdapter().addFastRecord(messageRecord);
+    }
+
+    return messageRecord.getId();
+  }
+
+  public void releaseOutgoingMessage(long id) {
+    if (getListAdapter() != null) {
+      getListAdapter().releaseFastRecord(id);
     }
   }
 

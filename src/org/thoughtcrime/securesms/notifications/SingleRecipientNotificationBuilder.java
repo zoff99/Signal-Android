@@ -3,7 +3,6 @@ package org.thoughtcrime.securesms.notifications;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -19,6 +18,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.contacts.avatars.ContactColors;
+import org.thoughtcrime.securesms.contacts.avatars.ContactPhotoFactory;
 import org.thoughtcrime.securesms.crypto.MasterSecret;
 import org.thoughtcrime.securesms.mms.DecryptableStreamUriLoader;
 import org.thoughtcrime.securesms.mms.Slide;
@@ -27,6 +28,7 @@ import org.thoughtcrime.securesms.preferences.NotificationPrivacyPreference;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.recipients.Recipients;
 import org.thoughtcrime.securesms.util.BitmapUtil;
+import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.thoughtcrime.securesms.util.Util;
 
 import java.util.LinkedList;
@@ -51,7 +53,7 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
 
     setSmallIcon(R.drawable.icon_notification);
     setColor(context.getResources().getColor(R.color.textsecure_primary));
-    setPriority(NotificationCompat.PRIORITY_HIGH);
+    setPriority(TextSecurePreferences.getNotificationPriority(context));
     setCategory(NotificationCompat.CATEGORY_MESSAGE);
   }
 
@@ -68,11 +70,8 @@ public class SingleRecipientNotificationBuilder extends AbstractNotificationBuil
                                                           .toConversationColor(context)));
     } else {
       setContentTitle(context.getString(R.string.SingleRecipientNotificationBuilder_signal));
-      setLargeIcon(Recipient.getUnknownRecipient()
-                            .getContactPhoto()
-                            .asDrawable(context, Recipient.getUnknownRecipient()
-                                                          .getColor()
-                                                          .toConversationColor(context)));
+      setLargeIcon(ContactPhotoFactory.getDefaultContactPhoto("Unknown")
+                                      .asDrawable(context, ContactColors.UNKNOWN_COLOR.toConversationColor(context)));
     }
   }
 

@@ -40,11 +40,16 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.google.android.mms.pdu_alt.CharacterSets;
+import com.google.android.mms.pdu_alt.EncodedStringValue;
+import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 
 import org.thoughtcrime.securesms.BuildConfig;
+import org.thoughtcrime.securesms.database.Address;
 import org.thoughtcrime.securesms.mms.OutgoingLegacyMmsConnection;
-import org.whispersystems.signalservice.api.util.InvalidNumberException;
+import org.whispersystems.libsignal.util.guava.Optional;
 import org.whispersystems.signalservice.api.util.PhoneNumberFormatter;
 
 import java.io.ByteArrayOutputStream;
@@ -64,9 +69,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import ws.com.google.android.mms.pdu.CharacterSets;
-import ws.com.google.android.mms.pdu.EncodedStringValue;
 
 public class Util {
   private static final String TAG = Util.class.getSimpleName();
@@ -194,28 +196,11 @@ public class Util {
     return totalSize;
   }
 
-  public static String canonicalizeNumber(Context context, String number)
-      throws InvalidNumberException
-  {
-    String localNumber = TextSecurePreferences.getLocalNumber(context);
-    return PhoneNumberFormatter.formatNumber(number, localNumber);
-  }
+  public static boolean isOwnNumber(Context context, Address address) {
+    if (address.isGroup()) return false;
+    if (address.isEmail()) return false;
 
-  public static String canonicalizeNumberOrGroup(@NonNull Context context, @NonNull String number)
-      throws InvalidNumberException
-  {
-    if (GroupUtil.isEncodedGroup(number)) return number;
-    else                                  return canonicalizeNumber(context, number);
-  }
-
-  public static boolean isOwnNumber(Context context, String number) {
-    try {
-      String e164number = canonicalizeNumber(context, number);
-      return TextSecurePreferences.getLocalNumber(context).equals(e164number);
-    } catch (InvalidNumberException e) {
-      Log.w(TAG, e);
-    }
-    return false;
+    return TextSecurePreferences.getLocalNumber(context).equals(address.toPhoneString());
   }
 
   public static byte[] readFully(InputStream in) throws IOException {
@@ -252,22 +237,24 @@ public class Util {
     return total;
   }
 
-  public static @Nullable String getDeviceE164Number(Context context) {
-    final String  localNumber = ((TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number();
-    final String  countryIso  = getSimCountryIso(context);
-    final Integer countryCode = PhoneNumberUtil.getInstance().getCountryCodeForRegion(countryIso);
+  public static Optional<Phonenumber.PhoneNumber> getDeviceNumber(Context context) {
+    try {
+      final String           localNumber = ((TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number();
+      final Optional<String> countryIso  = getSimCountryIso(context);
 
-    if (TextUtils.isEmpty(localNumber)) return null;
+      if (TextUtils.isEmpty(localNumber)) return Optional.absent();
+      if (!countryIso.isPresent())        return Optional.absent();
 
-    if      (localNumber.startsWith("+"))    return localNumber;
-    else if (!TextUtils.isEmpty(countryIso)) return PhoneNumberFormatter.formatE164(String.valueOf(countryCode), localNumber);
-    else if (localNumber.length() == 10)     return "+1" + localNumber;
-    else                                     return "+" + localNumber;
+      return Optional.fromNullable(PhoneNumberUtil.getInstance().parse(localNumber, countryIso.get()));
+    } catch (NumberParseException e) {
+      Log.w(TAG, e);
+      return Optional.absent();
+    }
   }
 
-  public static @Nullable String getSimCountryIso(Context context) {
+  public static Optional<String> getSimCountryIso(Context context) {
     String simCountryIso = ((TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE)).getSimCountryIso();
-    return simCountryIso != null ? simCountryIso.toUpperCase() : null;
+    return Optional.fromNullable(simCountryIso != null ? simCountryIso.toUpperCase() : null);
   }
 
   public static <T> List<List<T>> partition(List<T> list, int partitionSize) {
@@ -362,12 +349,8 @@ public class Util {
   }
 
   public static int getDaysTillBuildExpiry() {
-    // int age = (int)TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - BuildConfig.BUILD_TIMESTAMP);
-    // return 90 - age;
-
-    // never expire ------
-    return 200;
-    // never expire ------
+    int age = (int)TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - BuildConfig.BUILD_TIMESTAMP);
+    return 90 - age;
   }
 
   @TargetApi(VERSION_CODES.LOLLIPOP)
@@ -433,7 +416,7 @@ public class Util {
     ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 
     return (VERSION.SDK_INT >= VERSION_CODES.KITKAT && activityManager.isLowRamDevice()) ||
-           activityManager.getMemoryClass() <= 64;
+           activityManager.getLargeMemoryClass() <= 64;
   }
 
   public static int clamp(int value, int min, int max) {

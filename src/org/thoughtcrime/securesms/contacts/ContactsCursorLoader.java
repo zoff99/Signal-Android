@@ -27,6 +27,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.database.Address;
 import org.thoughtcrime.securesms.database.DatabaseFactory;
 import org.thoughtcrime.securesms.recipients.RecipientFactory;
 import org.thoughtcrime.securesms.recipients.Recipients;
@@ -45,9 +46,9 @@ public class ContactsCursorLoader extends CursorLoader {
 
   private static final String TAG = ContactsCursorLoader.class.getSimpleName();
 
-  public final static int MODE_ALL        = 0;
-  public final static int MODE_PUSH_ONLY  = 1;
-  public final static int MODE_OTHER_ONLY = 2;
+  public final static int MODE_ALL       = 0;
+  public final static int MODE_PUSH_ONLY = 1;
+  public final static int MODE_SMS_ONLY  = 2;
 
   private final String filter;
   private final int    mode;
@@ -64,13 +65,13 @@ public class ContactsCursorLoader extends CursorLoader {
     ContactsDatabase  contactsDatabase = DatabaseFactory.getContactsDatabase(getContext());
     ArrayList<Cursor> cursorList       = new ArrayList<>(3);
 
-    if (mode != MODE_OTHER_ONLY) {
+    if (mode != MODE_SMS_ONLY) {
       cursorList.add(contactsDatabase.queryTextSecureContacts(filter));
     }
 
     if (mode == MODE_ALL) {
       cursorList.add(contactsDatabase.querySystemContacts(filter));
-    } else if (mode == MODE_OTHER_ONLY) {
+    } else if (mode == MODE_SMS_ONLY) {
       cursorList.add(filterNonPushContacts(contactsDatabase.querySystemContacts(filter)));
     }
 
@@ -102,8 +103,8 @@ public class ContactsCursorLoader extends CursorLoader {
                                                                 ContactsDatabase.LABEL_COLUMN,
                                                                 ContactsDatabase.CONTACT_TYPE_COLUMN});
       while (cursor.moveToNext()) {
-        final String number = cursor.getString(cursor.getColumnIndexOrThrow(ContactsDatabase.NUMBER_COLUMN));
-        final Recipients recipients = RecipientFactory.getRecipientsFromString(getContext(), number, true);
+        final String     number     = cursor.getString(cursor.getColumnIndexOrThrow(ContactsDatabase.NUMBER_COLUMN));
+        final Recipients recipients = RecipientFactory.getRecipientsFor(getContext(), new Address[]{Address.fromExternal(getContext(), number)}, true);
 
         if (DirectoryHelper.getUserCapabilities(getContext(), recipients)
                            .getTextCapability() != Capability.SUPPORTED)

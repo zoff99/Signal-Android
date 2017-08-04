@@ -22,7 +22,6 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.RemoteException;
@@ -36,7 +35,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import org.thoughtcrime.securesms.R;
-import org.thoughtcrime.securesms.database.TextSecureDirectory;
+import org.thoughtcrime.securesms.database.Address;
 import org.thoughtcrime.securesms.util.Util;
 import org.whispersystems.libsignal.util.guava.Optional;
 import org.whispersystems.signalservice.api.push.ContactTokenDetails;
@@ -48,7 +47,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Database to supply all types of contacts that TextSecure needs to know about
@@ -79,29 +77,28 @@ public class ContactsDatabase {
     this.context  = context;
   }
 
-  public synchronized @NonNull List<String> setRegisteredUsers(@NonNull Account account,
-                                                               @NonNull String localNumber,
-                                                               @NonNull List<ContactTokenDetails> registeredContacts,
-                                                               boolean remove)
+  public synchronized @NonNull List<Address> setRegisteredUsers(@NonNull Account account,
+                                                                @NonNull List<ContactTokenDetails> registeredContacts,
+                                                                boolean remove)
       throws RemoteException, OperationApplicationException
   {
 
-    Map<String, ContactTokenDetails>    registeredNumbers = new HashMap<>();
-    List<String>                        addedNumbers      = new LinkedList<>();
-    ArrayList<ContentProviderOperation> operations        = new ArrayList<>();
-    Map<String, SignalContact>          currentContacts   = getSignalRawContacts(account, localNumber);
+    Map<Address, ContactTokenDetails>   registeredAddresses = new HashMap<>();
+    List<Address>                       addedAddresses      = new LinkedList<>();
+    ArrayList<ContentProviderOperation> operations          = new ArrayList<>();
+    Map<Address, SignalContact>         currentContacts     = getSignalRawContacts(account);
 
     for (ContactTokenDetails registeredContact : registeredContacts) {
-      String registeredNumber = registeredContact.getNumber();
+      Address registeredAddress = Address.fromSerialized(registeredContact.getNumber());
 
-      registeredNumbers.put(registeredNumber, registeredContact);
+      registeredAddresses.put(registeredAddress, registeredContact);
 
-      if (!currentContacts.containsKey(registeredNumber)) {
-        Optional<SystemContactInfo> systemContactInfo = getSystemContactInfo(registeredNumber, localNumber);
+      if (!currentContacts.containsKey(registeredAddress)) {
+        Optional<SystemContactInfo> systemContactInfo = getSystemContactInfo(registeredAddress);
 
         if (systemContactInfo.isPresent()) {
-          Log.w(TAG, "Adding number: " + registeredNumber);
-          addedNumbers.add(registeredNumber);
+          Log.w(TAG, "Adding number: " + registeredAddress);
+          addedAddresses.add(registeredAddress);
           addTextSecureRawContact(operations, account, systemContactInfo.get().number,
                                   systemContactInfo.get().name, systemContactInfo.get().id,
                                   true);
@@ -109,8 +106,8 @@ public class ContactsDatabase {
       }
     }
 
-    for (Map.Entry<String, SignalContact> currentContactEntry : currentContacts.entrySet()) {
-      ContactTokenDetails tokenDetails = registeredNumbers.get(currentContactEntry.getKey());
+    for (Map.Entry<Address, SignalContact> currentContactEntry : currentContacts.entrySet()) {
+      ContactTokenDetails tokenDetails = registeredAddresses.get(currentContactEntry.getKey());
 
       if (tokenDetails == null) {
         if (remove) {
@@ -132,13 +129,10 @@ public class ContactsDatabase {
       context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, operations);
     }
 
-    return addedNumbers;
+    return addedAddresses;
   }
 
   @NonNull Cursor querySystemContacts(String filter) {
-
-    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "querySystemContacts");
-
     Uri uri;
 
     if (!TextUtils.isEmpty(filter)) {
@@ -146,10 +140,6 @@ public class ContactsDatabase {
     } else {
       uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
     }
-
-    /*
-    -- use only local contacts (not any sync account contacts!!) --
-    */
 
     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       uri = uri.buildUpon().appendQueryParameter(ContactsContract.REMOVE_DUPLICATE_ENTRIES, "true").build();
@@ -171,127 +161,28 @@ public class ContactsDatabase {
       put(LABEL_COLUMN, ContactsContract.CommonDataKinds.Phone.LABEL);
     }};
 
-    String excludeSelection = ContactsContract.CommonDataKinds.Phone.NUMBER + " LIKE ?" + " AND ( " +
-            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " NOT IN (" +
-            "SELECT data.contact_id FROM raw_contacts, view_data data WHERE raw_contacts._id = data.raw_contact_id AND " +
-            "data.mimetype = '" + CONTACT_MIMETYPE + "')" + ")";
+    String formattedNumber = "REPLACE(REPLACE(REPLACE(REPLACE(data1,' ',''),'-',''),'(',''),')','')";
+    String excludeSelection = "(" + formattedNumber +" NOT IN " +
+            "(SELECT data1 FROM view_data WHERE "+formattedNumber+" = data1) " +
+            "OR "+formattedNumber+" = data1)" +
+            "AND " + formattedNumber + "NOT IN (SELECT "+formattedNumber+" FROM view_data where mimetype = '"+CONTACT_MIMETYPE+"')" ;
 
-    String fallbackSelection = ContactsContract.CommonDataKinds.Phone.NUMBER + " LIKE ?" + " AND ( " +
-            ContactsContract.Data.SYNC2 + " IS NULL OR " + ContactsContract.Data.SYNC2 + " != '" + SYNC + "'" + ")";
+    String fallbackSelection = ContactsContract.Data.SYNC2 + " IS NULL OR " + ContactsContract.Data.SYNC2 + " != '" + SYNC + "'";
 
     Cursor cursor;
 
-    try
-    {
-      // cursor = context.getContentResolver().query(uri, projection, excludeSelection, null, sort);
-
-      // --------------------------------------------------------------
-      // --------------------------------------------------------------
-      // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
-      // --------------------------------------------------------------
-      // --------------------------------------------------------------
-      cursor = context.getContentResolver().query(uri, projection, excludeSelection, new String[]{TextSecureDirectory.USEABLE_CONTACTS_PREFIX + "%"}, sort);
-    }
-    catch (Exception e)
-    {
+    try {
+      cursor = context.getContentResolver().query(uri, projection, excludeSelection, null, sort);
+    } catch (Exception e) {
       Log.w(TAG, e);
-      //  cursor = context.getContentResolver().query(uri, projection, fallbackSelection, null, sort);
-      // --------------------------------------------------------------
-      // --------------------------------------------------------------
-      // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
-      // --------------------------------------------------------------
-      // --------------------------------------------------------------
-      cursor = context.getContentResolver().query(uri, projection, fallbackSelection, new String[]{TextSecureDirectory.USEABLE_CONTACTS_PREFIX + "%"}, sort);
+      cursor = context.getContentResolver().query(uri, projection, fallbackSelection, null, sort);
     }
-
-
-    MatrixCursor matrixCursor = null;
-
-    try
-    {
-      final String tag01 = "querySystemContacts";
-
-      if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-      {
-        Log.i("ZZ0Z:", tag01 + " " + "count=" + cursor.getCount());
-      }
-
-      String[] columns = null;
-      try
-      {
-        columns = cursor.getColumnNames();
-        int i;
-        for (i = 0; i < columns.length; i++)
-        {
-          if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-          {
-            Log.i("ZZ0Z:", tag01 + " " + "columns: " + columns[i]);
-          }
-        }
-
-        matrixCursor = new MatrixCursor(columns);
-      }
-      catch (Exception e1)
-      {
-      }
-
-      while (cursor != null && cursor.moveToNext())
-      {
-
-        String long_log = "";
-
-        try
-        {
-          int i;
-          Object[] patched_row = new Object[columns.length];
-          for (i = 0; i < columns.length; i++)
-          {
-            long_log = long_log + " " + columns[i] + "=" + cursor.getString(cursor.getColumnIndex(columns[i]));
-            if (columns[i].equals(ContactsContract.CommonDataKinds.Phone.NUMBER))
-            {
-              // --------------------------------------------------------------
-              // --------------------------------------------------------------
-              // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
-              // --------------------------------------------------------------
-              // --------------------------------------------------------------
-              patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i])).replaceFirst(Pattern.quote(TextSecureDirectory.USEABLE_CONTACTS_PREFIX), TextSecureDirectory.USEABLE_CONTACTS_REPLACEMENT_STR);
-            }
-            else
-            {
-              patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i]));
-            }
-          }
-
-          matrixCursor.addRow(patched_row);
-
-        }
-        catch (Exception e1)
-        {
-        }
-        if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-        {
-          Log.i("ZZ0Z:", tag01 + " " + long_log);
-        }
-      }
-
-      cursor.close();
-
-      cursor = matrixCursor;
-      cursor.moveToFirst();
-    }
-    catch (Exception ee)
-    {
-    }
-
 
     return new ProjectionMappingCursor(cursor, projectionMap,
                                        new Pair<String, Object>(CONTACT_TYPE_COLUMN, NORMAL_TYPE));
   }
 
   @NonNull Cursor queryTextSecureContacts(String filter) {
-
-    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "queryTextSecureContacts");
-
     String[] projection = new String[] {ContactsContract.Data._ID,
                                         ContactsContract.Contacts.DISPLAY_NAME,
                                         ContactsContract.Data.DATA1};
@@ -321,61 +212,6 @@ public class ContactsDatabase {
                                                   sort);
     }
 
-    try
-    {
-      final String tag01 = "queryTextSecureContacts";
-
-      if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-      {
-        Log.i("ZZ0Z:", tag01 + " " + "count=" + cursor.getCount());
-      }
-
-      String[] columns = null;
-      try
-      {
-        columns = cursor.getColumnNames();
-        int i;
-        for (i = 0; i < columns.length; i++)
-        {
-          if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-          {
-            Log.i("ZZ0Z:", tag01 + " " + "columns: " + columns[i]);
-          }
-        }
-      }
-      catch (Exception e1)
-      {
-      }
-
-      while (cursor != null && cursor.moveToNext())
-      {
-
-        String long_log = "";
-
-        try
-        {
-          int i;
-          for (i = 0; i < columns.length; i++)
-          {
-            long_log = long_log + " " + columns[i] + "=" + cursor.getString(cursor.getColumnIndex(columns[i]));
-          }
-        }
-        catch (Exception e1)
-        {
-        }
-        if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-        {
-          Log.i("ZZ0Z:", tag01 + " " + long_log);
-        }
-      }
-
-      cursor.moveToFirst();
-    }
-    catch (Exception ee)
-    {
-    }
-
-
     return new ProjectionMappingCursor(cursor, projectionMap,
                                        new Pair<String, Object>(LABEL_COLUMN, "TextSecure"),
                                        new Pair<String, Object>(NUMBER_TYPE_COLUMN, 0),
@@ -384,7 +220,7 @@ public class ContactsDatabase {
   }
 
   private void addContactVoiceSupport(List<ContentProviderOperation> operations,
-                                      @NonNull String e164number, long rawContactId)
+                                      @NonNull Address address, long rawContactId)
   {
     operations.add(ContentProviderOperation.newUpdate(RawContacts.CONTENT_URI)
                                            .withSelection(RawContacts._ID + " = ?", new String[] {String.valueOf(rawContactId)})
@@ -394,9 +230,9 @@ public class ContactsDatabase {
     operations.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI.buildUpon().appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true").build())
                                            .withValue(ContactsContract.Data.RAW_CONTACT_ID, rawContactId)
                                            .withValue(ContactsContract.Data.MIMETYPE, CALL_MIMETYPE)
-                                           .withValue(ContactsContract.Data.DATA1, e164number)
+                                           .withValue(ContactsContract.Data.DATA1, address.toPhoneString())
                                            .withValue(ContactsContract.Data.DATA2, context.getString(R.string.app_name))
-                                           .withValue(ContactsContract.Data.DATA3, context.getString(R.string.ContactsDatabase_signal_call_s, e164number))
+                                           .withValue(ContactsContract.Data.DATA3, context.getString(R.string.ContactsDatabase_signal_call_s, address.toPhoneString()))
                                            .withYieldAllowed(true)
                                            .build());
   }
@@ -442,8 +278,6 @@ public class ContactsDatabase {
                                        Account account, String e164number, String displayName,
                                        long aggregateId, boolean supportsVoice)
   {
-    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "addTextSecureRawContact");
-
     int index   = operations.size();
     Uri dataUri = ContactsContract.Data.CONTENT_URI.buildUpon()
                                                    .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
@@ -512,17 +346,13 @@ public class ContactsDatabase {
                                            .build());
   }
 
-  private @NonNull Map<String, SignalContact> getSignalRawContacts(@NonNull Account account,
-                                                                   @NonNull String localNumber)
-  {
-    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "getSignalRawContacts" + " account name:"+ account.name+" account type:"+account.type);
-
+  private @NonNull Map<Address, SignalContact> getSignalRawContacts(@NonNull Account account) {
     Uri currentContactsUri = RawContacts.CONTENT_URI.buildUpon()
                                                     .appendQueryParameter(RawContacts.ACCOUNT_NAME, account.name)
                                                     .appendQueryParameter(RawContacts.ACCOUNT_TYPE, account.type).build();
 
-    Map<String, SignalContact> signalContacts = new HashMap<>();
-    Cursor                     cursor         = null;
+    Map<Address, SignalContact> signalContacts = new HashMap<>();
+    Cursor                      cursor         = null;
 
     try {
       String[] projection;
@@ -535,79 +365,14 @@ public class ContactsDatabase {
 
       cursor = context.getContentResolver().query(currentContactsUri, projection, null, null, null);
 
-
-      try
-      {
-        final String tag01 = "getSignalRawContacts";
-
-        if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-        {
-          Log.i("ZZ0Z:", tag01 + " " + "count=" + cursor.getCount());
-        }
-
-        String[] columns = null;
-        try
-        {
-          columns = cursor.getColumnNames();
-          int i;
-          for (i = 0; i < columns.length; i++)
-          {
-            if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-            {
-              Log.i("ZZ0Z:", tag01 + " " + "columns: " + columns[i]);
-            }
-          }
-        }
-        catch (Exception e1)
-        {
-        }
-
-        while (cursor != null && cursor.moveToNext())
-        {
-
-          String long_log = "";
-
-          try
-          {
-            int i;
-            for (i = 0; i < columns.length; i++)
-            {
-              long_log = long_log + " " + columns[i] + "=" + cursor.getString(cursor.getColumnIndex(columns[i]));
-            }
-          }
-          catch (Exception e1)
-          {
-          }
-          if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-          {
-            Log.i("ZZ0Z:", tag01 + " " + long_log);
-          }
-        }
-
-        cursor.moveToFirst();
-      }
-      catch (Exception ee)
-      {
-      }
-
-
-      while (cursor != null && cursor.moveToNext())
-      {
-        String currentNumber;
-
-        try {
-          currentNumber = PhoneNumberFormatter.formatNumber(cursor.getString(1), localNumber);
-        } catch (InvalidNumberException e) {
-          Log.w(TAG, e);
-          currentNumber = cursor.getString(1);
-        }
-
-        long   rawContactId                = cursor.getLong(0);
-        long   contactId                   = cursor.getLong(3);
-        String supportsVoice               = cursor.getString(2);
-        String rawContactDisplayName       = null;
-        String aggregateDisplayName        = null;
-        int    rawContactDisplayNameSource = 0;
+      while (cursor != null && cursor.moveToNext()) {
+        Address currentAddress              = Address.fromExternal(context, cursor.getString(1));
+        long    rawContactId                = cursor.getLong(0);
+        long    contactId                   = cursor.getLong(3);
+        String  supportsVoice               = cursor.getString(2);
+        String  rawContactDisplayName       = null;
+        String  aggregateDisplayName        = null;
+        int     rawContactDisplayNameSource = 0;
 
         if (Build.VERSION.SDK_INT >= 11) {
           rawContactDisplayName       = cursor.getString(4);
@@ -615,7 +380,7 @@ public class ContactsDatabase {
           aggregateDisplayName        = getDisplayName(contactId);
         }
 
-        signalContacts.put(currentNumber, new SignalContact(rawContactId, supportsVoice, rawContactDisplayName, aggregateDisplayName, rawContactDisplayNameSource));
+        signalContacts.put(currentAddress, new SignalContact(rawContactId, supportsVoice, rawContactDisplayName, aggregateDisplayName, rawContactDisplayNameSource));
       }
     } finally {
       if (cursor != null)
@@ -625,12 +390,11 @@ public class ContactsDatabase {
     return signalContacts;
   }
 
-  private Optional<SystemContactInfo> getSystemContactInfo(@NonNull String e164number,
-                                                           @NonNull String localNumber)
+  private Optional<SystemContactInfo> getSystemContactInfo(@NonNull Address address)
   {
-    if (TextSecureDirectory.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "getSystemContactInfo" + " e164number:"+ e164number+" localNumber:"+ localNumber);
+    if (!address.isPhone()) return Optional.absent();
 
-    Uri      uri          = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(e164number));
+    Uri      uri          = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(address.toPhoneString()));
     String[] projection   = {ContactsContract.PhoneLookup.NUMBER,
                              ContactsContract.PhoneLookup._ID,
                              ContactsContract.PhoneLookup.DISPLAY_NAME};
@@ -640,148 +404,22 @@ public class ContactsDatabase {
     try {
       numberCursor = context.getContentResolver().query(uri, projection, null, null, null);
 
+      while (numberCursor != null && numberCursor.moveToNext()) {
+        String  systemNumber  = numberCursor.getString(0);
+        Address systemAddress = Address.fromExternal(context, systemNumber);
 
-      Cursor cursor = numberCursor;
-      MatrixCursor matrixCursor = null;
+        if (systemAddress.equals(address)) {
+          idCursor = context.getContentResolver().query(RawContacts.CONTENT_URI,
+                                                        new String[] {RawContacts._ID},
+                                                        RawContacts.CONTACT_ID + " = ? ",
+                                                        new String[] {String.valueOf(numberCursor.getLong(1))},
+                                                        null);
 
-      try
-      {
-        final String tag01 = "getSystemContactInfo";
-
-        if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-        {
-          Log.i("ZZ0Z:", tag01 + " " + "count=" + cursor.getCount());
-        }
-
-        String[] columns = null;
-        try
-        {
-          columns = cursor.getColumnNames();
-          int i;
-          for (i = 0; i < columns.length; i++)
-          {
-            if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-            {
-              Log.i("ZZ0Z:", tag01 + " " + "columns: " + columns[i]);
-            }
+          if (idCursor != null && idCursor.moveToNext()) {
+            return Optional.of(new SystemContactInfo(numberCursor.getString(2),
+                                                     numberCursor.getString(0),
+                                                     idCursor.getLong(0)));
           }
-        }
-        catch (Exception e1)
-        {
-        }
-
-        matrixCursor = new MatrixCursor(columns);
-
-        while (cursor != null && cursor.moveToNext())
-        {
-
-          String long_log = "";
-
-          try
-          {
-            int i;
-            Object[] patched_row = new Object[columns.length];
-            for (i = 0; i < columns.length; i++)
-            {
-              long_log = long_log + " " + columns[i] + "=" + cursor.getString(cursor.getColumnIndex(columns[i]));
-              if (columns[i].equals(ContactsContract.PhoneLookup.NUMBER))
-              {
-                // --------------------------------------------------------------
-                // --------------------------------------------------------------
-                // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
-                // --------------------------------------------------------------
-                // --------------------------------------------------------------
-                patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i])).replaceFirst(Pattern.quote(TextSecureDirectory.USEABLE_CONTACTS_PREFIX), TextSecureDirectory.USEABLE_CONTACTS_REPLACEMENT_STR);
-              }
-              else
-              {
-                patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i]));
-              }
-            }
-
-            matrixCursor.addRow(patched_row);
-
-          }
-          catch (Exception e1)
-          {
-          }
-
-          if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-          {
-            Log.i("ZZ0Z:", tag01 + " " + long_log);
-          }
-        }
-
-        cursor.moveToFirst();
-
-
-        // -------------
-
-        cursor.close();
-        cursor = matrixCursor;
-
-
-        while (cursor != null && cursor.moveToNext())
-        {
-
-          String long_log = "";
-
-          try
-          {
-            int i;
-            for (i = 0; i < columns.length; i++)
-            {
-              long_log = long_log + " (patched) " + columns[i] + "=" + cursor.getString(cursor.getColumnIndex(columns[i]));
-            }
-          }
-          catch (Exception e1)
-          {
-            e1.printStackTrace();
-            if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-            {
-              Log.i("ZZ0Z:", tag01 + " EE2a " + e1.toString());
-            }
-          }
-
-
-          if (TextSecureDirectory.DEBUG_PHONENUMBERS)
-          {
-            Log.i("ZZ0Z:", tag01 + " " + long_log);
-          }
-        }
-
-        cursor.moveToFirst();
-
-        numberCursor = cursor;
-        numberCursor.moveToFirst();
-
-      }
-      catch (Exception ee)
-      {
-      }
-
-
-      while (numberCursor != null && numberCursor.moveToNext())
-      {
-        try {
-          String systemNumber              = numberCursor.getString(0);
-          String canonicalizedSystemNumber = PhoneNumberFormatter.formatNumber(systemNumber, localNumber);
-
-          if (canonicalizedSystemNumber.equals(e164number)) {
-            idCursor = context.getContentResolver().query(RawContacts.CONTENT_URI,
-                                                          new String[] {RawContacts._ID},
-                                                          RawContacts.CONTACT_ID + " = ? ",
-                                                          new String[] {String.valueOf(numberCursor.getLong(1))},
-                                                          null);
-
-            if (idCursor != null && idCursor.moveToNext()) {
-              return Optional.of(new SystemContactInfo(numberCursor.getString(2),
-                                                       numberCursor.getString(0),
-                                                       idCursor.getLong(0)));
-            }
-          }
-        } catch (InvalidNumberException e) {
-          Log.w(TAG, e);
         }
       }
     } finally {
