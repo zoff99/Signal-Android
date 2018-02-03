@@ -107,7 +107,7 @@ dependencies:
 
     - mkdir -p app/build/outputs/apk/
     #- cp -v ./build/outputs/apk/Signal-Android-debug.apk app/build/outputs/apk/app-debug-unaligned.apk
-    - cp -v ./build/outputs/apk/Signal-play*.apk app/build/outputs/apk/app-debug-unaligned.apk
+    - cp -v ./build/outputs/apk/play/debug/Signal-play*.apk app/build/outputs/apk/app-debug-unaligned.apk
 
     - zip -d app/build/outputs/apk/app-debug-unaligned.apk META-INF/\*     # remove signature !!
     - cp -av app/build/outputs/apk/app-debug-unaligned.apk ~/app.apk ;
