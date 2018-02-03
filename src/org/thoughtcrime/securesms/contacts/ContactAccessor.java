@@ -28,10 +28,12 @@ import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.thoughtcrime.securesms.database.Address;
 import org.thoughtcrime.securesms.database.DatabaseFactory;
 import org.thoughtcrime.securesms.database.GroupDatabase;
+import org.thoughtcrime.securesms.database.helpers.ClassicOpenHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -65,11 +67,28 @@ public class ContactAccessor {
   }
 
   public Set<Address> getAllContactsWithNumbers(Context context) {
+
+    // --------------------------------------------------------------
+    // --------------------------------------------------------------
+    // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+    // --------------------------------------------------------------
+    // --------------------------------------------------------------
+
     Set<Address> results = new HashSet<>();
 
-    try (Cursor cursor = context.getContentResolver().query(Phone.CONTENT_URI, new String[] {Phone.NUMBER}, null ,null, null)) {
-      while (cursor != null && cursor.moveToNext()) {
-        if (!TextUtils.isEmpty(cursor.getString(0))) {
+    final String tag01 = "getAllContactsWithNumbers";
+    String Selection = Phone.NUMBER + " LIKE ? ";
+
+    try (Cursor cursor = context.getContentResolver().query(Phone.CONTENT_URI, new String[]{Phone.NUMBER},
+                                                            Selection,
+                                                            new String[]{ClassicOpenHelper.USEABLE_CONTACTS_PREFIX + "%"},
+                                                            null))
+    {
+      while (cursor != null && cursor.moveToNext())
+      {
+        if (!TextUtils.isEmpty(cursor.getString(0)))
+        {
+          Log.i("ZZ0Z:", tag01 + " " + "res=" + cursor.getString(0));
           results.add(Address.fromExternal(context, cursor.getString(0)));
         }
       }

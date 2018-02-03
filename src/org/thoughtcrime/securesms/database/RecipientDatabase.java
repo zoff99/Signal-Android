@@ -303,6 +303,9 @@ public class RecipientDatabase extends Database {
   }
 
   public Set<Address> getAllAddresses() {
+
+    // Zoff: TODO ? are there phonenumbers in the ADDRESS field?
+
     SQLiteDatabase db      = databaseHelper.getReadableDatabase();
     Set<Address>   results = new HashSet<>();
 
