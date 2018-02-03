@@ -71,7 +71,7 @@ dependencies:
     #- ./gradlew assembleRelease --info --stacktrace --parallel;
     #- ./gradlew assembleDebug --info --stacktrace --parallel;
 
-    - ./gradlew assembleDebug --info --no-daemon --stacktrace -x lint > $CIRCLE_ARTIFACTS/make_out.txt 2>&1 ; if [ $? -eq 0 ]; then touch ~/ok.txt ; fi ; touch ~/ready.txt :
+    - ./gradlew assembleDebug --info --no-daemon --stacktrace --no-parallel -x lint > $CIRCLE_ARTIFACTS/make_out.txt 2>&1 ; if [ $? -eq 0 ]; then touch ~/ok.txt ; fi ; touch ~/ready.txt :
        background: true
 
     - ready_="0";
