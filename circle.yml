@@ -65,7 +65,7 @@ dependencies:
     - echo y | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-27"
     # -- why is this not just called "cmake" ? --
     - cmake_pkg_name=$($ANDROID_HOME/tools/bin/sdkmanager --list --verbose|grep -i cmake| tail -n 1 | cut -d \| -f 1 |tr -d " ");
-    echo y | $ANDROID_HOME/tools/bin/sdkmanager "$cmake_pkg_name"
+      echo y | $ANDROID_HOME/tools/bin/sdkmanager "$cmake_pkg_name"
     # -- why is this not just called "cmake" ? --
     - echo y | $ANDROID_HOME/tools/bin/sdkmanager --update
 
