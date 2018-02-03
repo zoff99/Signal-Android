@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.RemoteException;
@@ -36,6 +37,7 @@ import android.util.Pair;
 
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.database.Address;
+import org.thoughtcrime.securesms.database.helpers.ClassicOpenHelper;
 import org.thoughtcrime.securesms.util.Util;
 import org.whispersystems.libsignal.util.guava.Optional;
 
@@ -45,6 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Database to supply all types of contacts that TextSecure needs to know about
@@ -125,11 +128,17 @@ public class ContactsDatabase {
   @NonNull Cursor querySystemContacts(@Nullable String filter) {
     Uri uri;
 
+    if (ClassicOpenHelper.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "querySystemContacts");
+
     if (!TextUtils.isEmpty(filter)) {
       uri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(filter));
     } else {
       uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
     }
+
+    /*
+    -- use only local contacts (not any sync account contacts!!) --
+    */
 
     if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       uri = uri.buildUpon().appendQueryParameter(ContactsContract.REMOVE_DUPLICATE_ENTRIES, "true").build();
@@ -150,6 +159,7 @@ public class ContactsDatabase {
     }};
 
     String formattedNumber = "REPLACE(REPLACE(REPLACE(REPLACE(data1,' ',''),'-',''),'(',''),')','')";
+
     String excludeSelection = "(" + formattedNumber +" NOT IN " +
             "(SELECT data1 FROM view_data WHERE "+formattedNumber+" = data1) " +
             "OR "+formattedNumber+" = data1)" +
@@ -159,18 +169,134 @@ public class ContactsDatabase {
 
     Cursor cursor;
 
-    try {
-      cursor = context.getContentResolver().query(uri, projection, excludeSelection, null, sort);
-    } catch (Exception e) {
-      Log.w(TAG, e);
-      cursor = context.getContentResolver().query(uri, projection, fallbackSelection, null, sort);
+
+    try
+    {
+      // cursor = context.getContentResolver().query(uri, projection, excludeSelection, null, sort);
+
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      cursor = context.getContentResolver().query(uri, projection, excludeSelection,
+                                                  new String[]{ClassicOpenHelper.USEABLE_CONTACTS_PREFIX + "%"},
+                                                  sort);
     }
+    catch (Exception e)
+    {
+      Log.w(TAG, e);
+
+      //  cursor = context.getContentResolver().query(uri, projection, fallbackSelection, null, sort);
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+      // --------------------------------------------------------------
+      // --------------------------------------------------------------
+      cursor = context.getContentResolver().query(uri, projection, fallbackSelection,
+                                                  new String[]{ClassicOpenHelper.USEABLE_CONTACTS_PREFIX + "%"},
+                                                  sort);
+    }
+
+
+
+
+
+    MatrixCursor matrixCursor = null;
+
+    try
+    {
+      final String tag01 = "querySystemContacts";
+
+      if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+      {
+        Log.i("ZZ0Z:", tag01 + " " + "count=" + cursor.getCount());
+      }
+
+      String[] columns = null;
+      try
+      {
+        columns = cursor.getColumnNames();
+        int i;
+        for (i = 0; i < columns.length; i++)
+        {
+          if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+          {
+            Log.i("ZZ0Z:", tag01 + " " + "columns: " + columns[i]);
+          }
+        }
+
+        matrixCursor = new MatrixCursor(columns);
+      }
+      catch (Exception e1)
+      {
+      }
+
+      while (cursor != null && cursor.moveToNext())
+      {
+
+        String long_log = "";
+
+        try
+        {
+          int i;
+          Object[] patched_row = new Object[columns.length];
+          for (i = 0; i < columns.length; i++)
+          {
+            long_log = long_log + " " + columns[i] + "=" + cursor.getString(cursor.getColumnIndex(columns[i]));
+            if (columns[i].equals(ContactsContract.CommonDataKinds.Phone.NUMBER))
+            {
+              // --------------------------------------------------------------
+              // --------------------------------------------------------------
+              // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+              // --------------------------------------------------------------
+              // --------------------------------------------------------------
+              patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i])).
+                      replaceFirst(Pattern.quote(ClassicOpenHelper.USEABLE_CONTACTS_PREFIX),
+                                   ClassicOpenHelper.USEABLE_CONTACTS_REPLACEMENT_STR);
+            }
+            else
+            {
+              patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i]));
+            }
+          }
+
+          matrixCursor.addRow(patched_row);
+
+        }
+        catch (Exception e1)
+        {
+        }
+        if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+        {
+          Log.i("ZZ0Z:", tag01 + " " + long_log);
+        }
+      }
+
+      cursor.close();
+
+      cursor = matrixCursor;
+      cursor.moveToFirst();
+    }
+    catch (Exception ee)
+    {
+    }
+
+
+
+
+
+
+
 
     return new ProjectionMappingCursor(cursor, projectionMap,
                                        new Pair<String, Object>(CONTACT_TYPE_COLUMN, NORMAL_TYPE));
   }
 
   @NonNull Cursor queryTextSecureContacts(String filter) {
+
+    if (ClassicOpenHelper.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "queryTextSecureContacts");
+
     String[] projection = new String[] {ContactsContract.Contacts.DISPLAY_NAME,
                                         ContactsContract.Data.DATA1};
 
@@ -197,6 +323,76 @@ public class ContactsDatabase {
                                                                 "%" + filter + "%", "%" + filter + "%"},
                                                   sort);
     }
+
+
+
+
+
+
+    try
+    {
+      final String tag01 = "queryTextSecureContacts";
+
+      if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+      {
+        Log.i("ZZ0Z:", tag01 + " " + "count=" + cursor.getCount());
+      }
+
+      String[] columns = null;
+      try
+      {
+        columns = cursor.getColumnNames();
+        int i;
+        for (i = 0; i < columns.length; i++)
+        {
+          if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+          {
+            Log.i("ZZ0Z:", tag01 + " " + "columns: " + columns[i]);
+          }
+        }
+      }
+      catch (Exception e1)
+      {
+      }
+
+      while (cursor != null && cursor.moveToNext())
+      {
+
+        String long_log = "";
+
+        try
+        {
+          int i;
+          for (i = 0; i < columns.length; i++)
+          {
+            long_log = long_log + " " + columns[i] + "=" +
+                       cursor.getString(cursor.getColumnIndex(columns[i]));
+          }
+        }
+        catch (Exception e1)
+        {
+        }
+        if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+        {
+          Log.i("ZZ0Z:", tag01 + " " + long_log);
+        }
+      }
+
+      cursor.moveToFirst();
+    }
+    catch (Exception ee)
+    {
+    }
+
+
+
+
+
+
+
+
+
+
 
     return new ProjectionMappingCursor(cursor, projectionMap,
                                        new Pair<String, Object>(LABEL_COLUMN, "TextSecure"),
@@ -264,6 +460,9 @@ public class ContactsDatabase {
                                        Account account, String e164number, String displayName,
                                        long aggregateId, boolean supportsVoice)
   {
+
+    if (ClassicOpenHelper.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "addTextSecureRawContact");
+
     int index   = operations.size();
     Uri dataUri = ContactsContract.Data.CONTENT_URI.buildUpon()
                                                    .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
@@ -333,6 +532,9 @@ public class ContactsDatabase {
   }
 
   private @NonNull Map<Address, SignalContact> getSignalRawContacts(@NonNull Account account) {
+
+    if (ClassicOpenHelper.DEBUG_PHONENUMBERS) Log.i("ZZ0ZZ:Enter", "getSignalRawContacts" + " account name:"+ account.name+" account type:"+account.type);
+
     Uri currentContactsUri = RawContacts.CONTENT_URI.buildUpon()
                                                     .appendQueryParameter(RawContacts.ACCOUNT_NAME, account.name)
                                                     .appendQueryParameter(RawContacts.ACCOUNT_TYPE, account.type).build();
@@ -351,7 +553,74 @@ public class ContactsDatabase {
 
       cursor = context.getContentResolver().query(currentContactsUri, projection, null, null, null);
 
-      while (cursor != null && cursor.moveToNext()) {
+
+
+
+
+
+
+
+      try
+      {
+        final String tag01 = "getSignalRawContacts";
+
+        if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+        {
+          Log.i("ZZ0Z:", tag01 + " " + "count=" + cursor.getCount());
+        }
+
+        String[] columns = null;
+        try
+        {
+          columns = cursor.getColumnNames();
+          int i;
+          for (i = 0; i < columns.length; i++)
+          {
+            if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+            {
+              Log.i("ZZ0Z:", tag01 + " " + "columns: " + columns[i]);
+            }
+          }
+        }
+        catch (Exception e1)
+        {
+        }
+
+        while (cursor != null && cursor.moveToNext())
+        {
+
+          String long_log = "";
+
+          try
+          {
+            int i;
+            for (i = 0; i < columns.length; i++)
+            {
+              long_log = long_log + " " + columns[i] + "=" + cursor.getString(cursor.getColumnIndex(columns[i]));
+            }
+          }
+          catch (Exception e1)
+          {
+          }
+          if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+          {
+            Log.i("ZZ0Z:", tag01 + " " + long_log);
+          }
+        }
+
+        cursor.moveToFirst();
+      }
+      catch (Exception ee)
+      {
+      }
+
+
+
+
+      while (cursor != null && cursor.moveToNext())
+      {
+
+
         Address currentAddress              = Address.fromExternal(context, cursor.getString(1));
         long    rawContactId                = cursor.getLong(0);
         long    contactId                   = cursor.getLong(3);
@@ -378,6 +647,11 @@ public class ContactsDatabase {
 
   private Optional<SystemContactInfo> getSystemContactInfo(@NonNull Address address)
   {
+    if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+    {
+      Log.i("ZZ0ZZ:Enter", "getSystemContactInfo" + " addr:" + address.toPhoneString());
+    }
+
     if (!address.isPhone()) return Optional.absent();
 
     Uri      uri          = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(address.toPhoneString()));
@@ -390,7 +664,136 @@ public class ContactsDatabase {
     try {
       numberCursor = context.getContentResolver().query(uri, projection, null, null, null);
 
-      while (numberCursor != null && numberCursor.moveToNext()) {
+
+
+
+
+        Cursor cursor = numberCursor;
+        MatrixCursor matrixCursor = null;
+
+        try
+        {
+          final String tag01 = "getSystemContactInfo";
+
+          if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+          {
+            Log.i("ZZ0Z:", tag01 + " " + "count=" + cursor.getCount());
+          }
+
+          String[] columns = null;
+          try
+          {
+            columns = cursor.getColumnNames();
+            int i;
+            for (i = 0; i < columns.length; i++)
+            {
+              if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+              {
+                Log.i("ZZ0Z:", tag01 + " " + "columns: " + columns[i]);
+              }
+            }
+          }
+          catch (Exception e1)
+          {
+          }
+
+          matrixCursor = new MatrixCursor(columns);
+
+          while (cursor != null && cursor.moveToNext())
+          {
+
+            String long_log = "";
+
+            try
+            {
+              int i;
+              Object[] patched_row = new Object[columns.length];
+              for (i = 0; i < columns.length; i++)
+              {
+                long_log = long_log + " " + columns[i] + "=" + cursor.getString(cursor.getColumnIndex(columns[i]));
+                if (columns[i].equals(ContactsContract.PhoneLookup.NUMBER))
+                {
+                  // --------------------------------------------------------------
+                  // --------------------------------------------------------------
+                  // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+                  // --------------------------------------------------------------
+                  // --------------------------------------------------------------
+                  patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i])).
+                          replaceFirst(Pattern.quote(ClassicOpenHelper.USEABLE_CONTACTS_PREFIX),
+                                       ClassicOpenHelper.USEABLE_CONTACTS_REPLACEMENT_STR);
+                }
+                else
+                {
+                  patched_row[i] = (Object) cursor.getString(cursor.getColumnIndex(columns[i]));
+                }
+              }
+
+              matrixCursor.addRow(patched_row);
+
+            }
+            catch (Exception e1)
+            {
+            }
+
+            if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+            {
+              Log.i("ZZ0Z:", tag01 + " " + long_log);
+            }
+          }
+
+          cursor.moveToFirst();
+
+
+          // -------------
+
+          cursor.close();
+          cursor = matrixCursor;
+
+
+          while (cursor != null && cursor.moveToNext())
+          {
+
+            String long_log = "";
+
+            try
+            {
+              int i;
+              for (i = 0; i < columns.length; i++)
+              {
+                long_log = long_log + " (patched) " + columns[i] + "=" + cursor.getString(cursor.getColumnIndex(columns[i]));
+              }
+            }
+            catch (Exception e1)
+            {
+              e1.printStackTrace();
+              if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+              {
+                Log.i("ZZ0Z:", tag01 + " EE2a " + e1.toString());
+              }
+            }
+
+
+            if (ClassicOpenHelper.DEBUG_PHONENUMBERS)
+            {
+              Log.i("ZZ0Z:", tag01 + " " + long_log);
+            }
+          }
+
+          cursor.moveToFirst();
+
+          numberCursor = cursor;
+          numberCursor.moveToFirst();
+
+        }
+        catch (Exception ee)
+        {
+        }
+
+
+
+
+        while (numberCursor != null && numberCursor.moveToNext())
+        {
         String  systemNumber  = numberCursor.getString(0);
         Address systemAddress = Address.fromExternal(context, systemNumber);
 

@@ -114,6 +114,20 @@ public class ClassicOpenHelper extends SQLiteOpenHelper {
   private static final int MORE_RECIPIENT_FIELDS                           = 47;
   private static final int DATABASE_VERSION                                = 47;
 
+  // --------------------------------------------------------------
+  // --------------------------------------------------------------
+  // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+  // --------------------------------------------------------------
+  // --------------------------------------------------------------
+  public static final String USEABLE_CONTACTS_PREFIX = "###"; // default "###"
+  public static final String USEABLE_CONTACTS_REPLACEMENT_STR = ""; // default ""
+  public static final boolean DEBUG_PHONENUMBERS = false; // print debugging messages
+  // --------------------------------------------------------------
+  // --------------------------------------------------------------
+  // only get entries starting with 'TextSecureDirectory.USEABLE_CONTACTS_PREFIX' as start of phonenumber
+  // --------------------------------------------------------------
+  // --------------------------------------------------------------
+
   private static final String TAG = ClassicOpenHelper.class.getSimpleName();
 
   private final Context context;
