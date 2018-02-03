@@ -103,6 +103,7 @@ dependencies:
       exit 0
 
     - find . -name '*.apk' ; exit 0
+    - cat $CIRCLE_ARTIFACTS/make_out.txt ; exit 0
 
     - mkdir -p app/build/outputs/apk/
     #- cp -v ./build/outputs/apk/Signal-Android-debug.apk app/build/outputs/apk/app-debug-unaligned.apk
