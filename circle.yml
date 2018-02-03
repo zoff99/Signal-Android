@@ -15,7 +15,7 @@ machine:
     _SDK_: /usr/local/android-sdk-linux/
     _JAVA_OPTIONS: "-Xms212m -Xmx300m"
     JAVA_OPTS: "-Xms212m -Xmx300m"
-    GRADLE_OPTS: '-Xmx212m -Dorg.gradle.jvmargs="-Xmx500m -XX:+HeapDumpOnOutOfMemoryError -XX:MaxPermSize=500m"'
+    GRADLE_OPTS: '-Xmx212m -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xmx500m -XX:+HeapDumpOnOutOfMemoryError -XX:MaxPermSize=500m"'
     SBT_OPTS: "-Xms212M -Xmx500M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"
 dependencies:
   cache_directories:
@@ -71,7 +71,7 @@ dependencies:
     #- ./gradlew assembleRelease --info --stacktrace --parallel;
     #- ./gradlew assembleDebug --info --stacktrace --parallel;
 
-    - ./gradlew assembleDebug --info --no-daemon --stacktrace --no-parallel -x lint > $CIRCLE_ARTIFACTS/make_out.txt 2>&1 ; if [ $? -eq 0 ]; then touch ~/ok.txt ; fi ; touch ~/ready.txt :
+    - ./gradlew assembleDebug --no-daemon --stacktrace --max-workers=1 -x lint > $CIRCLE_ARTIFACTS/make_out.txt 2>&1 ; if [ $? -eq 0 ]; then touch ~/ok.txt ; fi ; touch ~/ready.txt :
        background: true
 
     - ready_="0";
