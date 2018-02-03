@@ -280,7 +280,7 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'),
                           'proguard-google-play-services.pro',
                           'proguard-dagger.pro',
@@ -303,7 +303,7 @@ android {
                           'proguard.cfg'
         }
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles = buildTypes.debug.proguardFiles
             signingConfig signingConfigs.release
         }
