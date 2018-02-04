@@ -13,10 +13,10 @@ machine:
     ANDROID_HOME: /usr/local/android-sdk-linux
     ANDROID_SDK: /usr/local/android-sdk-linux/
     _SDK_: /usr/local/android-sdk-linux/
-    _JAVA_OPTIONS: "-Xms212m -Xmx400m -Dorg.gradle.parallel=false "
-    JAVA_OPTS: "-Xms212m -Xmx400m"
-    GRADLE_OPTS: '-Xmx212m -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xmx400m -XX:+HeapDumpOnOutOfMemoryError -XX:MaxPermSize=400m"'
-    SBT_OPTS: "-Xms212M -Xmx400M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"
+    _JAVA_OPTIONS: "-Xms212m -Xmx300m -Dorg.gradle.parallel=false "
+    JAVA_OPTS: "-Xms212m -Xmx300m"
+    GRADLE_OPTS: '-Xmx212m -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xmx400m -XX:+HeapDumpOnOutOfMemoryError -XX:MaxPermSize=300m"'
+    SBT_OPTS: "-Xms212M -Xmx300M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"
 dependencies:
   cache_directories:
     - ~/.android
