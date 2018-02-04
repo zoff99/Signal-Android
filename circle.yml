@@ -13,10 +13,10 @@ machine:
     ANDROID_HOME: /usr/local/android-sdk-linux
     ANDROID_SDK: /usr/local/android-sdk-linux/
     _SDK_: /usr/local/android-sdk-linux/
-    _JAVA_OPTIONS: "-Xms212m -Xmx300m -Dorg.gradle.parallel=false "
-    JAVA_OPTS: "-Xms212m -Xmx300m"
-    GRADLE_OPTS: '-Xmx212m -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xmx400m -XX:+HeapDumpOnOutOfMemoryError -XX:MaxPermSize=300m"'
-    SBT_OPTS: "-Xms212M -Xmx300M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"
+    _JAVA_OPTIONS: "-Xms212m -Xmx310m -Dorg.gradle.parallel=false "
+    JAVA_OPTS: "-Xms212m -Xmx310m"
+    GRADLE_OPTS: '-Xmx212m -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xmx300m -XX:+HeapDumpOnOutOfMemoryError -XX:MaxPermSize=310m"'
+    SBT_OPTS: "-Xms212M -Xmx310M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"
 dependencies:
   cache_directories:
     - ~/.android
@@ -109,6 +109,7 @@ dependencies:
 
     - find . -name '*.apk' ; exit 0
     - cat $CIRCLE_ARTIFACTS/make_out.txt ; exit 0
+    - cat $CIRCLE_ARTIFACTS/make_out2.txt ; exit 0
 
     - mkdir -p app/build/outputs/apk/
     #- cp -v ./build/outputs/apk/Signal-Android-debug.apk app/build/outputs/apk/app-debug-unaligned.apk
