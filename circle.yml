@@ -88,10 +88,15 @@ dependencies:
       done ;
       exit 0
 
+    - rm -f ~/ready.txt
+    - rm -f ~/ok.txt
+    - ./gradlew assembleDebug --no-daemon --stacktrace --max-workers=1 -x lint > $CIRCLE_ARTIFACTS/make_out2.txt 2>&1 ; if [ $? -eq 0 ]; then touch ~/ok.txt ; fi ; touch ~/ready.txt :
+       background: true
+
     - ready_="0";
       counter=0;
       while [ $ready_ == "0" ]; do
-      tail -20 $CIRCLE_ARTIFACTS/make_out.txt;
+      tail -20 $CIRCLE_ARTIFACTS/make_out2.txt;
       echo "running ...";
       counter=$[ $counter + 1 ] ;
       if [ $counter -eq 38 ] ; then exit 0 ; fi ;
