@@ -37,7 +37,6 @@
   <string name="ApplicationPreferencesActivity_off">כבוי</string>
   <string name="ApplicationPreferencesActivity_Off">כבוי</string>
   <string name="ApplicationPreferencesActivity_sms_mms_summary">SMS %1$s, MMS %2$s</string>
-  <string name="ApplicationPreferencesActivity_privacy_summary">משפט־סיסמה %1$s, אבטחת מסך %2$s</string>
   <string name="ApplicationPreferencesActivity_appearance_summary">ערכת נושא %1$s, שפה %2$s</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
@@ -556,7 +555,6 @@
   <string name="KeyCachingService_signal_passphrase_cached">גע כדי לפתוח.</string>
   <string name="KeyCachingService_signal_passphrase_cached_with_lock">נא לגעת לפתיחה, או לגעת במנעול לסגירה.</string>
   <string name="KeyCachingService_passphrase_cached">Signal אינו נעול</string>
-  <string name="KeyCachingService_lock">לנעול עם משפט סודי</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">אתה</string>
   <string name="MediaPreviewActivity_unssuported_media_type">סוג מדיה שאינו נתמך</string>
@@ -842,7 +840,7 @@
   <string name="AndroidManifest_archived_conversations">שיחות בארכיון</string>
   <string name="AndroidManifest_remove_photo">הסר תצלום</string>
   <!--arrays.xml-->
-  <string name="arrays__import_export">ייבא / ייצא</string>
+  <string name="arrays__import_export">ייבא</string>
   <string name="arrays__use_default">השתמש בברירת מחדל</string>
   <string name="arrays__use_custom">השתמש במותאם אישית</string>
   <string name="arrays__mute_for_one_hour">השתק למשך שעה</string>
@@ -884,8 +882,8 @@
   <string name="preferences__choose_your_contact_entry_from_the_contacts_list">נא לבחור את איש הקשר שלך מרשימת אנשי הקשר.</string>
   <string name="preferences__change_passphrase">שינוי משפט סודי</string>
   <string name="preferences__change_your_passphrase">שינוי המשפט הסודי שלך</string>
-  <string name="preferences__enable_passphrase">הפעלת משפט סודי</string>
-  <string name="preferences__lock_signal_and_message_notifications_with_a_passphrase">נעל את Signal והתראות הודעה באמצעות משפט־סיסמה</string>
+  <string name="preferences__enable_passphrase">אפשר נעילת מסך באמצעות משפט־סיסמה</string>
+  <string name="preferences__lock_signal_and_message_notifications_with_a_passphrase">נעל מסך והתראות באמצעות משפט־סיסמה</string>
   <string name="preferences__screen_security">אבטחת מסך</string>
   <string name="preferences__disable_screen_security_to_allow_screen_shots">חסימת צילומי מסך ברשימות האחרונים ובתוך האפליקציה</string>
   <string name="preferences__auto_lock_signal_after_a_specified_time_interval_of_inactivity">נעל באופן אוטומטי את Signal לאחר מרווח זמן של אי־פעילות</string>
@@ -1088,5 +1086,19 @@
   <string name="Permissions_not_now">לא עכשיו</string>
   <string name="ConversationListActivity_signal_needs_contacts_permission_in_order_to_search_your_contacts_but_it_has_been_permanently_denied">Signal צריך הרשאת אנשי קשר על מנת לחפש את אנשי הקשר שלך, אבל היא נדחתה לצמיתות. אנא המשך אל הגדרות היישום, בחר \"הרשאות\" ואפשר את \"אנשי קשר\".</string>
   <string name="conversation_activity__enable_signal_messages">אפשר הודעות SIGNAL</string>
+  <string name="SQLCipherMigrationHelper_migrating_signal_database">מהגר מסד נתונים של Signal</string>
+  <string name="PushDecryptJob_new_locked_message">הודעה נעולה חדשה</string>
+  <string name="PushDecryptJob_unlock_to_view_pending_messages">בטל נעילה כדי להציג הודעות ממתינות</string>
+  <string name="ExperienceUpgradeActivity_unlock_to_complete_update">בטל נעילה כדי להשלים עדכון</string>
+  <string name="ExperienceUpgradeActivity_please_unlock_signal_to_complete_update">אנא בטל את נעילת Signal כדי להשלים עדכון</string>
+  <string name="registration_activity__skip">דלג</string>
+  <string name="registration_activity__register">רישום</string>
+  <string name="RegistrationActivity_restore">שחזור</string>
+  <string name="BackupUtil_never">לעולם לא</string>
+  <string name="BackupUtil_unknown">לא ידוע</string>
+  <string name="AppProtectionPreferenceFragment_none">ללא</string>
+  <string name="RegistrationActivity_too_many_attempts">יותר מדי ניסיונות</string>
+  <string name="RegistrationLockDialog_disable">הַשְׁבֵּת</string>
+  <string name="RegistrationActivity_continue">המשך</string>
   <!--EOF-->
 </resources>

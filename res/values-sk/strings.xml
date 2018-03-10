@@ -39,7 +39,6 @@
   <string name="ApplicationPreferencesActivity_off">vypnuté</string>
   <string name="ApplicationPreferencesActivity_Off">Vypnuté</string>
   <string name="ApplicationPreferencesActivity_sms_mms_summary">SMS %1$s, MMS %2$s</string>
-  <string name="ApplicationPreferencesActivity_privacy_summary">Heslo %1$s, zabezpečenie obrazovky %2$s</string>
   <string name="ApplicationPreferencesActivity_appearance_summary">%1$s téma, %2$s jazyk</string>
   <!--AppProtectionPreferenceFragment-->
   <plurals name="AppProtectionPreferenceFragment_minutes">
@@ -522,7 +521,6 @@ Bola prijatá správa vzájomnej výmeny kľúčov s neplatnou verziou protokolu
   <string name="KeyCachingService_signal_passphrase_cached">Dotykom otvor.</string>
   <string name="KeyCachingService_signal_passphrase_cached_with_lock">Dotykom otvorte alebo dotykom zámku zatvorte.</string>
   <string name="KeyCachingService_passphrase_cached">Signal je odomknutý</string>
-  <string name="KeyCachingService_lock">Zamkni s heslom</string>
   <!--MediaPreviewActivity-->
   <string name="MediaPreviewActivity_you">Vy</string>
   <string name="MediaPreviewActivity_unssuported_media_type">Nepodporovaný typ súboru</string>
@@ -785,7 +783,7 @@ Bola prijatá správa vzájomnej výmeny kľúčov s neplatnou verziou protokolu
   <string name="AndroidManifest__invite_friends">Pozvať priateľov</string>
   <string name="AndroidManifest_archived_conversations">Archivované konverzácie</string>
   <!--arrays.xml-->
-  <string name="arrays__import_export">Import / export</string>
+  <string name="arrays__import_export">Import</string>
   <string name="arrays__use_default">Použiť predvolené</string>
   <string name="arrays__use_custom">Použiť vlastné</string>
   <string name="arrays__mute_for_one_hour">Stlmiť na 1 hodinu</string>
@@ -828,8 +826,6 @@ Bola prijatá správa vzájomnej výmeny kľúčov s neplatnou verziou protokolu
   <string name="preferences__choose_your_contact_entry_from_the_contacts_list">Vyberte Váš kontakt zo zoznamu kontaktov.</string>
   <string name="preferences__change_passphrase">Zmeniť heslo</string>
   <string name="preferences__change_your_passphrase">Zmeniť heslo</string>
-  <string name="preferences__enable_passphrase">Použiť heslo</string>
-  <string name="preferences__lock_signal_and_message_notifications_with_a_passphrase">Uzamknúť Signal a upozornenia správ heslom</string>
   <string name="preferences__screen_security">Zabezpečenie obrazovky</string>
   <string name="preferences__disable_screen_security_to_allow_screen_shots">Zakázať vytváranie snímkov obrazovky vnútri aplikácie a v zozname bežiacich aplikácií</string>
   <string name="preferences__auto_lock_signal_after_a_specified_time_interval_of_inactivity">Aut. zamknúť Signal po určenej dobe bez aktivity</string>
@@ -1020,5 +1016,15 @@ Bola prijatá správa vzájomnej výmeny kľúčov s neplatnou verziou protokolu
   <string name="ConversationListFragment_loading">Načítava sa...</string>
   <string name="CallNotificationBuilder_connecting">Pripájanie...</string>
   <string name="Permissions_continue">Pokračovať</string>
+  <string name="registration_activity__skip">Preskoč</string>
+  <string name="registration_activity__register">Registrovať</string>
+  <string name="RegistrationActivity_restore">Obnovenie</string>
+  <string name="BackupDialog_copied_to_clipboard">Kopírovať do schránky</string>
+  <string name="BackupUtil_never">Nikdy</string>
+  <string name="BackupUtil_unknown">Neznáme</string>
+  <string name="AppProtectionPreferenceFragment_none">Žiadne</string>
+  <string name="RegistrationActivity_too_many_attempts">Príliš veľa pokusov</string>
+  <string name="RegistrationLockDialog_disable">Vypnúť</string>
+  <string name="RegistrationActivity_continue">Pokračovať</string>
   <!--EOF-->
 </resources>

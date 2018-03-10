@@ -9,9 +9,12 @@ import android.util.Log;
 import org.thoughtcrime.securesms.database.DatabaseFactory;
 import org.thoughtcrime.securesms.database.MessagingDatabase.InsertResult;
 import org.thoughtcrime.securesms.database.SmsDatabase;
+import org.thoughtcrime.securesms.jobs.requirements.MasterSecretRequirement;
+import org.thoughtcrime.securesms.jobs.requirements.SqlCipherMigrationRequirement;
 import org.thoughtcrime.securesms.notifications.MessageNotifier;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.sms.IncomingTextMessage;
+import org.thoughtcrime.securesms.util.TextSecurePreferences;
 import org.whispersystems.jobqueue.JobParameters;
 import org.whispersystems.libsignal.util.guava.Optional;
 
@@ -31,6 +34,7 @@ public class SmsReceiveJob extends ContextJob {
     super(context, JobParameters.newBuilder()
                                 .withPersistence()
                                 .withWakeLock(true)
+                                .withRequirement(new SqlCipherMigrationRequirement(context))
                                 .create());
 
     this.pdus           = pdus;
@@ -41,7 +45,7 @@ public class SmsReceiveJob extends ContextJob {
   public void onAdded() {}
 
   @Override
-  public void onRun() {
+  public void onRun() throws MigrationPendingException {
     Log.w(TAG, "onRun()");
     
     Optional<IncomingTextMessage> message = assembleMessageFragments(pdus, subscriptionId);
@@ -66,7 +70,7 @@ public class SmsReceiveJob extends ContextJob {
 
   @Override
   public boolean onShouldRetry(Exception exception) {
-    return false;
+    return exception instanceof MigrationPendingException;
   }
 
   private boolean isBlocked(IncomingTextMessage message) {
@@ -78,8 +82,13 @@ public class SmsReceiveJob extends ContextJob {
     return false;
   }
 
-  private Optional<InsertResult> storeMessage(IncomingTextMessage message) {
+  private Optional<InsertResult> storeMessage(IncomingTextMessage message) throws MigrationPendingException {
     SmsDatabase database = DatabaseFactory.getSmsDatabase(context);
+    database.ensureMigration();
+
+    if (TextSecurePreferences.getNeedsSqlCipherMigration(context)) {
+      throw new MigrationPendingException();
+    }
 
     if (message.isSecureMessage()) {
       IncomingTextMessage    placeholder  = new IncomingTextMessage(message, "");
@@ -108,5 +117,9 @@ public class SmsReceiveJob extends ContextJob {
     }
 
     return Optional.of(new IncomingTextMessage(messages));
+  }
+
+  private class MigrationPendingException extends Exception {
+
   }
 }
